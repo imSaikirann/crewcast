@@ -1,11 +1,35 @@
 import { prisma } from "@/lib/prisma";
+import { redis } from "@/lib/redis";
+import { cacheKeys } from "@/lib/cacheKeys";
 import { PublicFormShell } from "@/features/public-form/components/PublicFormShell";
 
-export default async function Page({ params }: { params: { publicId: string } }) {
+export default async function Page({
+  params,
+}: {
+  params: Promise<{ publicId: string }>;
+}) {
   const { publicId } = await params;
 
+  const cacheKey = cacheKeys.job(publicId);
 
-  // 1️⃣ Load the form
+ 
+  let cached: string | null = null;
+
+  try {
+    cached = await redis.get(cacheKey);
+  } catch (err) { 
+    console.error("Redis GET failed:", err);
+  }
+
+  if (cached) {
+    try {
+      return <PublicFormShell form={JSON.parse(cached)} />;
+    } catch {
+      
+    }
+  }
+
+ 
   const form = await prisma.recruiterForm.findUnique({
     where: { publicId },
     select: {
@@ -27,7 +51,6 @@ export default async function Page({ params }: { params: { publicId: string } })
     return <div className="py-24 text-center">Form not found</div>;
   }
 
-  // 2️⃣ Load recruiter
   const recruiter = await prisma.recruiter.findUnique({
     where: { userId: form.recruiterId },
     select: {
@@ -46,19 +69,32 @@ export default async function Page({ params }: { params: { publicId: string } })
     );
   }
 
-  // 3️⃣ Load domain (optional)
   const domain = await prisma.domains.findUnique({
     where: { id: form.domainId },
-    select: { title: true },
+    select: { title: true }, 
   });
 
-  // 4️⃣ Merge everything
   const safeForm = {
     ...form,
     recruiter,
     domain,
   };
 
-  // 5️⃣ Render page (SSR)
+ 
+  let ttl = 3600; // 1 hour
+  if (form.expiresAt) {
+    const diff = Math.floor(
+      (new Date(form.expiresAt).getTime() - Date.now()) / 1000
+    );
+    if (diff > 0) ttl = Math.min(diff, 3600);
+  }
+
+
+  try {
+    await redis.set(cacheKey, JSON.stringify(safeForm), "EX", ttl);
+  } catch (err) {
+    console.error("Redis SET failed:", err);
+  }
+
   return <PublicFormShell form={safeForm} />;
 }
