@@ -9,38 +9,61 @@ function expiryText(expiresAt: string) {
 }
 
 export function PublicFormMeta({ form }: any) {
+  const salary =
+    form.salaryMin && form.salaryMax
+      ? `${form.currency ?? ""} ${formatNumber(form.salaryMin)} – ${formatNumber(form.salaryMax)}`
+      : null;
+
   return (
     <div className="space-y-10">
 
-      {/* ───────── Hero Block ───────── */}
+      {/* ───────── Hero ───────── */}
       <div className="space-y-3">
         <h1 className="text-3xl sm:text-4xl font-semibold tracking-tight">
           {form.title}
         </h1>
 
         <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-muted-foreground">
-          {form.expiresAt && (
-            <span>{expiryText(form.expiresAt)}</span>
-          )}
-
-          {form.location && (
-            <span>• {form.location}</span>
-          )}
-
-          {form.workMode && (
-            <span>• {formatWorkMode(form.workMode)}</span>
-          )}
+          {form.expiresAt && <span>{expiryText(form.expiresAt)}</span>}
+          {form.specialization && <span>• {form.specialization}</span>}
+          {form.location && <span>• {form.location}</span>}
+          {form.workMode && <span>• {formatWorkMode(form.workMode)}</span>}
         </div>
       </div>
 
-      {/* ───────── Job Highlights ───────── */}
+      {/* ───────── Highlights ───────── */}
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-        {form.salary && <MetaItem label="Pay" value={form.salary} />}
+        {salary && <MetaItem label="Pay" value={salary} />}
         {form.roleType && <MetaItem label="Role type" value={formatRoleType(form.roleType)} />}
         {form.experience && <MetaItem label="Experience" value={formatExperience(form.experience)} />}
-        {form.location && <MetaItem label="Location" value={form.location} />}
+        {form.contractDurationMonths && (
+          <MetaItem
+            label="Contract"
+            value={`${form.contractDurationMonths} months`}
+          />
+        )}
         {form.workMode && <MetaItem label="Work mode" value={formatWorkMode(form.workMode)} />}
+        {form.location && <MetaItem label="Location" value={form.location} />}
       </div>
+
+      {/* ───────── Tech Stack ───────── */}
+      {form.techStack?.length > 0 && (
+        <div className="space-y-2">
+          <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+            Tech stack
+          </h2>
+          <div className="flex flex-wrap gap-2">
+            {form.techStack.map((tech: string) => (
+              <span
+                key={tech}
+                className="px-3 py-1 text-sm rounded-full bg-muted border"
+              >
+                {tech}
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* ───────── Description ───────── */}
       {form.description && (
@@ -58,7 +81,7 @@ export function PublicFormMeta({ form }: any) {
   );
 }
 
-/* ---------- Meta Item ---------- */
+/* ---------- UI ---------- */
 
 function MetaItem({ label, value }: { label: string; value: string }) {
   return (
@@ -66,9 +89,7 @@ function MetaItem({ label, value }: { label: string; value: string }) {
       <p className="text-xs uppercase tracking-wide text-muted-foreground">
         {label}
       </p>
-      <p className="text-base font-medium mt-1">
-        {value}
-      </p>
+      <p className="text-base font-medium mt-1">{value}</p>
     </div>
   );
 }
@@ -95,4 +116,8 @@ function formatExperience(exp: string) {
   if (exp === "MID") return "Mid (2–5 yrs)";
   if (exp === "SENIOR") return "Senior (5+ yrs)";
   return exp;
+}
+
+function formatNumber(n: number) {
+  return n.toLocaleString();
 }

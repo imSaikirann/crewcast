@@ -12,12 +12,11 @@ export default async function Page({
 
   const cacheKey = cacheKeys.job(publicId);
 
- 
+  // 1️⃣ Try Redis first (best-effort)
   let cached: string | null = null;
-
   try {
     cached = await redis.get(cacheKey);
-  } catch (err) { 
+  } catch (err) {
     console.error("Redis GET failed:", err);
   }
 
@@ -25,11 +24,11 @@ export default async function Page({
     try {
       return <PublicFormShell form={JSON.parse(cached)} />;
     } catch {
-      
+      // corrupt cache → ignore
     }
   }
 
- 
+  // 2️⃣ Load from DB
   const form = await prisma.recruiterForm.findUnique({
     where: { publicId },
     select: {
@@ -38,12 +37,25 @@ export default async function Page({
       description: true,
       fields: true,
       createdAt: true,
-      recruiterId: true,
+      expiresAt: true,
+
+      // Hiring metadata
       roleType: true,
       workMode: true,
       experience: true,
+      location: true,
+      specialization: true,
+
+      // Tech & salary
+      techStack: true,
+      salaryMin: true,
+      salaryMax: true,
+      currency: true,
+      contractDurationMonths: true,
+
+      // Relations
+      recruiterId: true,
       domainId: true,
-      expiresAt: true,
     },
   });
 
@@ -51,6 +63,7 @@ export default async function Page({
     return <div className="py-24 text-center">Form not found</div>;
   }
 
+  // 3️⃣ Load recruiter
   const recruiter = await prisma.recruiter.findUnique({
     where: { userId: form.recruiterId },
     select: {
@@ -69,19 +82,21 @@ export default async function Page({
     );
   }
 
+  // 4️⃣ Load domain
   const domain = await prisma.domains.findUnique({
     where: { id: form.domainId },
-    select: { title: true }, 
+    select: { title: true },
   });
 
+  // 5️⃣ Merge safe public payload
   const safeForm = {
     ...form,
     recruiter,
     domain,
   };
 
- 
-  let ttl = 3600; // 1 hour
+  // 6️⃣ Compute TTL (until expiry or max 1h)
+  let ttl = 3600;
   if (form.expiresAt) {
     const diff = Math.floor(
       (new Date(form.expiresAt).getTime() - Date.now()) / 1000
@@ -89,12 +104,13 @@ export default async function Page({
     if (diff > 0) ttl = Math.min(diff, 3600);
   }
 
-
+  // 7️⃣ Save to Redis (best-effort)
   try {
     await redis.set(cacheKey, JSON.stringify(safeForm), "EX", ttl);
   } catch (err) {
     console.error("Redis SET failed:", err);
   }
 
+  // 8️⃣ Render
   return <PublicFormShell form={safeForm} />;
 }

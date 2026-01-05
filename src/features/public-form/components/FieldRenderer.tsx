@@ -4,7 +4,10 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 
 export function FieldRenderer({ field }: any) {
-  const { register, formState: { errors } } = useFormContext();
+  const {
+    register,
+    formState: { errors },
+  } = useFormContext();
 
   const common = register(field.id, { required: field.required });
 
@@ -15,8 +18,8 @@ export function FieldRenderer({ field }: any) {
         {field.required && <span className="text-destructive"> *</span>}
       </Label>
 
-      {/* TEXT / EMAIL / NUMBER */}
-      {["text", "email", "number"].includes(field.type) && (
+      {/* TEXT / EMAIL / NUMBER / URL */}
+      {["text", "email", "number", "url"].includes(field.type) && (
         <Input
           type={field.type}
           placeholder={field.placeholder}
@@ -38,11 +41,13 @@ export function FieldRenderer({ field }: any) {
       {field.type === "select" && (
         <select
           {...common}
-          className="w-full h-12 px-3 rounded-md border bg-background"
+          className="w-full h-12 px-3 rounded-md border bg-background text-sm"
         >
           <option value="">Select an option</option>
-          {field.options.map((opt: string) => (
-            <option key={opt} value={opt}>{opt}</option>
+          {field.options?.map((opt: string) => (
+            <option key={opt} value={opt}>
+              {opt}
+            </option>
           ))}
         </select>
       )}
@@ -50,27 +55,38 @@ export function FieldRenderer({ field }: any) {
       {/* RADIO */}
       {field.type === "radio" && (
         <div className="space-y-2">
-          {field.options.map((opt: string) => (
+          {field.options?.map((opt: string) => (
             <label key={opt} className="flex items-center gap-2 text-sm">
-              <input type="radio" value={opt} {...common} />
+              <input
+                type="radio"
+                value={opt}
+                {...common}
+                className="accent-primary"
+              />
               {opt}
             </label>
           ))}
         </div>
       )}
 
-      {/* CHECKBOX */}
+      {/* CHECKBOX (multi-select) */}
       {field.type === "checkbox" && (
         <div className="space-y-2">
-          {field.options.map((opt: string) => (
+          {field.options?.map((opt: string) => (
             <label key={opt} className="flex items-center gap-2 text-sm">
-              <input type="checkbox" value={opt} {...register(field.id)} />
+              <input
+                type="checkbox"
+                value={opt}
+                {...register(field.id)}
+                className="accent-primary"
+              />
               {opt}
             </label>
           ))}
         </div>
       )}
 
+      {/* Validation error */}
       {errors[field.id] && (
         <p className="text-xs text-destructive">This field is required</p>
       )}

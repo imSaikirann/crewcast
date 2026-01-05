@@ -113,39 +113,57 @@ model Domains {
 model RecruiterForm {
   id String @id @default(auto()) @map("_id") @db.ObjectId
 
-  recruiterId String    @db.ObjectId
-  recruiter   Recruiter @relation(fields: [recruiterId], references: [id], onDelete: Cascade)
+  recruiterId String
+  recruiter Recruiter @relation(fields: [recruiterId], references: [id], onDelete: Cascade)
 
-  domainId String  @db.ObjectId
-  domain   Domains @relation(fields: [domainId], references: [id], onDelete: Cascade)
+  domainId String
+  domain Domains @relation(fields: [domainId], references: [id], onDelete: Cascade)
 
-  // Public job link
   publicId String @unique @default(uuid())
 
   // Job identity
-  title       String
+  title String
   description String
+  specialization String 
 
   // Hiring metadata
-  roleType   RoleType // FullTime, Internship, Contract
-  experience Experience // Junior, Mid, Senior, Lead
-  workMode   WorkMode // Remote, Hybrid, Onsite
+  roleType RoleType
+  experience Experience
+  workMode WorkMode
+  location String?
 
-  location String? // City / Country if onsite or hybrid
+  // Salary
+  salaryMin Int?
+  salaryMax Int?
+  currency String?
 
+  // Tech
+  techStack String[]
 
-  fields Json // role-based form schema
+  // Contract
+  contractDurationMonths Int?
+
+  // Public visibility
+  showCompanyName Boolean @default(true)
+
+  // Versioning
+  status JobStatus @default(DRAFT)
+  version Int @default(1)
+  publishedAt DateTime?
+
+  // Form schema
+  fields Json
 
   expiresAt DateTime
-  isActive  Boolean  @default(true)
 
   applications Application[]
-  createdAt    DateTime      @default(now())
-  updatedAt    DateTime      @updatedAt
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([recruiterId])
   @@index([domainId])
-  @@index([isActive])
+  @@index([status])
 }
 
 
@@ -291,4 +309,10 @@ enum ApplicationStatus {
   INTERVIEW
   REJECTED
   HIRED
+}
+
+enum JobStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
 }
