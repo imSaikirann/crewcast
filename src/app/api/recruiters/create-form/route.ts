@@ -8,14 +8,13 @@ import { cacheKeys } from "@/lib/cacheKeys";
 export async function POST(req: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
-    const userId = session?.user?.id!;
+    if (!session?.user?.id) {
+      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+    }
 
-    // if (!userId) {
-    //   return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
-    // }
+    const userId = session.user.id;
 
     const body = await req.json();
-
     const {
       formTitle,
       formDescription,
@@ -34,12 +33,10 @@ export async function POST(req: NextRequest) {
       contractDurationMonths,
     } = body;
 
- 
     if (!formTitle || !formDescription || !Array.isArray(fields) || !domainId) {
       return NextResponse.json({ message: "Invalid payload" }, { status: 400 });
     }
 
-    // Salary range validation
     if (salaryMin != null && salaryMax != null && salaryMin > salaryMax) {
       return NextResponse.json(
         { message: "salaryMin cannot be greater than salaryMax" },
@@ -47,20 +44,30 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const domain = await prisma.domains.findFirst({
-      where: {
-        id: domainId,
-      },
+    const recruiter = await prisma.recruiter.findUnique({
+      where: { userId },
     });
 
-    if (!domain) {
+    if (!recruiter) {
+      return NextResponse.json({ message: "Recruiter not found" }, { status: 403 });
+    }
+
+ 
+    if (recruiter.totalFormsCount >= recruiter.totalFormsLimit) {
       return NextResponse.json(
-        { message: "Invalid or unauthorized domain" },
+        { message: "Form creation limit reached. Upgrade required." },
         { status: 403 }
       );
     }
 
-  
+    const domain = await prisma.domains.findUnique({
+      where: { id: domainId },
+    });
+
+    if (!domain) {
+      return NextResponse.json({ message: "Invalid domain" }, { status: 400 });
+    }
+
     const isValid = fields.every((f: any) => f.id && f.type && f.label);
     if (!isValid) {
       return NextResponse.json(
@@ -69,36 +76,44 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const created = await prisma.recruiterForm.create({
-      data: {
-        recruiterId: userId,
-        domainId,
+    await prisma.$transaction([
+      prisma.recruiterForm.create({
+        data: {
+          recruiterId: userId,   
+          domainId,
+          title: formTitle,
+          description: formDescription,
+          fields,
+          expiresAt,
+          roleType,
+          experience,
+          workMode,
+          location,
+          specialization,
+          techStack,
+          salaryMin,
+          salaryMax,
+          currency,
+          contractDurationMonths,
+          status: "DRAFT",
+          version: 1,
+        },
+      }),
+      prisma.recruiter.update({
+        where: { id: recruiter.id },
+        data: {
+          totalFormsCount: { increment: 1 },
+        },
+      }),
+    ]);
 
-        title: formTitle,
-        description: formDescription,
-        fields,
-        expiresAt,
-        roleType,
-        experience: experience,
-        workMode: workMode ,
-        location ,
-        specialization,
-        techStack,
-        salaryMin,
-        salaryMax,
-        currency,
-        contractDurationMonths,
-        status: "DRAFT",
-        version: 1,
-      },
-    });
-
-    return NextResponse.json(created, { status: 201 });
+    return NextResponse.json({ ok: true }, { status: 201 });
   } catch (err) {
     console.error("Create job error:", err);
     return NextResponse.json({ message: "Server error" }, { status: 500 });
   }
 }
+
 
 export async function GET() {
   try {

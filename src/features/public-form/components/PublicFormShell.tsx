@@ -1,7 +1,9 @@
 "use client";
 
-import { usePublicForm } from "@/features/hooks/usePublicForm";
+import { useEffect, useState } from "react";
 import { useForm, FormProvider } from "react-hook-form";
+import { usePublicForm } from "@/features/hooks/usePublicForm";
+import { getPublicFormStorageKey } from "../lib/storage";
 
 import { PublicFormHeader } from "./PublicFormHeader";
 import { PublicFormMeta } from "./PublicFormMeta";
@@ -13,6 +15,35 @@ import { PublicFormFooter } from "./PublicFormFooter";
 export function PublicFormShell({ form }: { form: any }) {
   const { step, setStep, submit } = usePublicForm();
   const methods = useForm();
+  const [hydrated, setHydrated] = useState(false);
+
+  // 1. Restore
+  useEffect(() => {
+    const saved = localStorage.getItem(getPublicFormStorageKey(form.publicId));
+    if (saved) {
+      methods.reset(JSON.parse(saved));
+    }
+    setHydrated(true);
+  }, [form.publicId]);
+
+  // 2. Persist (only after restore)
+  useEffect(() => {
+    if (!hydrated) return;
+
+    const sub = methods.watch((values) => {
+      localStorage.setItem(
+        getPublicFormStorageKey(form.publicId),
+        JSON.stringify(values)
+      );
+    });
+
+    return () => sub.unsubscribe();
+  }, [hydrated, methods, form.publicId]);
+
+  if(step === "done")
+  {
+    localStorage.removeItem(getPublicFormStorageKey(form.publicId));
+  }
 
   return (
     <FormProvider {...methods}>
@@ -31,6 +62,7 @@ export function PublicFormShell({ form }: { form: any }) {
           {step === "review" && (
             <PublicFormReview
               form={form}
+              answers={methods.getValues()}
               onBack={() => setStep("form")}
               onSubmit={() => submit(form.publicId, methods.getValues())}
             />
@@ -39,7 +71,7 @@ export function PublicFormShell({ form }: { form: any }) {
           {step === "done" && <PublicFormSuccess />}
         </div>
 
-        <PublicFormFooter />
+        <PublicFormFooter formPublicId={form.publicId} />
       </div>
     </FormProvider>
   );

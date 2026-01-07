@@ -12,11 +12,8 @@ export function PublicFormFields({ form, onNext }: any) {
 
       <div className="pt-6 border-t">
         <Button size="lg" className="w-full py-6 text-base">
-          Continue →
+          Continue 
         </Button>
-        <p className="text-xs text-muted-foreground text-center mt-3">
-          Takes less than 2 minutes
-        </p>
       </div>
     </form>
   );

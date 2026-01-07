@@ -2,6 +2,7 @@ import { prisma } from "@/lib/prisma";
 import { redis } from "@/lib/redis";
 import { cacheKeys } from "@/lib/cacheKeys";
 import { PublicFormShell } from "@/features/public-form/components/PublicFormShell";
+import { trackFormView } from "@/lib/trackFormView";
 
 export default async function Page({
   params,
@@ -12,7 +13,7 @@ export default async function Page({
 
   const cacheKey = cacheKeys.job(publicId);
 
-  // 1️⃣ Try Redis first (best-effort)
+
   let cached: string | null = null;
   try {
     cached = await redis.get(cacheKey);
@@ -20,18 +21,24 @@ export default async function Page({
     console.error("Redis GET failed:", err);
   }
 
-  if (cached) {
-    try {
-      return <PublicFormShell form={JSON.parse(cached)} />;
-    } catch {
-      // corrupt cache → ignore
-    }
-  }
+if (cached) {
+  try {
+    const form = JSON.parse(cached);
 
-  // 2️⃣ Load from DB
+    await trackFormView(form.id);   
+
+    return <PublicFormShell form={form} />;
+  } catch {
+    // corrupt cache → ignore
+  }
+}
+
+
+
   const form = await prisma.recruiterForm.findUnique({
     where: { publicId },
     select: {
+      id:true,
       publicId: true,
       title: true,
       description: true,
@@ -45,6 +52,7 @@ export default async function Page({
       experience: true,
       location: true,
       specialization: true,
+      showCompanyName:true,
 
       // Tech & salary
       techStack: true,
@@ -53,7 +61,7 @@ export default async function Page({
       currency: true,
       contractDurationMonths: true,
 
-      // Relations
+
       recruiterId: true,
       domainId: true,
     },
@@ -63,13 +71,13 @@ export default async function Page({
     return <div className="py-24 text-center">Form not found</div>;
   }
 
-  // 3️⃣ Load recruiter
+
   const recruiter = await prisma.recruiter.findUnique({
     where: { userId: form.recruiterId },
     select: {
-      companyName: true,
-      website: true,
-      linkedinLink: true,
+      companyName: !form.showCompanyName ? true: false,
+      website: !form.showCompanyName ? true: false,
+      linkedinLink: !form.showCompanyName ? true: false,
       verified: true,
     },
   });
@@ -82,20 +90,21 @@ export default async function Page({
     );
   }
 
-  // 4️⃣ Load domain
+
   const domain = await prisma.domains.findUnique({
     where: { id: form.domainId },
     select: { title: true },
   });
 
-  // 5️⃣ Merge safe public payload
+
   const safeForm = {
     ...form,
     recruiter,
     domain,
   };
-
-  // 6️⃣ Compute TTL (until expiry or max 1h)
+  
+  await trackFormView(form.id);
+ 
   let ttl = 3600;
   if (form.expiresAt) {
     const diff = Math.floor(
@@ -104,13 +113,11 @@ export default async function Page({
     if (diff > 0) ttl = Math.min(diff, 3600);
   }
 
-  // 7️⃣ Save to Redis (best-effort)
   try {
     await redis.set(cacheKey, JSON.stringify(safeForm), "EX", ttl);
   } catch (err) {
     console.error("Redis SET failed:", err);
   }
 
-  // 8️⃣ Render
   return <PublicFormShell form={safeForm} />;
 }
