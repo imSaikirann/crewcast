@@ -196,8 +196,8 @@ model FormView {
 model JobReport {
   id String @id @default(auto()) @map("_id") @db.ObjectId
 
-  formId String        @db.ObjectId
-  form   RecruiterForm @relation(fields: [formId], references: [id], onDelete: Cascade)
+  formId String       
+  form   RecruiterForm @relation(fields: [formId], references: [publicId], onDelete: Cascade)
 
   reason  String
   message String?
@@ -264,14 +264,10 @@ model Application {
 
   fullName String
   email    String
-  phone    String?
+
 
   responses Json
 
-  resumeUrl String?
-  portfolio String?
-  github    String?
-  linkedin  String?
 
   status ApplicationStatus  @default(APPLIED)
   scores ApplicationScore[]
@@ -279,6 +275,7 @@ model Application {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  @@unique([jobId, email]) 
   @@index([jobId])
   @@index([email])
   @@index([status])

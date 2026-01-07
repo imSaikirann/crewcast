@@ -7,10 +7,12 @@ import { headers } from "next/headers";
 
 export async function POST(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = params.id ? params : { id: null };
+    const { id } = await context.params;   
+ 
+    
     const { reason, message } = await req.json();
 
  
@@ -26,7 +28,7 @@ export async function POST(
       );
     }
 
-    // verify form exists
+
     const form = await prisma.recruiterForm.findUnique({
       where: { publicId: id },
       select: { id: true },
@@ -36,7 +38,7 @@ export async function POST(
       return NextResponse.json({ message: "Form not found" }, { status: 404 });
     }
 
-    // get request fingerprint
+
     const h = headers();
     const ip =
       (await h).get("x-forwarded-for")?.split(",")[0] ||
@@ -45,7 +47,7 @@ export async function POST(
 
     const userAgent = (await h).get("user-agent") || "unknown";
 
-    // rate limit (same device once per 24h)
+
     const last24h = new Date(Date.now() - 24 * 60 * 60 * 1000);
 
     const existing = await prisma.jobReport.findFirst({

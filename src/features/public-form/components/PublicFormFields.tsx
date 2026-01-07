@@ -1,4 +1,5 @@
-import { FieldRenderer } from "./FieldRenderer";
+
+import { FieldRenderer } from "@/components/common/forms/FieldRenderer";
 import { Button } from "@/components/ui/button";
 
 export function PublicFormFields({ form, onNext }: any) {

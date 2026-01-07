@@ -8,6 +8,6 @@ export const cacheKeys = {
   domainForms: (domainId: string) =>
     `crewcast:domain:${domainId}:forms`,
 
-  jobApplicants: (publicId: string) =>
-    `crewcast:job:${publicId}:applicants`,
+  jobApplications: (formId: string) =>
+    `crewcast:job:${formId}:applications`,
 };
