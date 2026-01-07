@@ -24,6 +24,7 @@ interface BreadcrumbsProps {
   items: BreadcrumbItemType[];
 }
 
+
 export default function Breadcrumbs({ items }: BreadcrumbsProps) {
   const router = useRouter();
 
