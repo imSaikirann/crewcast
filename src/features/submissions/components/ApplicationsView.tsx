@@ -2,7 +2,9 @@
 
 import ApplicationFilters from "@/features/submissions/components/ApplicationFilters";
 import ApplicationTable from "@/features/submissions/components/ApplicationTable";
+import { ApplicationStatus } from "@/generated/prisma/enums";
 import { useState, useMemo } from "react";
+import ApplicationsStats from "./ApplicationsStats";
 
 
 export default function ApplicationsView({ data }: { data: any[] }) {
@@ -31,6 +33,8 @@ export default function ApplicationsView({ data }: { data: any[] }) {
         status={status}
         setStatus={setStatus}
       />
+
+      <ApplicationsStats/>
 
       <ApplicationTable applications={filtered} />
     </div>
