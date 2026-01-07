@@ -25,7 +25,9 @@ import {
   MoreVerticalIcon,
   TimeQuarterIcon,
   AnalyticsUpIcon,
-  Target01Icon
+  Target01Icon,
+  CreditCardDefrostIcon,
+  Mail01Icon
 } from 'hugeicons-react';
 
 export const hugeIcons = {
@@ -59,7 +61,9 @@ export const hugeIcons = {
   'arrow-right': ArrowRight01Icon,
   views:EyeIcon,
   lock:LockIcon,
-  'more-vertical':MoreVerticalIcon
+  'more-vertical':MoreVerticalIcon,
+  'credit-card':CreditCardDefrostIcon,
+  'mail':Mail01Icon
 };
 
 export type HugeIconName = keyof typeof hugeIcons;

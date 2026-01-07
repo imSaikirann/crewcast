@@ -35,7 +35,7 @@ export default function DashboardPage() {
 
   return (
     <div className="min-h-screen bg-background font-mono">
-      <div className="max-w-7xl mx-auto px-6 py-8 space-y-8">
+      <div className="max-w-7xl mx-auto px-6 py-8 space-y-8 mt-20">
         {/* Breadcrumbs */}
         <Breadcrumbs
           items={[

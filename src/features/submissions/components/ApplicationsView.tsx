@@ -1,20 +1,28 @@
 "use client";
 
+import { useState, useMemo } from "react";
 import ApplicationFilters from "@/features/submissions/components/ApplicationFilters";
 import ApplicationTable from "@/features/submissions/components/ApplicationTable";
-import { ApplicationStatus } from "@/generated/prisma/enums";
-import { useState, useMemo } from "react";
-import ApplicationsStats from "./ApplicationsStats";
+import ApplicationsStats from "@/features/submissions/components/ApplicationsStats";
 
+type Application = {
+  id: string;
+  fullName: string;
+  email: string;
+  createdAt: string;
+  status: string;
+  scores: { totalScore: number }[];
+  responses: Record<string, any>;
+};
 
-export default function ApplicationsView({ data }: { data: any[] }) {
+export default function ApplicationsView({ data }: { data: Application[] }) {
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("");
 
   const filtered = useMemo(() => {
-    return data.filter((a) => {
-      const q = search.toLowerCase();
+    const q = search.toLowerCase();
 
+    return data.filter((a) => {
       const matchesSearch =
         a.fullName.toLowerCase().includes(q) ||
         a.email.toLowerCase().includes(q);
@@ -26,17 +34,23 @@ export default function ApplicationsView({ data }: { data: any[] }) {
   }, [data, search, status]);
 
   return (
-    <div className="space-y-4">
-      <ApplicationFilters
-        search={search}
-        setSearch={setSearch}
-        status={status}
-        setStatus={setStatus}
-      />
+    <div className="space-y-6">
+      {/* Top bar */}
+      <div className="flex flex-col lg:flex-row-reverse lg:items-center lg:justify-between gap-4">
+        <ApplicationFilters
+          search={search}
+          setSearch={setSearch}
+          status={status}
+          setStatus={setStatus}
+        />
 
-      <ApplicationsStats/>
+        <ApplicationsStats />
+      </div>
 
-      <ApplicationTable applications={filtered} />
+      {/* Table */}
+      <div className="bg-background border rounded-xl overflow-hidden">
+        <ApplicationTable applications={filtered} />
+      </div>
     </div>
   );
 }
