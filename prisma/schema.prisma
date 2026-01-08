@@ -78,6 +78,7 @@ model Recruiter {
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   companyName  String
+  companyEmail String
   website      String
   linkedinLink String
   verified     Boolean @default(false)
@@ -94,6 +95,7 @@ model Recruiter {
   updatedAt DateTime @updatedAt
 
   recruiterForms RecruiterForm[]
+  verification EmailVerification[]
 }
 
 
@@ -311,11 +313,25 @@ model ApplicationScore {
 
 model EmailVerification {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String   @db.ObjectId
   email     String
   tokenHash String   @unique
   expiresAt DateTime
   used      Boolean  @default(false)
   createdAt DateTime @default(now())
+
+  user Recruiter @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+
+model UpgradeRequest {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId     String   @db.ObjectId
+  email      String
+  company    String
+  plan       String
+  status     String   @default("PENDING") 
+  createdAt  DateTime @default(now())
 }
 
 enum RoleType {

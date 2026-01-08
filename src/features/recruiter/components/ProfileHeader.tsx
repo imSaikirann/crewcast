@@ -14,7 +14,7 @@ export default function ProfileHeader({ recruiter }: any) {
         <div>
           <div className="flex items-center gap-2">
             <h1 className="text-2xl sm:text-3xl font-bold">
-              {recruiter.name}
+              {recruiter.companyName}
             </h1>
 
             {recruiter.verified && (
@@ -31,18 +31,6 @@ export default function ProfileHeader({ recruiter }: any) {
         </div>
       </div>
 
-      {/* Right: Primary action */}
-      <div className="flex gap-2">
-        <button className="px-4 py-2 rounded-lg border flex items-center gap-2">
-          <HugeIcon name="edit" className="w-4 h-4" />
-          Edit profile
-        </button>
-
-        <button className="px-4 py-2 rounded-lg bg-primary text-primary-foreground flex items-center gap-2">
-          <HugeIcon name="add-circle" className="w-4 h-4" />
-          Create Job
-        </button>
-      </div>
     </div>
   );
 }

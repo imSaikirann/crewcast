@@ -10,4 +10,6 @@ export const cacheKeys = {
 
   jobApplications: (formId: string) =>
     `crewcast:job:${formId}:applications`,
+
+  jobs:'crewcast:jobs'
 };

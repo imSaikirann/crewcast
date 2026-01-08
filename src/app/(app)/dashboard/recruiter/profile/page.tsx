@@ -10,7 +10,7 @@ export default function Page() {
               items={[
                 { label: "Home", href: "/" },
                 { label: "Dashboard", href: "/dashboard" },
-                { label: "Submissions", href: `/dashboard}` },
+                { label: "Profile", href: "/dashboard/recruiter/profile" },
                 
               ]}
             />

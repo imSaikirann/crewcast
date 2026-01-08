@@ -1,7 +1,11 @@
-export default function PublicLayout({ children }: { children: React.ReactNode }) {
+export default function PublicLayout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
   return (
-    <html lang="en">
-      <body>{children}</body>
-    </html>
-  );
+    <div className="min-h-screen bg-white dark:bg-neutral-950">
+      {children}
+    </div>
+  )
 }

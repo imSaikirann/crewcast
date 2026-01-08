@@ -1,8 +1,8 @@
 import { HugeIcon } from "@/utils/hugeicons";
 
 export default function PlanUsageCard({ plan }: any) {
-  const activePct = (plan.activeForms / plan.activeLimit) * 100;
-  const totalPct = (plan.totalForms / plan.totalLimit) * 100;
+  const activePct = Math.min((plan.used / plan.limit) * 100, 100);
+  const totalPct = Math.min((plan.totalUsed / plan.totalLimit) * 100, 100);
 
   return (
     <div className="rounded-xl border bg-background p-6 space-y-6">
@@ -20,7 +20,7 @@ export default function PlanUsageCard({ plan }: any) {
         <div>
           <div className="flex justify-between mb-1">
             <span>Active forms</span>
-            <span>{plan.activeForms}/{plan.activeLimit}</span>
+            <span>{plan.used}/{plan.limit}</span>
           </div>
           <div className="h-2 rounded bg-muted">
             <div className="h-2 rounded bg-primary" style={{ width: `${activePct}%` }} />
@@ -30,7 +30,7 @@ export default function PlanUsageCard({ plan }: any) {
         <div>
           <div className="flex justify-between mb-1">
             <span>Total forms</span>
-            <span>{plan.totalForms}/{plan.totalLimit}</span>
+            <span>{plan.totalUsed}/{plan.totalLimit}</span>
           </div>
           <div className="h-2 rounded bg-muted">
             <div className="h-2 rounded bg-primary" style={{ width: `${totalPct}%` }} />
