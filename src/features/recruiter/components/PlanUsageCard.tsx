@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/button";
 import { HugeIcon } from "@/utils/hugeicons";
 
 export default function PlanUsageCard({ plan }: any) {
@@ -38,9 +39,9 @@ export default function PlanUsageCard({ plan }: any) {
         </div>
       </div>
 
-      <button className="w-full mt-2 py-2 rounded-lg bg-primary text-primary-foreground">
+      <Button size="default" className="w-full  mt-2 cursor-pointer">
         Upgrade Plan
-      </button>
+      </Button>
     </div>
   );
 }

@@ -16,23 +16,23 @@ export default function ProfileCard({ recruiter }: any) {
 
       <div className="space-y-3 text-sm">
         <div className="flex items-start gap-3">
-          <HugeIcon name="mail" className="w-4 h-4 text-muted-foreground mt-0.5 flex-shrink-0" />
+          <HugeIcon name="mail" className="w-4 h-4 text-muted-foreground mt-0.5 shrink-0" />
           <div className="min-w-0">
             <p className="text-muted-foreground text-xs mb-0.5">Email</p>
-            <p className="break-words">{recruiter.companyEmail}</p>
+            <p className="wrap-break-word">{recruiter.companyEmail}</p>
           </div>
         </div>
 
         {recruiter.website && (
           <div className="flex items-start gap-3">
-            <HugeIcon name="global" className="w-4 h-4 text-muted-foreground mt-0.5 flex-shrink-0" />
+            <HugeIcon name="global" className="w-4 h-4 text-muted-foreground mt-0.5 shrink-0" />
             <div className="min-w-0">
               <p className="text-muted-foreground text-xs mb-0.5">Website</p>
               <a 
                 href={recruiter.website.startsWith('http') ? recruiter.website : `https://${recruiter.website}`} 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="text-primary hover:underline break-words"
+                className="text-primary hover:underline wrap-break-word"
               >
                 {recruiter.website}
               </a>
@@ -42,14 +42,14 @@ export default function ProfileCard({ recruiter }: any) {
 
         {recruiter.linkedinLink && (
           <div className="flex items-start gap-3">
-            <HugeIcon name="link" className="w-4 h-4 text-muted-foreground mt-0.5 flex-shrink-0" />
+            <HugeIcon name="link" className="w-4 h-4 text-muted-foreground mt-0.5 shrink-0" />
             <div className="min-w-0">
               <p className="text-muted-foreground text-xs mb-0.5">LinkedIn</p>
               <a 
                 href={recruiter.linkedinLink.startsWith('http') ? recruiter.linkedinLink : `https://${recruiter.linkedinLink}`} 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="text-primary hover:underline break-words"
+                className="text-primary hover:underline wrap-break-word"
               >
                 {recruiter.linkedinLink}
               </a>

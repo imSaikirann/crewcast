@@ -48,7 +48,7 @@ export default function Navbar() {
       className={`fixed top-0 inset-x-0 z-50 bg-white/70 dark:bg-background/70 backdrop-blur-md transition-transform duration-300
       ${hidden ? "-translate-y-full" : "translate-y-0"}`}
     >
-      <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+      <div className="max-w-7xl mx-auto px-6  h-16 flex items-center justify-between">
 
         <Link href="/" className="flex items-center gap-3 group">
           <h1 className="text-2xl font-bold tracking-tight group-hover:text-black transition font-mono">
@@ -90,6 +90,7 @@ export default function Navbar() {
                 <div className="absolute right-0 mt-2 bg-card border border-border rounded-xl shadow-lg w-60 p-2">
                   <p className="px-3 py-2">{user.name}</p>
                   <p className="px-3 pb-2 text-xs text-muted-foreground">{user.email}</p>
+                  
                   <button
                     onClick={() => signOut()}
                     className="w-full text-left px-3 py-2 text-destructive hover:bg-destructive/10 rounded-md"

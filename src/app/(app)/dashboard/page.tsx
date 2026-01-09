@@ -14,11 +14,11 @@ export default function DashboardPage() {
   const isVerified = recruiter?.verified;
 
   function handleCreateForm() {
-    router.push("/dashboard/pick-domain");
+    router.push("/dashboard/domains");
   }
 
   return (
-    <div className="min-h-screen bg-background font-mono">
+    <div className="min-h-screen bg-background ">
       <div className="max-w-7xl mx-auto px-6 py-8 space-y-8 mt-20">
 
         <Breadcrumbs
@@ -40,7 +40,7 @@ export default function DashboardPage() {
           <div className="flex items-center gap-3">
             <Link href="/dashboard/recruiter/profile">
               <Button variant="outline" size="lg">
-                Recruiter Profile <HugeIcon name="user" />
+                Recruiter Profile <HugeIcon name="user" className="" />
               </Button>
             </Link>
 

@@ -19,7 +19,7 @@ export default function ProfileHeader({ recruiter }: any) {
 
             {recruiter.verified && (
               <span className="flex items-center gap-1 text-xs px-2 py-1 rounded-full bg-primary/10 text-primary">
-                <HugeIcon name="verified-checkmark" className="w-3 h-3" />
+                <HugeIcon name="verified-checkmark" className="w-3 h-3 text-primary" />
                 Verified
               </span>
             )}

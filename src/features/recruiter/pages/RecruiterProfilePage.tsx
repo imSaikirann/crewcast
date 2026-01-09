@@ -8,6 +8,7 @@ import ProfileCard from "../components/ProfileCard"
 import PlanUsageCard from "../components/PlanUsageCard"
 import ProfileSetupForm from "../components/ProfileSetupForm"
 import { useState } from "react"
+import { Button } from "@/components/ui/button"
 
 export default function RecruiterProfilePage() {
   const { data: recruiter, isLoading, error } = useRecruiterProfile()
@@ -63,12 +64,13 @@ export default function RecruiterProfilePage() {
         {/* Header Section */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-6 border-b">
           <ProfileHeader recruiter={recruiter} />
-          <button
+          <Button
+          size="default"
             onClick={() => setIsEditing(true)}
-            className="px-4 py-2 text-sm font-medium text-primary hover:text-primary/80 border border-input rounded-md hover:bg-accent transition-colors whitespace-nowrap"
+            className="text-xs cursor-pointer"
           >
             Edit Profile
-          </button>
+          </Button>
         </div>
 
         {/* Alerts */}
@@ -92,12 +94,22 @@ export default function RecruiterProfilePage() {
           )}
 
           {recruiter.verified && recruiter.activeFormCount < recruiter.formLimit && (
-            <div className="border border-green-500/30 bg-green-500/10 text-green-600 dark:text-green-500 px-4 py-3 rounded-lg flex items-center gap-2">
-              <svg className="w-5 h-5 shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-              </svg>
-              <span>Your profile is verified. You can now create job forms!</span>
-            </div>
+           <div className="
+      flex items-start sm:items-center gap-3
+      border border-emerald-500/30
+      bg-emerald-500/10
+      text-emerald-700 dark:text-emerald-400
+      px-4 py-3 rounded-xl
+    ">
+
+
+      <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
+        <span className="font-medium">Profile verified</span>
+        <span className="text-sm opacity-80">
+          You can now create job forms.
+        </span>
+      </div>
+    </div>
           )}
         </div>
 

@@ -25,7 +25,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${inter.variable} antialiased bg-white font-mono dark:bg-neutral-950 dark:text-white transition-colors`}
+        className={`${geistSans.variable} ${geistMono.variable} ${inter.variable} antialiased bg-white font-sans dark:bg-neutral-950 dark:text-white transition-colors`}
       >
         <Providers>
           {/* Providers must receive ONE ReactNode */}
