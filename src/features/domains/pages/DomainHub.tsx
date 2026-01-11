@@ -13,7 +13,7 @@ const BREADCRUMBS = [
   { label: "Home", href: "/" },
   { label: "Dashboard", href: "/dashboard" },
   { label: "Domains", href: "/dashboard/domains" },
-] as const
+] 
 
 export default function DomainsPage() {
   const [query, setQuery] = useState("")
@@ -21,11 +21,11 @@ export default function DomainsPage() {
 
   const filtered = useMemo(() => {
     const q = query.toLowerCase()
-    return (domains ?? []).filter(
+    return Array.isArray(domains) ? domains.filter(
       d =>
         d.title.toLowerCase().includes(q) ||
         d.description.toLowerCase().includes(q)
-    )
+    ) : []
   }, [query, domains])
 
   return (

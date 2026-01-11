@@ -63,7 +63,7 @@ export function DomainCard({ domain }: { domain: Domain }) {
   }
 
   return (
-    <Link href={`/dashboard/forms/new?domain=${domain._id}`}>
+    <Link href={`/dashboard/forms/new?domain=${domain.id}`}>
       {content}
     </Link>
   )
