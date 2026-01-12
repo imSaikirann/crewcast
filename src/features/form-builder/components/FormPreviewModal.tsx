@@ -39,7 +39,7 @@ export function FormPreviewModal({
               variant="ghost"
               size="icon"
               onClick={onClose}
-              className="h-8 w-8 flex-shrink-0"
+              className="h-8 w-8 shrink-0"
             >
               <HugeIcon name="cancel" className="h-4 w-4" />
             </Button>

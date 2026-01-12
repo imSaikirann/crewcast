@@ -1,15 +1,18 @@
-import { useFormContext } from "react-hook-form";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
+import { useFormContext } from "react-hook-form"
+import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
+import { Label } from "@/components/ui/label"
 
 export function FieldRenderer({ field }: any) {
   const {
     register,
     formState: { errors },
-  } = useFormContext();
+  } = useFormContext()
 
-  const common = register(field.id, { required: field.required });
+  const common = register(field.id, {
+    required: field.required,
+    valueAsNumber: field.type === "number",
+  })
 
   return (
     <div className="space-y-2">
@@ -18,13 +21,28 @@ export function FieldRenderer({ field }: any) {
         {field.required && <span className="text-destructive"> *</span>}
       </Label>
 
-      {/* TEXT / EMAIL / NUMBER / URL */}
-      {["text", "email", "number", "url"].includes(field.type) && (
+      {/* TEXT / EMAIL / NUMBER / URL / DATE */}
+      {["text", "email", "number", "url", "date"].includes(field.type) && (
         <Input
           type={field.type}
           placeholder={field.placeholder}
+          min={field.min}
+          max={field.max}
+          step={field.step}
+          disabled={field.disabled}
+          readOnly={field.readOnly}
           {...common}
           className="h-12 text-base"
+        />
+      )}
+
+      {/* FILE */}
+      {field.type === "file" && (
+        <Input
+          type="file"
+          accept={field.accept}
+          disabled={field.disabled}
+          {...register(field.id, { required: field.required })}
         />
       )}
 
@@ -32,6 +50,8 @@ export function FieldRenderer({ field }: any) {
       {field.type === "textarea" && (
         <Textarea
           placeholder={field.placeholder}
+          disabled={field.disabled}
+          readOnly={field.readOnly}
           {...common}
           className="min-h-30"
         />
@@ -41,9 +61,12 @@ export function FieldRenderer({ field }: any) {
       {field.type === "select" && (
         <select
           {...common}
+          disabled={field.disabled}
           className="w-full h-12 px-3 rounded-md border bg-background text-sm"
         >
-          <option value="">Select an option</option>
+          <option value="">
+            {field.placeholder || "Select an option"}
+          </option>
           {field.options?.map((opt: string) => (
             <option key={opt} value={opt}>
               {opt}
@@ -60,6 +83,7 @@ export function FieldRenderer({ field }: any) {
               <input
                 type="radio"
                 value={opt}
+                disabled={field.disabled}
                 {...common}
                 className="accent-primary"
               />
@@ -69,7 +93,7 @@ export function FieldRenderer({ field }: any) {
         </div>
       )}
 
-      {/* CHECKBOX (multi-select) */}
+      {/* CHECKBOX (multi-select array) */}
       {field.type === "checkbox" && (
         <div className="space-y-2">
           {field.options?.map((opt: string) => (
@@ -77,6 +101,7 @@ export function FieldRenderer({ field }: any) {
               <input
                 type="checkbox"
                 value={opt}
+                disabled={field.disabled}
                 {...register(field.id)}
                 className="accent-primary"
               />
@@ -88,8 +113,10 @@ export function FieldRenderer({ field }: any) {
 
       {/* Validation error */}
       {errors[field.id] && (
-        <p className="text-xs text-destructive">This field is required</p>
+        <p className="text-xs text-destructive">
+          {field.errorMessage || "This field is required"}
+        </p>
       )}
     </div>
-  );
+  )
 }

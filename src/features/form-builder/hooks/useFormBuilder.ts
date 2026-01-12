@@ -2,39 +2,99 @@ import { useState, useEffect } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import axios from "axios"
 import { FieldType, FormField } from "../types/types"
-import { RoleType } from "@/generated/prisma/client";
+import { RoleType } from "@/generated/prisma/client"
 import { nanoid } from "nanoid"
-
 import { useDomainDefaultForm } from "./useDominDefaults"
+import { useCreateForm } from "./useCreateForm"
+import { toast } from "@/lib/toast"
 
+/* ---------------------------------------------
+   Step-1 business model
+---------------------------------------------- */
+export interface JobFormDetails {
+  formTitle: string
+  formDescription: string
+  expiresAt: string
+  domainId: string
+  roleType: string
+  experience: string
+  workMode: string
+  location: string
+  specialization: string
+  techStack: string[]
+  salaryMin: number
+  salaryMax: number
+  currency: string
+  contractDurationMonths: number
+}
+
+/* ---------------------------------------------
+   Hook
+---------------------------------------------- */
 export function useFormBuilder() {
   const router = useRouter()
   const params = useSearchParams()
   const domainId = params.get("domain")
-
+const createFormMutation = useCreateForm()
   const { data: defaults } = useDomainDefaultForm(domainId)
 
-  const [formTitle, setFormTitle] = useState("")
-  const [formDescription, setFormDescription] = useState("")
-  const [roleType, setRoleType] = useState<RoleType | null>(null)
-  const [expiresAt, setExpiresAt] = useState("")
-  const [fields, setFields] = useState<FormField[]>([])
-  const [selectedFieldType, setSelectedFieldType] = useState<FieldType>("text")
+  /* -------------------------
+     Unified step-1 state
+  -------------------------- */
+  const [details, setDetails] = useState<JobFormDetails>({
+    formTitle: "",
+    formDescription: "",
+    expiresAt: "",
+    domainId: domainId ?? "",
+    roleType: "FULL_TIME", // Default to FULL_TIME instead of empty string
+    experience: "JUNIOR", // Default to JUNIOR instead of 0
+    workMode: "",
+    location: "",
+    specialization: "",
+    techStack: [],
+    salaryMin: 0,
+    salaryMax: 0,
+    currency: "INR",
+    contractDurationMonths: 0,
+  })
 
+  const updateDetails = <K extends keyof JobFormDetails>(
+    key: K,
+    value: JobFormDetails[K]
+  ) => {
+    setDetails(prev => ({ ...prev, [key]: value }))
+  }
+
+  /* -------------------------
+     Step-2 fields
+  -------------------------- */
+  const [fields, setFields] = useState<FormField[]>([])
+  const [selectedFieldType, setSelectedFieldType] =
+    useState<FieldType>("text")
+
+  const generateId = () => `field-${nanoid(10)}`
+
+  /* -------------------------
+     Load defaults
+  -------------------------- */
   useEffect(() => {
     if (!defaults) return
 
-    setFormTitle(defaults.formTitle || "")
-    setFormDescription(defaults.formDescription || "")
-    if (defaults.expiresAt) {
-      setExpiresAt(new Date(defaults.expiresAt).toISOString().split("T")[0])
-    }
+    setDetails(p => ({
+      ...p,
+      formTitle: defaults.formTitle || "",
+      formDescription: defaults.formDescription || "",
+      expiresAt: defaults.expiresAt
+        ? new Date(defaults.expiresAt).toISOString().split("T")[0]
+        : "",
+    }))
+
     if (defaults.fields) setFields(defaults.fields)
   }, [defaults])
 
-   const generateId = () => `field-${nanoid(10)}`
-
-
+  /* -------------------------
+     Field operations
+  -------------------------- */
   const addField = (index?: number) => {
     const field: FormField = {
       id: generateId(),
@@ -44,15 +104,13 @@ export function useFormBuilder() {
       required: false,
       ...(selectedFieldType === "select" ? { options: [] } : {}),
     }
-    if (index !== undefined) {
-      setFields(p => {
-        const newFields = [...p]
-        newFields.splice(index, 0, field)
-        return newFields
-      })
-    } else {
-      setFields(p => [...p, field])
-    }
+
+    setFields(p => {
+      if (index === undefined) return [...p, field]
+      const next = [...p]
+      next.splice(index, 0, field)
+      return next
+    })
   }
 
   const updateField = (id: string, updates: Partial<FormField>) => {
@@ -83,33 +141,46 @@ export function useFormBuilder() {
     )
   }
 
+  /* -------------------------
+     Save
+  -------------------------- */
   const save = async () => {
-    if (!domainId) throw new Error("Missing domain")
-    if (!formTitle.trim()) throw new Error("Title required")
-    if (!expiresAt) throw new Error("Expiry required")
-    if (!fields.length) throw new Error("No fields")
+    if (!details.domainId) {
+      toast.error("Domain is required", { description: "Please select a domain for this form." })
+      return
+    }
+    if (!details.formTitle.trim()) {
+      toast.error("Form title is required", { description: "Please enter a title for your form." })
+      return
+    }
+    if (!details.expiresAt) {
+      toast.error("Expiry date is required", { description: "Please select an expiry date for your form." })
+      return
+    }
+    if (!fields.length) {
+      toast.error("Form fields are required", { description: "Please add at least one field to your form." })
+      return
+    }
 
-    await axios.post("/api/recruiters/create-form", {
-      domainId,
-      formTitle,
-      formDescription,
-      roleType,
-      expiresAt: new Date(expiresAt),
-      fields,
-    })
-
-    router.push("/dashboard")
+    try {
+      createFormMutation.mutate({
+        details,
+        fields,
+      })
+    } catch (error) {
+      // Error handling is done in useCreateForm hook
+    }
   }
 
+  /* -------------------------
+     Public API
+  -------------------------- */
   return {
-    formTitle,
-    setFormTitle,
-    formDescription,
-    setFormDescription,
-    roleType,
-    setRoleType,
-    expiresAt,
-    setExpiresAt,
+    // Step-1
+    details,
+    updateDetails,
+
+    // Step-2
     fields,
     selectedFieldType,
     setSelectedFieldType,
@@ -119,6 +190,8 @@ export function useFormBuilder() {
     removeField,
     addOption,
     removeOption,
+
+    // Save
     save,
   }
 }

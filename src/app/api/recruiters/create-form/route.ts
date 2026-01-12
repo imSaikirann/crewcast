@@ -33,6 +33,8 @@ export async function POST(req: NextRequest) {
       contractDurationMonths,
     } = body;
 
+    console.log(body)
+
     if (!formTitle || !formDescription || !Array.isArray(fields) || !domainId) {
       return NextResponse.json({ message: "Invalid payload" }, { status: 400 });
     }
@@ -76,6 +78,21 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    // Validate and set default roleType if empty or invalid
+    const validRoleTypes = ["FULL_TIME", "PART_TIME", "CONTRACT", "INTERNSHIP"];
+    const finalRoleType = roleType && validRoleTypes.includes(roleType) 
+      ? roleType 
+      : "FULL_TIME"; // Default to FULL_TIME if empty or invalid
+
+    // Validate and set default experience if empty or invalid
+    const validExperience = ["JUNIOR", "MID", "SENIOR", "LEAD"];
+    const finalExperience = experience && validExperience.includes(experience)
+      ? experience
+      : "JUNIOR"; // Default to JUNIOR if empty or invalid
+
+    // Ensure specialization is always provided (required field in Prisma)
+    const finalSpecialization = specialization ?? "";
+
     await prisma.$transaction([
       prisma.recruiterForm.create({
         data: {
@@ -85,11 +102,11 @@ export async function POST(req: NextRequest) {
           description: formDescription,
           fields,
           expiresAt,
-          roleType,
-          experience,
+          roleType: finalRoleType,
+          experience: finalExperience,
           workMode,
           location,
-          specialization,
+          specialization: finalSpecialization,
           techStack,
           salaryMin,
           salaryMax,

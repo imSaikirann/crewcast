@@ -40,7 +40,7 @@ export default function DashboardPage() {
           <div className="flex items-center gap-3">
             <Link href="/dashboard/recruiter/profile">
               <Button variant="outline" size="lg">
-                Recruiter Profile <HugeIcon name="user" className="" />
+                Recruiter Profile <HugeIcon name="user" className="text-gray-800 dark:text-white" />
               </Button>
             </Link>
 

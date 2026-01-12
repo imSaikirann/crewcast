@@ -1,3 +1,5 @@
+import { RoleType } from "@/generated/prisma/enums";
+
 export type FieldType = "text" | "email" | "number" | "textarea" | "select" | "checkbox" | "date" | "file";
 export interface FormField {
   id: string;
@@ -27,3 +29,22 @@ export interface FieldEditorProps {
   onAddOption: (option: string) => void;
   onRemoveOption: (index: number) => void;
 }
+
+
+export interface JobFormDetails {
+  formTitle: string
+  formDescription: string
+  expiresAt: string
+  domainId: string
+  roleType: string
+  experience: string
+  workMode: string
+  location: string
+  specialization: string
+  techStack: string[]
+  salaryMin: number
+  salaryMax: number
+  currency: string
+  contractDurationMonths: number
+}
+
