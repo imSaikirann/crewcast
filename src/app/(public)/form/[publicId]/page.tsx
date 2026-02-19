@@ -1,9 +1,10 @@
 import { prisma } from "@/lib/prisma";
-import { redis } from "@/lib/redis";
+import { getRedis } from "@/lib/redis";
 import { cacheKeys } from "@/lib/cacheKeys";
 import { PublicFormShell } from "@/features/public-form/components/PublicFormShell";
 import { trackFormView } from "@/lib/trackFormView";
 
+const redis = getRedis()
 export default async function Page({
   params,
 }: {

@@ -1,5 +1,5 @@
 export type Domain = {
-  _id: string
+  id: string
   title: string
   description: string
   jobCount: number

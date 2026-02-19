@@ -1,6 +1,8 @@
+export const dynamic = "force-dynamic"
+
 import Breadcrumbs from '@/components/common/Breadcrumbs'
 import Form from '@/features/form-builder/pages/Form'
-import React from 'react'
+
 
 export default function page() {
   return (

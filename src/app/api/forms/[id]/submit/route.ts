@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { redis } from "@/lib/redis";
+import { getRedis } from "@/lib/redis";
 import { cacheKeys } from "@/lib/cacheKeys";
 
 
+const redis = getRedis()
 // ADD DATA VALIDATION
 export async function POST(
   req: NextRequest,

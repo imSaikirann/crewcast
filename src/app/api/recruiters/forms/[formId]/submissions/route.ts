@@ -1,10 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { prisma } from "@/lib/prisma";
-import { redis } from "@/lib/redis";
+import { getRedis } from "@/lib/redis"
 import { cacheKeys } from "@/lib/cacheKeys";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
+const redis = getRedis()
 export async function GET(
   req: NextRequest,
   context: { params: Promise<{ formId: string }> }

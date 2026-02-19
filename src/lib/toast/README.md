@@ -124,3 +124,4 @@ The Toaster component is configured in `src/app/providers.tsx` with:
 4. **Don't overuse**: Too many toasts can be annoying
 5. **Keep messages concise**: Short and to the point
 
+

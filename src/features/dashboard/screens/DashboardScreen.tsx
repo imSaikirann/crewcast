@@ -32,14 +32,14 @@ export default function DashboardScreen() {
           </div>
 
           <div className="flex gap-3">
-            <Link href="/recruiter">
+            <Link href="/dashboard/recruiter/profile">
               <Button variant="outline" size="lg">
                 Recruiter Profile
                 <HugeIcon name="user" className="ml-2" />
               </Button>
             </Link>
 
-            <Button size="lg" onClick={() => router.push("/dashboard/pick-domain")}>
+            <Button size="lg" onClick={() => router.push("/dashboard/domains")}>
               Create Form
             </Button>
           </div>
