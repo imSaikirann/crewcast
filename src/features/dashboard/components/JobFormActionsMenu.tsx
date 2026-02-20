@@ -25,7 +25,7 @@ export function JobFormActionsMenu() {
         </DropdownMenuItem>
 
         <DropdownMenuItem>
-          <HugeIcon name="form" className="mr-2" />
+          <HugeIcon name="edit" className="mr-2" />
           Edit
         </DropdownMenuItem>
 

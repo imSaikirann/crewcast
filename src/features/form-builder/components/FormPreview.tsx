@@ -18,7 +18,7 @@ export const FormPreview = memo(({ title, description, fields }: FormPreviewProp
       <div className="space-y-4">
         {fields.length === 0 ? (
           <div className="text-center py-12 text-muted-foreground">
-            <HugeIcon name="form" className="w-12 h-12 mx-auto mb-3 opacity-50" />
+            <HugeIcon name="edit" className="w-12 h-12 mx-auto mb-3 opacity-50" />
             <p>No fields added yet. Add fields to see preview.</p>
           </div>
         ) : (
