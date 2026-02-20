@@ -9,6 +9,7 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+   transpilePackages: ["hugeicons-react"],
 };
 
 export default nextConfig;
