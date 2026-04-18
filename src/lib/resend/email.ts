@@ -1,9 +1,28 @@
-import { Resend } from "resend"
+import { Resend } from "resend";
 
-const resend = new Resend(process.env.RESEND_API_KEY!)
+function getResendClient() {
+  const apiKey = process.env.RESEND_API_KEY;
 
-export async function sendRecruiterVerificationEmail(email: string, token: string) {
-  const link = `${process.env.NEXTAUTH_URL!}/dashboard/recruiter/verification?token=${token}`
+  if (!apiKey) {
+    throw new Error("RESEND_API_KEY is not set");
+  }
+
+  return new Resend(apiKey);
+}
+
+export async function sendRecruiterVerificationEmail(
+  email: string,
+  token: string
+) {
+  const resend = getResendClient();
+
+  const baseUrl = process.env.NEXTAUTH_URL;
+
+  if (!baseUrl) {
+    throw new Error("NEXTAUTH_URL is not set");
+  }
+
+  const link = `${baseUrl}/dashboard/recruiter/verification?token=${token}`;
 
   await resend.emails.send({
     from: "Crewcast <onboarding@resend.dev>",
@@ -15,5 +34,5 @@ export async function sendRecruiterVerificationEmail(email: string, token: strin
       <a href="${link}">${link}</a>
       <p>This link expires in 24 hours.</p>
     `,
-  })
+  });
 }

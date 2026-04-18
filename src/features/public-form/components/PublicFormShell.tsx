@@ -13,7 +13,7 @@ import { PublicFormSuccess } from "./PublicFormSuccess";
 import { PublicFormFooter } from "./PublicFormFooter";
 
 export function PublicFormShell({ form }: { form: any }) {
-  const { step, setStep, submit } = usePublicForm();
+  const { step, setStep, submit, loading, error } = usePublicForm();
   const methods = useForm();
   const [hydrated, setHydrated] = useState(false);
 
@@ -65,6 +65,8 @@ export function PublicFormShell({ form }: { form: any }) {
               answers={methods.getValues()}
               onBack={() => setStep("form")}
               onSubmit={() => submit(form.publicId, methods.getValues())}
+              loading={loading}
+              error={error}
             />
           )}
 

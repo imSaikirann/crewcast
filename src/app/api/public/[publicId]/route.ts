@@ -35,8 +35,6 @@ export async function GET(
       },
     });
 
-    console.log(form)
-
     if (!form) {
       return NextResponse.json(
         { message: "Form not found" },
@@ -46,7 +44,7 @@ export async function GET(
 
     // 2️⃣ Load recruiter safely
     const recruiter = await prisma.recruiter.findUnique({
-      where: { userId: form.recruiterId },
+      where: { id: form.recruiterId },
       select: {
         companyName: true,
         website: true,

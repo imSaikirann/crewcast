@@ -1,124 +1,110 @@
-"use client"
+const adminCaps = [
+  { emoji: "🏢", label: "Domain management" },
+  { emoji: "📋", label: "Default forms" },
+  { emoji: "👥", label: "Recruiter activity" },
+  { emoji: "📊", label: "Platform analytics" },
+  { emoji: "🔍", label: "Application reports" },
+  { emoji: "👁️", label: "View tracking" },
+  { emoji: "📈", label: "Form quality scores" },
+  { emoji: "🛡️", label: "Access control" },
+];
 
-import { Star } from "lucide-react"
-import { useState } from "react"
-
-const testimonials = [
-  {
-    author: "Jane Wilson",
-    title: "Head of Engineering",
-    company: "TechCorp",
-    content: "We found 3 exceptional engineers in just 2 weeks using Crewcast. The GitHub-based scoring is incredibly accurate.",
-    rating: 5,
-    large: true,
-  },
-  {
-    author: "Michael Park",
-    title: "Recruiter",
-    company: "StartupXYZ",
-    content: "Finally a platform that eliminates resume fluff. Real metrics, real impact.",
-    rating: 5,
-  },
-  {
-    author: "Lisa Chen",
-    title: "CTO",
-    company: "DataFlow",
-    content: "Saved us 40 hours on screening. The data-driven approach is a game changer.",
-    rating: 5,
-  },
-  {
-    author: "David Kumar",
-    title: "Hiring Manager",
-    company: "CloudSync",
-    content: "Best hiring platform we've used. Engineers actually want to work with us now.",
-    rating: 5,
-    large: true,
-  },
-]
-
-export default function Testimonials() {
-  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null)
-
+export default function Reviews() {
   return (
-    <section className="relative z-10 py-32 px-6 bg-white dark:bg-neutral-950">
-      <div className="max-w-6xl mx-auto">
-        {/* Section header */}
-        <div className="mb-16 text-center">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-900 mb-6">
-            <Star className="w-4 h-4" />
-            <span className="text-sm text-neutral-600 dark:text-neutral-400">Loved by 500+ companies</span>
+    <section className="relative z-10 border-y border-[var(--landing-border)] bg-[var(--landing-bg)] px-5 py-20 sm:px-6 lg:py-28">
+      <div className="mx-auto max-w-7xl space-y-12">
+        {/* Admin section */}
+        <div className="grid gap-10 lg:grid-cols-2 lg:items-center">
+          <div className="space-y-5">
+            <p className="font-mono-hero text-xs uppercase tracking-widest text-[var(--landing-subtle)]">
+              // ADMIN_PLATFORM
+            </p>
+            <h2 className="font-mono-hero text-3xl font-bold text-[var(--landing-text)] sm:text-4xl">
+              Full platform control for admins.
+            </h2>
+            <p className="font-body text-lg leading-8 text-[var(--landing-muted)]">
+              Platform admins manage every dimension of the hiring operation — domains, recruiter access, form quality, and aggregate reporting across all roles.
+            </p>
           </div>
-          <h2 className="text-4xl md:text-5xl font-black mb-4 text-balance">
-            Hear from our customers
-          </h2>
-          <p className="text-lg text-neutral-600 dark:text-neutral-400 max-w-2xl mx-auto">
-            See how leading companies are hiring smarter with Crewcast.
-          </p>
+
+          <div className="rounded-sm border border-[var(--landing-border)] bg-[var(--landing-panel)] p-6">
+            <p className="font-mono-hero mb-4 text-xs uppercase tracking-widest text-[var(--landing-subtle)]">Admin capabilities</p>
+            <div className="grid grid-cols-2 gap-2">
+              {adminCaps.map((cap) => (
+                <div
+                  key={cap.label}
+                  className="flex items-center gap-3 rounded-sm border border-[var(--landing-border)] bg-[var(--landing-bg)] px-3 py-2.5 transition-colors hover:border-[var(--landing-muted)]"
+                >
+                  <span className="text-base" role="img" aria-hidden="true">{cap.emoji}</span>
+                  <span className="font-body text-xs text-[var(--landing-muted)]">{cap.label}</span>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
 
-        {/* Testimonials grid - Bento style */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 auto-rows-max">
-          {testimonials.map((testimonial, index) => (
-            <div
-              key={index}
-              className={`relative group cursor-pointer transition-all duration-300 ${
-                testimonial.large ? "md:col-span-2 md:row-span-1" : ""
-              }`}
-              onMouseEnter={() => setHoveredIndex(index)}
-              onMouseLeave={() => setHoveredIndex(null)}
-            >
-              {/* Animated glow */}
-              <div
-                className={`absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-all duration-300 bg-gradient-to-r ${
-                  index % 2 === 0
-                    ? "from-blue-500/10 to-transparent"
-                    : "from-violet-500/10 to-transparent"
-                } pointer-events-none`}
-              />
-
-              <div className="relative p-8 rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-gradient-to-br from-neutral-50 to-white dark:from-neutral-900 dark:to-neutral-950 hover:border-neutral-300 dark:hover:border-neutral-700 transition-all duration-300 h-full hover:shadow-lg hover:shadow-blue-500/5">
-                {/* Stars */}
-                <div className="flex gap-1 mb-4">
-                  {[...Array(testimonial.rating)].map((_, i) => (
-                    <Star key={i} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                  ))}
-                </div>
-
-                {/* Quote */}
-                <p className="text-lg font-medium mb-6 leading-relaxed text-neutral-900 dark:text-white">
-                  "{testimonial.content}"
-                </p>
-
-                {/* Author */}
-                <div className="border-t border-neutral-200 dark:border-neutral-800 pt-4">
-                  <p className="font-semibold text-neutral-900 dark:text-white">{testimonial.author}</p>
-                  <p className="text-sm text-neutral-600 dark:text-neutral-400">
-                    {testimonial.title} at {testimonial.company}
-                  </p>
-                </div>
-              </div>
+        {/* Before / After */}
+        <div className="grid gap-4 md:grid-cols-2">
+          {/* Before */}
+          <div className="rounded-sm border border-[color-mix(in_srgb,var(--landing-danger)_30%,transparent)] bg-[var(--landing-panel)] p-6 space-y-4">
+            <div className="flex items-center gap-3">
+              <span className="font-mono-hero text-xs font-bold uppercase tracking-widest text-[var(--landing-danger)]">❌ Without Crewcast</span>
             </div>
-          ))}
+            <ul className="space-y-3">
+              {[
+                "Hundreds of applications with no technical context",
+                "Manual GitHub checks for maybe 5% of candidates",
+                "Resume keywords decide who gets reviewed",
+                "Hours spent on interviews with unqualified devs",
+              ].map((p) => (
+                <li key={p} className="flex items-start gap-3 text-sm text-[var(--landing-muted)]">
+                  <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-[color-mix(in_srgb,var(--landing-danger)_40%,transparent)]" />
+                  {p}
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* After */}
+          <div className="rounded-sm border border-[var(--landing-border)] bg-[var(--landing-accent-soft)] p-6 space-y-4">
+            <div className="flex items-center gap-3">
+              <span className="font-mono-hero text-xs font-bold uppercase tracking-widest text-[var(--landing-accent)]">✓ With Crewcast</span>
+            </div>
+            <ul className="space-y-3">
+              {[
+                "Every application has a GitHub score and breakdown",
+                "Recruiter sees ranked table, not a pile of PDFs",
+                "Score is based on real public work, not claimed skills",
+                "Shortlist in minutes — review signal, not just resume",
+              ].map((p) => (
+                <li key={p} className="flex items-start gap-3 text-sm text-[var(--landing-muted)]">
+                  <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--landing-accent)] opacity-60" />
+                  {p}
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
 
-        {/* Stats bar */}
-        <div className="mt-20 p-8 rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-gradient-to-r from-blue-50 to-violet-50 dark:from-blue-500/10 dark:to-violet-500/10">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+        {/* Quote bar */}
+        <div className="rounded-sm border border-[var(--landing-border)] bg-[var(--landing-panel)] px-8 py-6">
+          <div className="grid gap-6 lg:grid-cols-[auto_1fr_auto] lg:items-center">
+            <span className="font-mono-hero text-4xl text-[var(--landing-border)]">"</span>
             <div>
-              <p className="text-3xl font-black mb-2">500+</p>
-              <p className="text-sm text-neutral-600 dark:text-neutral-400">Companies Trusting Us</p>
+              <p className="font-mono-hero text-lg font-semibold text-[var(--landing-text)]">
+                Designed to save recruiter review time, not replace recruiter judgment.
+              </p>
+              <p className="font-body mt-2 text-sm text-[var(--landing-subtle)]">
+                The score starts the conversation. You still review answers, check role fit, and decide who moves forward.
+              </p>
             </div>
-            <div>
-              <p className="text-3xl font-black mb-2">4.9★</p>
-              <p className="text-sm text-neutral-600 dark:text-neutral-400">Average Rating</p>
-            </div>
-            <div>
-              <p className="text-3xl font-black mb-2">10K+</p>
-              <p className="text-sm text-neutral-600 dark:text-neutral-400">Engineers Hired</p>
+            <div className="text-right">
+              <p className="font-mono-hero text-2xl font-bold text-[var(--landing-accent)]">5 min</p>
+              <p className="font-body text-xs text-[var(--landing-subtle)]">avg review time</p>
             </div>
           </div>
         </div>
       </div>
     </section>
-  )
+  );
 }

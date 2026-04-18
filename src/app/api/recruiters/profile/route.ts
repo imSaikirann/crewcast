@@ -1,12 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { prisma } from "@/lib/prisma";
-import { getRedis } from "@/lib/redis";
+import { redis } from "@/lib/redis";
 import { cacheKeys } from "@/lib/cacheKeys";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { CreateRecruiterSchema } from "@/lib/validators/recruiter";
 
-const redis = getRedis()
 export async function GET(
   req: NextRequest,
 ) {

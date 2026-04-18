@@ -5,6 +5,7 @@ import { DomainCard } from "@/features/domains/components/DomainCard"
 import { DomainCardSkeleton } from "@/features/domains/components/DomainCardSkeleton"
 
 import Breadcrumbs from "@/components/common/Breadcrumbs"
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Input } from "@/components/ui/input"
 import { useDomainsList } from "../hooks/useDomain"
 import { DomainGridSkeleton } from "../components/DomainGridSkeleton"
@@ -29,8 +30,8 @@ export default function DomainsPage() {
   }, [query, domains])
 
   return (
-    <div className="max-w-7xl mx-auto px-6 py-10 mt-20 space-y-10">
-      <Breadcrumbs items={BREADCRUMBS} />
+    <div className="mx-auto max-w-7xl space-y-10 px-4 py-6 sm:px-6 lg:px-8">
+      <Breadcrumbs items={BREADCRUMBS.slice(1)} />
 
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
@@ -53,9 +54,12 @@ export default function DomainsPage() {
       {isLoading ? (
         <DomainGridSkeleton />
       ) : error ? (
-        <div className="text-center py-20 text-destructive">
-          Failed to load domains. Try again.
-        </div>
+        <Alert variant="destructive">
+          <AlertTitle>Domains could not be loaded</AlertTitle>
+          <AlertDescription>
+            Refresh the page or contact an admin if the issue continues.
+          </AlertDescription>
+        </Alert>
       ) : filtered.length === 0 ? (
         <div className="text-center py-20 text-muted-foreground">
           No domains match your search.

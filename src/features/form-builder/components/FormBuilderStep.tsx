@@ -42,6 +42,7 @@ export function FormBuilderStep({
       { value: "checkbox", label: "Checkbox" },
       { value: "date", label: "Date" },
       { value: "file", label: "File Upload" },
+      { value: "url", label: "URL" },
     ],
     []
   )
@@ -167,4 +168,3 @@ export function FormBuilderStep({
     </div>
   )
 }
-

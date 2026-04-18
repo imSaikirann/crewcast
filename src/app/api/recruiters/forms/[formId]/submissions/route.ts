@@ -1,11 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { prisma } from "@/lib/prisma";
-import { getRedis } from "@/lib/redis"
+import { cacheGet, cacheSet } from "@/lib/redis"
 import { cacheKeys } from "@/lib/cacheKeys";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
-const redis = getRedis()
 export async function GET(
   req: NextRequest,
   context: { params: Promise<{ formId: string }> }
@@ -23,7 +22,7 @@ export async function GET(
     const cacheKey = cacheKeys.jobApplications(publicId);
 
  
-    const cached = await redis.get(cacheKey);
+    const cached = await cacheGet<string>(cacheKey);
     if (cached) {
       return NextResponse.json(JSON.parse(cached));
     }
@@ -34,6 +33,9 @@ export async function GET(
       select: {
         id: true,
         recruiterId: true,
+        recruiter: {
+          select: { userId: true },
+        },
       },
     });
 
@@ -42,7 +44,7 @@ export async function GET(
     }
 
 
-    if (form.recruiterId !== session.user.id) {
+    if (form.recruiter.userId !== session.user.id) {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
@@ -70,7 +72,7 @@ export async function GET(
     });
 
 
-    await redis.setex(cacheKey, 30, JSON.stringify(submissions)); 
+    await cacheSet(cacheKey, JSON.stringify(submissions), 30); 
 
     return NextResponse.json(submissions);
   } catch (e) {

@@ -6,6 +6,7 @@ import { CreateRecruiterSchema } from "@/lib/validators/recruiter"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { useState } from "react"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { api } from "@/lib/api"
@@ -168,9 +169,12 @@ export default function ProfileSetupForm({ existingProfile, onSuccess, onCancel 
           </div>
 
           {error && (
-            <div className="bg-destructive/10 border border-destructive/20 text-destructive px-4 py-3 rounded-lg text-sm">
-              {error}
-            </div>
+            <Alert variant="destructive">
+              <AlertTitle>Profile not saved</AlertTitle>
+              <AlertDescription className="whitespace-pre-line">
+                {error}
+              </AlertDescription>
+            </Alert>
           )}
 
           <div className="flex gap-3 pt-2">
@@ -201,4 +205,3 @@ export default function ProfileSetupForm({ existingProfile, onSuccess, onCancel 
     </div>
   )
 }
-

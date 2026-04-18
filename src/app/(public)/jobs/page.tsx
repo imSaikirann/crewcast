@@ -1,62 +1,128 @@
-import Breadcrumbs from "@/components/common/Breadcrumbs"
-import JobCard from "@/features/jobs/components/JobCard"
-import { Job } from "@/features/jobs/types/job"
+import Breadcrumbs from "@/components/common/Breadcrumbs";
+import JobsClient from "@/features/jobs/components/JobFilters";
+import type { Job } from "@/features/jobs/types/job";
+import { prisma } from "@/lib/prisma";
 
-const jobs: Job[] = [
-  {
-    id: "695bc159e67d820a6155a2f8",
-    publicId: "a0249757-9e93-47ec-acd9-ca383643cf26",
-    title: "Frontend Engineer",
-    techStack: ["React", "TypeScript", "Next.js", "Tailwind", "REST APIs"],
-    description:
-      "We are hiring a frontend engineer to build and scale our SaaS product.",
-    salaryMin: 1200000,
-    salaryMax: 2000000,
-    experience: "MID",
-    location: "India",
-    roleType: "FULL_TIME",
-    workMode: "REMOTE",
-  },
-  {
-    id: "695beda48c05b60ee9de7004",
-    publicId: "edcc05ef-1435-456b-815d-2d29b1ad0eb0",
-    title: "Backend Engineer (Node.js)",
-    techStack: ["Node.js", "TypeScript", "PostgreSQL", "Prisma", "Redis", "Docker", "AWS"],
-    description:
-      "We are looking for a backend engineer to design and scale APIs.",
-    salaryMin: 1800000,
-    salaryMax: 2800000,
-    experience: "SENIOR",
-    location: "Bangalore, India",
-    roleType: "FULL_TIME",
-    workMode: "HYBRID",
-  },
-]
+export const dynamic = "force-dynamic";
 
-export default function JobsPage() {
+export default async function JobsPage() {
+  const jobs = await prisma.recruiterForm.findMany({
+    where: {
+      isFlagged: false,
+      status: { not: "ARCHIVED" },
+      expiresAt: { gt: new Date() },
+    },
+    select: {
+      id: true,
+      publicId: true,
+      title: true,
+      description: true,
+      techStack: true,
+      salaryMax: true,
+      salaryMin: true,
+      currency: true,
+      experience: true,
+      location: true,
+      roleType: true,
+      workMode: true,
+      specialization: true,
+      expiresAt: true,
+      createdAt: true,
+      viewCount: true,
+      recruiter: {
+        select: {
+          companyName: true,
+          verified: true,
+        },
+      },
+      domain: {
+        select: {
+          title: true,
+        },
+      },
+      _count: {
+        select: {
+          applications: true,
+        },
+      },
+    },
+    orderBy: [{ createdAt: "desc" }],
+  });
+
+  const jobData: Job[] = jobs.map((job) => ({
+    id: job.id,
+    publicId: job.publicId,
+    title: job.title,
+    description: job.description,
+    techStack: job.techStack,
+    salaryMin: job.salaryMin,
+    salaryMax: job.salaryMax,
+    currency: job.currency,
+    experience: job.experience,
+    location: job.location,
+    roleType: job.roleType,
+    workMode: job.workMode,
+    specialization: job.specialization,
+    expiresAt: job.expiresAt.toISOString(),
+    createdAt: job.createdAt.toISOString(),
+    companyName: job.recruiter.companyName,
+    companyVerified: job.recruiter.verified,
+    domainTitle: job.domain.title,
+    applicationsCount: job._count.applications,
+    viewCount: job.viewCount,
+  }));
+
   return (
-    <div className="min-h-screen bg-white dark:bg-neutral-950 px-6 py-16 transition-colors">
-      <div className="max-w-7xl mx-auto px-6 py-8 space-y-8 mt-5 ">
-            <Breadcrumbs
-                      items={[
-                        { label: "Home", href: "/" },
-                        { label: "Jobs", href: "/jobs" },
-                        
-                      ]}
-                    />
-        <h1 className="text-3xl font-bold text-neutral-900 dark:text-white mb-10">
-          Open Positions
-        </h1>
+    <main className="min-h-screen bg-[#f8faf7] px-4 py-24 text-slate-950 transition-colors dark:bg-neutral-950 dark:text-white sm:px-6">
+      <div className="mx-auto max-w-7xl space-y-8">
+        <Breadcrumbs
+          items={[
+            { label: "Home", href: "/" },
+            { label: "Jobs", href: "/jobs" },
+          ]}
+        />
 
-       
+        <section className="grid gap-6 lg:grid-cols-[1fr_360px] lg:items-end">
+          <div className="space-y-3">
+            <p className="text-sm font-medium text-muted-foreground">
+              Public job board
+            </p>
+            <h1 className="max-w-3xl text-4xl font-bold tracking-tight sm:text-5xl">
+              Open roles hiring through Crewcast
+            </h1>
+            <p className="max-w-2xl text-base text-muted-foreground">
+              Browse live hiring forms, review the role details, and apply with
+              your GitHub profile for software jobs.
+            </p>
+          </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            
-          {jobs.map((job) => (
-            <JobCard key={job.id} job={job} />
-          ))}
-        </div>
+          <div className="grid grid-cols-3 gap-3 rounded-lg border bg-background p-4 shadow-sm">
+            <BoardStat label="Open jobs" value={jobData.length} />
+            <BoardStat
+              label="Remote"
+              value={jobData.filter((job) => job.workMode === "REMOTE").length}
+            />
+            <BoardStat
+              label="Companies"
+              value={
+                new Set(jobData.map((job) => job.companyName).filter(Boolean))
+                  .size
+              }
+            />
+          </div>
+        </section>
+
+        <JobsClient jobs={jobData} />
       </div>
+    </main>
+  );
+}
+
+function BoardStat({ label, value }: { label: string; value: number }) {
+  return (
+    <div>
+      <p className="text-2xl font-bold">{value}</p>
+      <p className="text-xs text-muted-foreground">{label}</p>
     </div>
-  )
+  );
 }

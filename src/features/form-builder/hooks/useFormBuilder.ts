@@ -7,6 +7,7 @@ import { nanoid } from "nanoid"
 import { useDomainDefaultForm } from "./useDominDefaults"
 import { useCreateForm } from "./useCreateForm"
 import { toast } from "@/lib/toast"
+import { withRequiredGitHubField } from "@/lib/formFields"
 
 /* ---------------------------------------------
    Step-1 business model
@@ -68,7 +69,7 @@ const createFormMutation = useCreateForm()
   /* -------------------------
      Step-2 fields
   -------------------------- */
-  const [fields, setFields] = useState<FormField[]>([])
+  const [fields, setFields] = useState<FormField[]>(withRequiredGitHubField<FormField>([]))
   const [selectedFieldType, setSelectedFieldType] =
     useState<FieldType>("text")
 
@@ -89,7 +90,9 @@ const createFormMutation = useCreateForm()
         : "",
     }))
 
-    if (defaults.fields) setFields(defaults.fields)
+    if (defaults.fields) {
+      setFields(withRequiredGitHubField<FormField>(defaults.fields))
+    }
   }, [defaults])
 
   /* -------------------------
@@ -114,11 +117,19 @@ const createFormMutation = useCreateForm()
   }
 
   const updateField = (id: string, updates: Partial<FormField>) => {
-    setFields(p => p.map(f => (f.id === id ? { ...f, ...updates } : f)))
+    setFields(p =>
+      withRequiredGitHubField(
+        p.map(f =>
+          f.id === id
+            ? { ...f, ...updates, ...(f.locked ? { required: true } : {}) }
+            : f
+        )
+      )
+    )
   }
 
   const removeField = (id: string) => {
-    setFields(p => p.filter(f => f.id !== id))
+    setFields(p => withRequiredGitHubField(p.filter(f => f.id !== id || f.locked)))
   }
 
   const addOption = (id: string, value: string) => {
@@ -163,9 +174,9 @@ const createFormMutation = useCreateForm()
     }
 
     try {
-      createFormMutation.mutate({
+      await createFormMutation.mutateAsync({
         details,
-        fields,
+        fields: withRequiredGitHubField(fields),
       })
     } catch (error) {
       // Error handling is done in useCreateForm hook
@@ -193,5 +204,6 @@ const createFormMutation = useCreateForm()
 
     // Save
     save,
+    isSaving: createFormMutation.isPending,
   }
 }

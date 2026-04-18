@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
 import { HugeIcon } from "@/utils/hugeicons"
 import { FormField } from "../types/types"
+import { isGitHubField } from "@/lib/formFields"
 
 interface FieldEditorProps {
   field: FormField
@@ -24,6 +25,7 @@ export function FieldEditor({
   onRemoveOption,
 }: FieldEditorProps) {
   const [newOption, setNewOption] = React.useState("")
+  const locked = field.locked || isGitHubField(field)
 
   const handleAddOption = () => {
     if (newOption.trim()) {
@@ -40,9 +42,11 @@ export function FieldEditor({
           variant="ghost"
           size="icon"
           onClick={onRemove}
+          disabled={locked}
           className="h-8 w-8 text-destructive hover:text-destructive flex-shrink-0"
+          title={locked ? "Required for software job scoring" : "Remove field"}
         >
-          <HugeIcon name="delete" className="h-4 w-4" />
+          <HugeIcon name={locked ? "lock" : "delete"} className="h-4 w-4" />
         </Button>
       </CardHeader>
       <CardContent className="space-y-4">
@@ -53,6 +57,7 @@ export function FieldEditor({
             onChange={(e) => onUpdate({ label: e.target.value })}
             placeholder="Enter field label"
             className="mt-1"
+            readOnly={locked}
           />
         </div>
 
@@ -63,6 +68,7 @@ export function FieldEditor({
             onChange={(e) => onUpdate({ placeholder: e.target.value })}
             placeholder="Enter placeholder text"
             className="mt-1"
+            readOnly={locked}
           />
         </div>
 
@@ -70,13 +76,19 @@ export function FieldEditor({
           <input
             type="checkbox"
             id={`required-${field.id}`}
-            checked={field.required}
+            checked={locked || field.required}
             onChange={(e) => onUpdate({ required: e.target.checked })}
+            disabled={locked}
             className="h-4 w-4 rounded border-gray-300"
           />
           <Label htmlFor={`required-${field.id}`} className="cursor-pointer">
             Required field
           </Label>
+          {locked && (
+            <span className="text-xs text-muted-foreground">
+              Locked for GitHub scoring
+            </span>
+          )}
         </div>
 
         {field.type === "select" && (
@@ -132,4 +144,3 @@ export function FieldEditor({
     </Card>
   )
 }
-

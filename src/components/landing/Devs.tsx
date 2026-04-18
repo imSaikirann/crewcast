@@ -1,162 +1,126 @@
-"use client"
+const GitHubMark = ({ className = "h-4 w-4" }: { className?: string }) => (
+  <svg viewBox="0 0 16 16" className={`fill-current ${className}`} aria-hidden="true">
+    <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z" />
+  </svg>
+);
 
-import { Github, ExternalLink } from "lucide-react"
-import { useState } from "react"
-
-const developers = [
+const candidates = [
   {
-    name: "Alex Chen",
-    role: "Full-Stack Engineer",
-    score: 92,
-    repos: 234,
-    contributions: "1.2K+",
-    skills: ["TypeScript", "React", "Node.js"],
-    verified: true,
-  },
-  {
-    name: "Sarah Ibrahim",
-    role: "React Specialist",
+    initials: "AK",
+    name: "Aditya Kumar",
+    role: "Frontend Engineer",
     score: 88,
-    repos: 156,
-    contributions: "980+",
-    skills: ["React", "Next.js", "Tailwind"],
-    verified: true,
+    langs: "React, TypeScript, Next.js",
   },
   {
-    name: "Marcus Lee",
-    role: "Backend Architect",
-    score: 95,
-    repos: 312,
-    contributions: "2.1K+",
-    skills: ["Python", "PostgreSQL", "AWS"],
-    verified: true,
+    initials: "PR",
+    name: "Priya Rajan",
+    role: "Backend Engineer",
+    score: 81,
+    langs: "Go, PostgreSQL, gRPC",
   },
   {
-    name: "Elena Rodriguez",
-    role: "DevOps Engineer",
-    score: 85,
-    repos: 89,
-    contributions: "750+",
-    skills: ["Kubernetes", "Docker", "Terraform"],
-    verified: true,
+    initials: "MS",
+    name: "Mihail Stoev",
+    role: "Full-stack Engineer",
+    score: 74,
+    langs: "Node.js, Vue, Python",
   },
-]
+];
 
-export default function DevelopersShowcase() {
-  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null)
+function scoreColor(score: number) {
+  if (score >= 85) return "text-[var(--landing-accent)]";
+  if (score >= 70) return "text-[var(--landing-warning)]";
+  return "text-[var(--landing-danger)]";
+}
 
+export default function Devs() {
   return (
-    <section className="relative z-10 py-32 px-6 bg-neutral-50 dark:bg-neutral-900/50">
-      <div className="max-w-6xl mx-auto">
-        {/* Section header */}
-        <div className="mb-16">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 mb-6">
-            <Github className="w-4 h-4" />
-            <span className="text-sm text-neutral-600 dark:text-neutral-400">Top developers</span>
-          </div>
-          <h2 className="text-4xl md:text-5xl font-black text-balance mb-4">
-            Verified engineers you can hire today
-          </h2>
-          <p className="text-lg text-neutral-600 dark:text-neutral-400 max-w-2xl">
-            Browse developers ranked by their real GitHub impact. Every profile is verified and backed by public data.
-          </p>
-        </div>
+    <section className="relative z-10 bg-[var(--landing-bg-alt)] px-5 py-20 sm:px-6 lg:py-28">
+      <div className="mx-auto max-w-7xl">
+        <div className="grid gap-16 lg:grid-cols-2 lg:items-center">
+          {/* Left — copy */}
+          <div className="space-y-6">
+            <p className="font-mono-hero text-xs uppercase tracking-widest text-[var(--landing-subtle)]">
+              // CANDIDATE_EXPERIENCE
+            </p>
+            <h2 className="font-mono-hero text-3xl font-bold text-[var(--landing-text)] sm:text-4xl">
+              Clean forms for candidates. Scored signals for you.
+            </h2>
+            <p className="font-body text-lg leading-8 text-[var(--landing-muted)]">
+              Candidates see a simple public job page and a clean application form. For software roles, they add their GitHub profile. Crewcast handles the scoring — they don't need to do anything extra.
+            </p>
 
-        {/* Developers grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {developers.map((dev, index) => (
-            <div
-              key={index}
-              className="relative group cursor-pointer"
-              onMouseEnter={() => setHoveredIndex(index)}
-              onMouseLeave={() => setHoveredIndex(null)}
-            >
-              {/* Animated glow */}
-              <div
-                className={`absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-all duration-300 bg-gradient-to-r from-blue-500/10 to-violet-500/10 pointer-events-none`}
-              />
-
-              <div className="relative p-8 rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 hover:border-neutral-300 dark:hover:border-neutral-700 transition-all duration-300 h-full hover:shadow-lg hover:shadow-blue-500/5">
-                {/* Score badge */}
-                <div className="absolute top-4 right-4 flex items-center gap-2">
-                  <div className="px-3 py-1 rounded-lg bg-gradient-to-r from-blue-100 to-violet-100 dark:from-blue-500/20 dark:to-violet-500/20">
-                    <span className="text-sm font-bold text-blue-600 dark:text-blue-400">
-                      {dev.score}/100
-                    </span>
-                  </div>
+            <div className="space-y-3">
+              {[
+                "Browse public jobs at crewcast.io/jobs",
+                "Apply with name, email, answers, and GitHub",
+                "No account required — form submit is enough",
+                "GitHub profile is the only extra step for devs",
+              ].map((item) => (
+                <div key={item} className="flex items-start gap-3 text-sm text-[var(--landing-muted)]">
+                  <span className="font-mono-hero mt-0.5 text-[var(--landing-accent)]">→</span>
+                  {item}
                 </div>
+              ))}
+            </div>
 
-                {/* Developer info */}
-                <div className="mb-6">
-                  <div className="flex items-start gap-3 mb-4">
-                    <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-blue-500 to-violet-500 flex items-center justify-center">
-                      <Github className="w-6 h-6 text-white" />
-                    </div>
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-1">
-                        <h3 className="font-semibold">{dev.name}</h3>
-                        {dev.verified && (
-                          <div className="w-4 h-4 rounded-full bg-green-500 flex items-center justify-center">
-                            <span className="text-white text-xs">✓</span>
-                          </div>
-                        )}
-                      </div>
-                      <p className="text-sm text-neutral-600 dark:text-neutral-400">{dev.role}</p>
-                    </div>
-                  </div>
-
-                  {/* Stats */}
-                  <div className="grid grid-cols-3 gap-3">
-                    <div className="p-2 rounded-lg bg-neutral-100 dark:bg-neutral-800">
-                      <p className="text-xs text-neutral-600 dark:text-neutral-400 mb-1">Repos</p>
-                      <p className="font-bold text-sm">{dev.repos}</p>
-                    </div>
-                    <div className="p-2 rounded-lg bg-neutral-100 dark:bg-neutral-800">
-                      <p className="text-xs text-neutral-600 dark:text-neutral-400 mb-1">Contributions</p>
-                      <p className="font-bold text-sm">{dev.contributions}</p>
-                    </div>
-                    <div className="p-2 rounded-lg bg-neutral-100 dark:bg-neutral-800">
-                      <p className="text-xs text-neutral-600 dark:text-neutral-400 mb-1">Score</p>
-                      <p className="font-bold text-sm text-blue-600">{dev.score}</p>
-                    </div>
-                  </div>
+            {/* Fake form field preview */}
+            <div className="rounded-sm border border-[var(--landing-border)] bg-[var(--landing-panel)] p-5 space-y-3">
+              <p className="font-mono-hero text-xs uppercase tracking-widest text-[var(--landing-subtle)]">Sample form field</p>
+              <div className="space-y-1">
+                <label className="font-mono-hero text-xs text-[var(--landing-muted)] flex items-center gap-2">
+                  <GitHubMark className="h-3 w-3 text-[var(--landing-text)]" />
+                  GitHub profile URL
+                  <span className="text-[var(--landing-danger)]">*required</span>
+                </label>
+                <div className="flex items-center gap-2 rounded-sm border border-[var(--landing-border)] bg-[var(--landing-bg)] px-3 py-2.5">
+                  <span className="font-mono-hero text-sm text-[var(--landing-subtle)]">github.com/</span>
+                  <span className="font-mono-hero text-sm text-[var(--landing-muted)]">your-username</span>
+                  <span className="ml-auto h-4 w-0.5 bg-[var(--landing-accent)] opacity-80" />
                 </div>
-
-                {/* Skills */}
-                <div className="mb-6 pb-6 border-b border-neutral-200 dark:border-neutral-800">
-                  <p className="text-xs font-semibold text-neutral-600 dark:text-neutral-400 mb-3 uppercase">
-                    Top skills
-                  </p>
-                  <div className="flex flex-wrap gap-2">
-                    {dev.skills.map((skill) => (
-                      <span
-                        key={skill}
-                        className="px-3 py-1 rounded-full bg-blue-50 dark:bg-blue-500/10 text-xs font-medium text-blue-600 dark:text-blue-400"
-                      >
-                        {skill}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-
-                {/* CTA */}
-                <button className="w-full py-2 px-4 rounded-lg bg-neutral-900 dark:bg-white text-white dark:text-black font-medium text-sm hover:opacity-90 transition flex items-center justify-center gap-2 group-hover:scale-105">
-                  View profile
-                  <ExternalLink className="w-4 h-4" />
-                </button>
+                <p className="font-body text-xs text-[var(--landing-subtle)]">Used to score public engineering signals for this role.</p>
               </div>
             </div>
-          ))}
-        </div>
+          </div>
 
-        {/* Browse all link */}
-        <div className="mt-12 text-center">
-          <button className="inline-flex items-center gap-2 px-6 py-3 rounded-lg border border-neutral-200 dark:border-neutral-800 hover:bg-neutral-50 dark:hover:bg-neutral-900 transition font-medium text-sm">
-            Browse all {developers.length}+ engineers
-            <ExternalLink className="w-4 h-4" />
-          </button>
+          {/* Right — candidate table preview */}
+          <div className="rounded-sm border border-[var(--landing-border)] bg-[var(--landing-panel)] overflow-hidden">
+            {/* Table header */}
+            <div className="grid grid-cols-[1fr_60px_1fr] gap-4 bg-[var(--landing-bg)] px-5 py-3 border-b border-[var(--landing-border)]">
+              <span className="font-mono-hero text-[10px] uppercase tracking-widest text-[var(--landing-subtle)]">Candidate</span>
+              <span className="font-mono-hero text-[10px] uppercase tracking-widest text-[var(--landing-subtle)]">Score</span>
+              <span className="font-mono-hero text-[10px] uppercase tracking-widest text-[var(--landing-subtle)]">Languages</span>
+            </div>
+
+            {candidates.map((c, i) => (
+              <div
+                key={c.name}
+                className={`grid grid-cols-[1fr_60px_1fr] gap-4 px-5 py-4 items-center transition-colors hover:bg-[var(--landing-panel-strong)] ${
+                  i < candidates.length - 1 ? "border-b border-[var(--landing-border)]" : ""
+                }`}
+              >
+                <div className="flex items-center gap-3">
+                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-sm bg-[var(--landing-panel-strong)] border border-[var(--landing-border)]">
+                    <GitHubMark className="h-4 w-4 text-[var(--landing-text)]" />
+                  </div>
+                  <div>
+                    <p className="font-body text-sm font-semibold text-[var(--landing-text)]">{c.name}</p>
+                    <p className="font-body text-xs text-[var(--landing-subtle)]">{c.role}</p>
+                  </div>
+                </div>
+                <p className={`font-mono-hero text-xl font-bold ${scoreColor(c.score)}`}>{c.score}</p>
+                <p className="font-body text-xs text-[var(--landing-muted)]">{c.langs}</p>
+              </div>
+            ))}
+
+            <div className="flex items-center justify-between border-t border-[var(--landing-border)] bg-[var(--landing-bg)] px-5 py-3">
+              <span className="font-mono-hero text-xs text-[var(--landing-subtle)]">Sorted by score · 3 of 24 shown</span>
+              <span className="font-mono-hero text-xs text-[var(--landing-accent)]">View all →</span>
+            </div>
+          </div>
         </div>
       </div>
     </section>
-  )
+  );
 }

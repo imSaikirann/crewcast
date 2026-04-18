@@ -119,10 +119,10 @@ model Domains {
 model RecruiterForm {
   id String @id @default(auto()) @map("_id") @db.ObjectId
 
-  recruiterId String
+  recruiterId String @db.ObjectId
   recruiter   Recruiter @relation(fields: [recruiterId], references: [id], onDelete: Cascade)
 
-  domainId String
+  domainId String @db.ObjectId
   domain   Domains @relation(fields: [domainId], references: [id], onDelete: Cascade)
 
   publicId String @unique @default(uuid())

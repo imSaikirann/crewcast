@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { getRedis } from "@/lib/redis";
+import { cacheDel } from "@/lib/redis";
 import { cacheKeys } from "@/lib/cacheKeys";
+import { extractGitHubUsername, scoreGitHubProfile } from "@/lib/githubScoring";
 
 
-const redis = getRedis()
 // ADD DATA VALIDATION
 export async function POST(
   req: NextRequest,
@@ -22,7 +22,7 @@ export async function POST(
     // find form
     const form = await prisma.recruiterForm.findUnique({
       where: { publicId: id },
-      select: { id: true, isFlagged: true },
+      select: { id: true, isFlagged: true, fields: true },
     });
 
     if (!form) {
@@ -36,6 +36,10 @@ export async function POST(
       );
     }
 
+    const validationError = validateRequiredResponses(data, form.fields);
+    if (validationError) {
+      return NextResponse.json({ error: validationError }, { status: 400 });
+    }
 
     const fullName =
       data.full_name || data.name || data.fullName || null;
@@ -63,6 +67,14 @@ export async function POST(
       );
     }
 
+    const githubUsername = extractGitHubUsername(data, form.fields);
+    if (!githubUsername) {
+      return NextResponse.json(
+        { error: "A valid GitHub username or profile URL is required" },
+        { status: 400 }
+      );
+    }
+
     const app = await prisma.application.create({
       data: {
         jobId: form.id,
@@ -72,11 +84,63 @@ export async function POST(
       },
     });
 
-    await redis.del(cacheKeys.jobApplications(id));
+    const score = await scoreGitHubProfile(githubUsername);
+    await prisma.applicationScore.create({
+      data: {
+        applicationId: app.id,
+        totalScore: score.totalScore,
+        breakdown: {
+          ...score.breakdown,
+          profile: {
+            ...score.breakdown.profile,
+            username: score.breakdown.profile.username ?? githubUsername,
+          },
+        },
+      },
+    });
 
-    return NextResponse.json({ success: true, id: app.id });
+    await cacheDel(cacheKeys.jobApplications(id));
+
+    return NextResponse.json({ success: true, id: app.id, score: score.totalScore });
   } catch (e) {
     console.error(e);
     return NextResponse.json({ error: "Server error" }, { status: 500 });
   }
+}
+
+function validateRequiredResponses(
+  data: Record<string, unknown>,
+  fields: unknown
+) {
+  const fieldList = Array.isArray(fields) ? fields : [];
+
+  for (const field of fieldList as any[]) {
+    if (!field?.required) continue;
+
+    const value = data[field.id];
+    const empty =
+      value === undefined ||
+      value === null ||
+      value === "" ||
+      (Array.isArray(value) && value.length === 0);
+
+    if (empty) {
+      return `${field.label || "A required field"} is required.`;
+    }
+
+    if (field.type === "email" && typeof value === "string") {
+      const validEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+      if (!validEmail) return `${field.label || "Email"} must be a valid email.`;
+    }
+
+    if (field.type === "url" && typeof value === "string") {
+      try {
+        new URL(value);
+      } catch {
+        return `${field.label || "URL"} must be a valid URL.`;
+      }
+    }
+  }
+
+  return null;
 }

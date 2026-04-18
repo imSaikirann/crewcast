@@ -1,4 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { useRouter } from "next/navigation"
 
 import { JobFormDetails,FormField } from "../types/types"
 
@@ -7,6 +8,7 @@ import { toast } from "@/lib/toast"
 
 export function useCreateForm() {
   const queryClient = useQueryClient()
+  const router = useRouter()
 
   return useMutation({
     mutationFn: ({
@@ -17,11 +19,14 @@ export function useCreateForm() {
       fields: FormField[]
     }) => createForm(details, fields),
 
-    onSuccess: () => {
+    onSuccess: async () => {
       queryClient.invalidateQueries({ queryKey: ["forms"] })
       toast.success("Form created successfully!", {
-        description: "Your form has been saved and is ready to use.",
+        description: "Redirecting back to your dashboard.",
       })
+      await queryClient.invalidateQueries()
+      router.push("/dashboard")
+      router.refresh()
     },
 
     onError: (error: any) => {

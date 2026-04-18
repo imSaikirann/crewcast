@@ -10,17 +10,18 @@ import StatsBento from "@/components/landing/StatsBento";
 
 export default function Home() {
   return (
-    <div className="min-h-screen w-full relative bg-white dark:bg-neutral-900">
+    <main className="relative min-h-screen w-full overflow-hidden bg-[var(--landing-bg)] text-[var(--landing-text)]">
       <BackgroundGrid />
-      <Hero />
-      <StatsBento/>
-      <Benefits />
-      <HowItWorks />
-      <DevelopersShowcase/>
-      <Testimonials/>
-
-      <FinalCTA />
-      <Footer />
-    </div>
+      <div className="relative z-10">
+        <Hero />
+        <StatsBento />
+        <Benefits />
+        <HowItWorks />
+        <DevelopersShowcase />
+        <Testimonials />
+        <FinalCTA />
+        <Footer />
+      </div>
+    </main>
   );
 }

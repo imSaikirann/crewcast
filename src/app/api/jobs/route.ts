@@ -1,51 +1,84 @@
-import { NextRequest, NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
+import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { getRedis } from "@/lib/redis";
+import { cacheGet, cacheSet } from "@/lib/redis";
 import { cacheKeys } from "@/lib/cacheKeys";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
-const redis = getRedis()
-export async function GET(
-  req: NextRequest
-) {
+export async function GET() {
   try {
-
-  
-
- 
-    const cached = await redis.get(cacheKeys.jobs);
+    const cached = await cacheGet<string>(cacheKeys.jobs);
     if (cached) {
       return NextResponse.json(JSON.parse(cached));
     }
 
-   
     const jobs = await prisma.recruiterForm.findMany({
+      where: {
+        isFlagged: false,
+        status: { not: "ARCHIVED" },
+        expiresAt: { gt: new Date() },
+      },
       select: {
         id: true,
-        publicId:true,
-        title:true,
-        techStack:true,
-        description:true,
-        salaryMax:true,
-        salaryMin:true,
-        experience:true,
-        location:true,
-        roleType:true,
-        workMode:true,
+        publicId: true,
+        title: true,
+        techStack: true,
+        description: true,
+        salaryMax: true,
+        salaryMin: true,
+        currency: true,
+        experience: true,
+        location: true,
+        roleType: true,
+        workMode: true,
+        specialization: true,
+        expiresAt: true,
+        createdAt: true,
+        viewCount: true,
+        recruiter: {
+          select: {
+            companyName: true,
+            verified: true,
+          },
+        },
+        domain: {
+          select: {
+            title: true,
+          },
+        },
+        _count: {
+          select: {
+            applications: true,
+          },
+        },
       },
+      orderBy: [{ createdAt: "desc" }],
     });
 
-    if (!jobs) {
-      return NextResponse.json({ error: "jobs not found" }, { status: 404 });
-    }
+    const payload = jobs.map((job) => ({
+      id: job.id,
+      publicId: job.publicId,
+      title: job.title,
+      description: job.description,
+      techStack: job.techStack,
+      salaryMin: job.salaryMin,
+      salaryMax: job.salaryMax,
+      currency: job.currency,
+      experience: job.experience,
+      location: job.location,
+      roleType: job.roleType,
+      workMode: job.workMode,
+      specialization: job.specialization,
+      expiresAt: job.expiresAt,
+      createdAt: job.createdAt,
+      companyName: job.recruiter.companyName,
+      companyVerified: job.recruiter.verified,
+      domainTitle: job.domain.title,
+      applicationsCount: job._count.applications,
+      viewCount: job.viewCount,
+    }));
 
+    await cacheSet(cacheKeys.jobs, JSON.stringify(payload), 30);
 
-
-
-    await redis.setex(cacheKeys.jobs, 30, JSON.stringify(jobs)); 
-
-    return NextResponse.json(jobs);
+    return NextResponse.json(payload);
   } catch (e) {
     console.error(e);
     return NextResponse.json({ error: "Server error" }, { status: 500 });

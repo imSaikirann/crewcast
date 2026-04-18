@@ -1,22 +1,30 @@
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
-import { usePublicForm } from "@/features/hooks/usePublicForm";
 
-export function PublicFormReview({ form, answers, onBack, onSubmit }: any) {
-  const { loading, error } = usePublicForm(); 
-
+export function PublicFormReview({
+  form,
+  answers,
+  onBack,
+  onSubmit,
+  loading,
+  error,
+}: any) {
   return (
     <div className="space-y-4">
       {form.fields.map((f: any) => (
-        <div key={f.id} className="flex justify-between">
+        <div key={f.id} className="flex justify-between gap-6">
           <span>{f.label}</span>
-          <span className="text-muted-foreground">
-            {answers[f.id] ?? "—"}
+          <span className="text-right text-muted-foreground">
+            {formatAnswer(answers[f.id])}
           </span>
         </div>
       ))}
 
       {error && (
-        <p className="text-sm text-red-600 text-center">{error}</p>
+        <Alert variant="destructive">
+          <AlertTitle>Application not submitted</AlertTitle>
+          <AlertDescription>{error}</AlertDescription>
+        </Alert>
       )}
 
       <div className="flex gap-2">
@@ -25,9 +33,15 @@ export function PublicFormReview({ form, answers, onBack, onSubmit }: any) {
         </Button>
 
         <Button onClick={onSubmit} disabled={loading}>
-          {loading ? "Submitting…" : "Submit"}
+          {loading ? "Submitting..." : "Submit"}
         </Button>
       </div>
     </div>
   );
+}
+
+function formatAnswer(value: unknown) {
+  if (Array.isArray(value)) return value.join(", ");
+  if (value === undefined || value === null || value === "") return "-";
+  return String(value);
 }

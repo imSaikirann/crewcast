@@ -1,80 +1,58 @@
-"use client"
+import Link from "next/link";
 
-import Link from "next/link"
-import { Github, Linkedin, Twitter } from "lucide-react"
+const GitHubMark = ({ className = "h-4 w-4" }: { className?: string }) => (
+  <svg viewBox="0 0 16 16" className={`fill-current ${className}`} aria-hidden="true">
+    <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z" />
+  </svg>
+);
+
+const links = {
+  Product: [
+    { label: "Dashboard", href: "/dashboard" },
+    { label: "Browse jobs", href: "/jobs" },
+    { label: "How it works", href: "/#how-it-works" },
+  ],
+  Platform: [
+    { label: "Admin panel", href: "/admin" },
+    { label: "Domain setup", href: "/admin/domains" },
+    { label: "Analytics", href: "/admin/analytics" },
+  ],
+  Company: [
+    { label: "About", href: "/about" },
+    { label: "Privacy", href: "/privacy" },
+    { label: "Terms", href: "/terms" },
+  ],
+};
 
 export default function Footer() {
-  const currentYear = new Date().getFullYear()
-
-  const links = {
-    Product: [
-      { label: "For Recruiters", href: "#" },
-      { label: "For Developers", href: "#" },
-      { label: "Pricing", href: "#" },
-      { label: "API", href: "#" },
-    ],
-    Company: [
-      { label: "About", href: "#" },
-      { label: "Blog", href: "#" },
-      { label: "Careers", href: "#" },
-      { label: "Contact", href: "#" },
-    ],
-    Resources: [
-      { label: "Documentation", href: "#" },
-      { label: "GitHub", href: "#" },
-      { label: "Community", href: "#" },
-      { label: "Status", href: "#" },
-    ],
-    Legal: [
-      { label: "Privacy", href: "#" },
-      { label: "Terms", href: "#" },
-      { label: "Cookie Policy", href: "#" },
-    ],
-  }
-
   return (
-    <footer className="relative z-10 border-t border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-950">
-      <div className="max-w-6xl mx-auto px-6 py-16">
-        {/* Footer grid */}
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-8 mb-12">
-          {/* Brand section */}
-          <div className="col-span-2 md:col-span-1 space-y-4">
-            <h3 className="font-black text-lg">Crewcast</h3>
-            <p className="text-sm text-neutral-600 dark:text-neutral-400 leading-relaxed">
-              Hire engineers based on what they build, not what they write.
-            </p>
-            <div className="flex gap-3 pt-2">
-              <Link
-                href="#"
-                className="p-2 rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-900 transition-colors"
-              >
-                <Github className="w-4 h-4" />
-              </Link>
-              <Link
-                href="#"
-                className="p-2 rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-900 transition-colors"
-              >
-                <Twitter className="w-4 h-4" />
-              </Link>
-              <Link
-                href="#"
-                className="p-2 rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-900 transition-colors"
-              >
-                <Linkedin className="w-4 h-4" />
-              </Link>
+    <footer className="border-t border-[var(--landing-border)] bg-[var(--landing-bg)] px-5 py-16 sm:px-6">
+      <div className="mx-auto max-w-7xl">
+        <div className="grid gap-12 lg:grid-cols-[1.5fr_repeat(3,1fr)]">
+          {/* Brand */}
+          <div className="space-y-4">
+            <div className="flex items-center gap-2">
+              <GitHubMark className="h-5 w-5 text-[var(--landing-text)]" />
+              <span className="font-mono-hero text-lg font-bold text-[var(--landing-text)]">Crewcast</span>
             </div>
+            <p className="font-body max-w-xs text-sm leading-6 text-[var(--landing-subtle)]">
+              GitHub-first hiring forms for software teams. Score real engineering work, not just resumes.
+            </p>
+            <p className="font-mono-hero text-xs text-[var(--landing-border)]">
+              // built for technical hiring
+            </p>
           </div>
 
-          {/* Links */}
-          {Object.entries(links).map(([category, items]) => (
-            <div key={category}>
-              <h4 className="text-sm font-semibold mb-4">{category}</h4>
-              <ul className="space-y-3">
+          {/* Link groups */}
+          {Object.entries(links).map(([group, items]) => (
+            <div key={group} className="space-y-4">
+              <p className="font-mono-hero text-[10px] uppercase tracking-widest text-[var(--landing-subtle)]">{group}</p>
+              <ul className="space-y-2.5">
                 {items.map((item) => (
                   <li key={item.label}>
                     <Link
                       href={item.href}
-                      className="text-sm text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors"
+                      className="font-body text-sm text-[var(--landing-muted)] transition-colors hover:text-[var(--landing-text)]"
                     >
                       {item.label}
                     </Link>
@@ -86,32 +64,15 @@ export default function Footer() {
         </div>
 
         {/* Bottom bar */}
-        <div className="pt-8 border-t border-neutral-200 dark:border-neutral-800 flex flex-col md:flex-row items-center justify-between gap-4">
-          <p className="text-sm text-neutral-600 dark:text-neutral-400">
-            © {currentYear} Crewcast. All rights reserved.
+        <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-[var(--landing-border)] pt-8 sm:flex-row">
+          <p className="font-body text-xs text-[var(--landing-subtle)]">
+            © {new Date().getFullYear()} Crewcast. All rights reserved.
           </p>
-          <div className="flex gap-6 text-sm">
-            <Link
-              href="#"
-              className="text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors"
-            >
-              Status
-            </Link>
-            <Link
-              href="#"
-              className="text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors"
-            >
-              Feedback
-            </Link>
-            <Link
-              href="#"
-              className="text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white transition-colors"
-            >
-              Help
-            </Link>
-          </div>
+          <p className="font-mono-hero text-xs text-[var(--landing-border)]">
+            GitHub data used is public only.
+          </p>
         </div>
       </div>
     </footer>
-  )
+  );
 }

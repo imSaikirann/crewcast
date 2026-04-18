@@ -19,6 +19,7 @@ export default function Page() {
       addOption={fb.addOption}
       removeOption={fb.removeOption}
       onSave={fb.save}
+      isSaving={fb.isSaving}
     />
   )
 }

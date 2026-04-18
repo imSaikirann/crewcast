@@ -1,10 +1,9 @@
 import { prisma } from "@/lib/prisma";
-import { getRedis } from "@/lib/redis";
+import { cacheGet, cacheSet } from "@/lib/redis";
 import { cacheKeys } from "@/lib/cacheKeys";
 import { PublicFormShell } from "@/features/public-form/components/PublicFormShell";
 import { trackFormView } from "@/lib/trackFormView";
 
-const redis = getRedis()
 export default async function Page({
   params,
 }: {
@@ -15,12 +14,7 @@ export default async function Page({
   const cacheKey = cacheKeys.job(publicId);
 
 
-  let cached: string | null = null;
-  try {
-    cached = await redis.get(cacheKey);
-  } catch (err) {
-    console.error("Redis GET failed:", err);
-  }
+  const cached = await cacheGet<string>(cacheKey);
 
 if (cached) {
   try {
@@ -74,11 +68,11 @@ if (cached) {
 
 
   const recruiter = await prisma.recruiter.findUnique({
-    where: { userId: form.recruiterId },
+    where: { id: form.recruiterId },
     select: {
-      companyName: !form.showCompanyName ? true: false,
-      website: !form.showCompanyName ? true: false,
-      linkedinLink: !form.showCompanyName ? true: false,
+      companyName: form.showCompanyName,
+      website: form.showCompanyName,
+      linkedinLink: form.showCompanyName,
       verified: true,
     },
   });
@@ -114,11 +108,7 @@ if (cached) {
     if (diff > 0) ttl = Math.min(diff, 3600);
   }
 
-  try {
-    await redis.set(cacheKey, JSON.stringify(safeForm), "EX", ttl);
-  } catch (err) {
-    console.error("Redis SET failed:", err);
-  }
+  await cacheSet(cacheKey, JSON.stringify(safeForm), ttl);
 
   return <PublicFormShell form={safeForm} />;
 }

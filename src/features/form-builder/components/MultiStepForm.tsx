@@ -6,7 +6,6 @@ import { FormDetailsStep } from "./FormDetailsStep"
 import { FormBuilderStep } from "./FormBuilderStep"
 import { JobFormDetails } from "../types/types"
 import { FormField, FieldType } from "../types/types"
-import { useCreateForm } from "../hooks/useCreateForm"
 
 export function MultiStepForm(props: {
   details: JobFormDetails
@@ -20,9 +19,9 @@ export function MultiStepForm(props: {
   addOption: (id: string, v: string) => void
   removeOption: (id: string, i: number) => void
   onSave: () => Promise<void>
+  isSaving: boolean
 }) {
   const [step, setStep] = useState<1 | 2>(1)
-  const createFormMutation = useCreateForm()
   
 
   return (
@@ -53,9 +52,26 @@ export function MultiStepForm(props: {
       )}
 
       <div className="flex justify-between mt-6">
-        {step === 2 && <Button className="cursor-pointer" onClick={() => setStep(1)}>Back</Button>}
-        {step === 1 && <Button className="cursor-pointer" type="submit" form="step1-form">Next</Button>}
-        {step === 2 && <Button onClick={props.onSave}  disabled={createFormMutation.isPending} > {createFormMutation.isPending ? "Saving..." : "Save Form"}</Button>}
+        {step === 2 && (
+          <Button
+            className="cursor-pointer"
+            variant="outline"
+            onClick={() => setStep(1)}
+            disabled={props.isSaving}
+          >
+            Back
+          </Button>
+        )}
+        {step === 1 && (
+          <Button className="cursor-pointer" type="submit" form="step1-form">
+            Next
+          </Button>
+        )}
+        {step === 2 && (
+          <Button onClick={props.onSave} disabled={props.isSaving}>
+            {props.isSaving ? "Saving form..." : "Save Form"}
+          </Button>
+        )}
       </div>
     </div>
   )

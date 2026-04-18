@@ -2,10 +2,10 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../auth/[...nextauth]/route";
 import { prisma } from "@/lib/prisma";
-import { getRedis} from "@/lib/redis";
+import { cacheDel } from "@/lib/redis";
 import { cacheKeys } from "@/lib/cacheKeys";
+import { withRequiredGitHubField } from "@/lib/formFields";
 
-const redis = getRedis()
 export async function POST(req: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
@@ -34,10 +34,32 @@ export async function POST(req: NextRequest) {
       contractDurationMonths,
     } = body;
 
-    console.log(body)
+    if (!formTitle?.trim()) {
+      return NextResponse.json(
+        { message: "Form title is required." },
+        { status: 400 }
+      );
+    }
 
-    if (!formTitle || !formDescription || !Array.isArray(fields) || !domainId) {
-      return NextResponse.json({ message: "Invalid payload" }, { status: 400 });
+    if (!formDescription?.trim()) {
+      return NextResponse.json(
+        { message: "Form description is required." },
+        { status: 400 }
+      );
+    }
+
+    if (!domainId) {
+      return NextResponse.json(
+        { message: "Please select a domain before creating a form." },
+        { status: 400 }
+      );
+    }
+
+    if (!Array.isArray(fields) || fields.length === 0) {
+      return NextResponse.json(
+        { message: "Add at least one candidate field." },
+        { status: 400 }
+      );
     }
 
     if (salaryMin != null && salaryMax != null && salaryMin > salaryMax) {
@@ -71,10 +93,11 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ message: "Invalid domain" }, { status: 400 });
     }
 
-    const isValid = fields.every((f: any) => f.id && f.type && f.label);
-    if (!isValid) {
+    const finalFields = withRequiredGitHubField(fields);
+    const invalidField = finalFields.find((f: any) => !f.id || !f.type || !f.label);
+    if (invalidField) {
       return NextResponse.json(
-        { message: "Invalid form fields" },
+        { message: "Each candidate field needs a label and type." },
         { status: 400 }
       );
     }
@@ -94,42 +117,65 @@ export async function POST(req: NextRequest) {
     // Ensure specialization is always provided (required field in Prisma)
     const finalSpecialization = specialization ?? "";
 
-    await prisma.$transaction([
-      prisma.recruiterForm.create({
-        data: {
-          recruiterId: userId,   
-          domainId,
-          title: formTitle,
-          description: formDescription,
-          fields,
-          expiresAt,
-          roleType: finalRoleType,
-          experience: finalExperience,
-          workMode,
-          location,
-          specialization: finalSpecialization,
-          techStack,
-          salaryMin,
-          salaryMax,
-          currency,
-          contractDurationMonths,
-          status: "DRAFT",
-          version: 1,
-        },
-      }),
-      prisma.recruiter.update({
+    const createdForm = await prisma.recruiterForm.create({
+      data: {
+        recruiterId: recruiter.id,
+        domainId,
+        title: formTitle,
+        description: formDescription,
+        fields: finalFields,
+        expiresAt,
+        roleType: finalRoleType,
+        experience: finalExperience,
+        workMode: workMode || "REMOTE",
+        location,
+        specialization: finalSpecialization,
+        techStack: normalizeTechStack(techStack),
+        salaryMin,
+        salaryMax,
+        currency,
+        contractDurationMonths,
+        status: "DRAFT",
+        version: 1,
+      },
+      select: {
+        id: true,
+        publicId: true,
+      },
+    });
+
+    await prisma.recruiter.update({
         where: { id: recruiter.id },
         data: {
           totalFormsCount: { increment: 1 },
         },
-      }),
-    ]);
+    });
 
-    return NextResponse.json({ ok: true }, { status: 201 });
+    await cacheDel(cacheKeys.recruiterJobs(recruiter.id), cacheKeys.jobs);
+
+    return NextResponse.json({ ok: true, form: createdForm }, { status: 201 });
   } catch (err) {
     console.error("Create job error:", err);
     return NextResponse.json({ message: "Server error" }, { status: 500 });
   }
+}
+
+function normalizeTechStack(value: unknown) {
+  if (Array.isArray(value)) {
+    return value
+      .flatMap((item) => String(item).split(","))
+      .map((item) => item.trim())
+      .filter(Boolean);
+  }
+
+  if (typeof value === "string") {
+    return value
+      .split(",")
+      .map((item) => item.trim())
+      .filter(Boolean);
+  }
+
+  return [];
 }
 
 

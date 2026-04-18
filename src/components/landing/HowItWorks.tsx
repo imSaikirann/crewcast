@@ -1,114 +1,92 @@
-"use client"
+const GitHubMark = ({ className = "h-4 w-4" }: { className?: string }) => (
+  <svg viewBox="0 0 16 16" className={`fill-current ${className}`} aria-hidden="true">
+    <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z" />
+  </svg>
+);
 
-import { CheckCircle2 } from "lucide-react"
-import { useState } from "react"
-
-const steps = [
+const features = [
   {
-    number: 1,
-    title: "Sign up & verify",
-    description: "Create your company account and verify your hiring authority.",
-    highlight: "Takes 2 minutes",
+    emoji: "🖥️",
+    title: "Recruiter dashboard",
+    description: "Manage all your jobs, view applications, track metrics, and review candidates from one place.",
   },
   {
-    number: 2,
-    title: "Set tech requirements",
-    description: "Define the tech stack, experience level, and specific skills needed.",
-    highlight: "Be specific",
+    emoji: "🌐",
+    title: "Public jobs page",
+    description: "A clean browsable list of all open roles at your company — no login required for candidates.",
   },
   {
-    number: 3,
-    title: "Get ranked candidates",
-    description: "Browse engineers ranked by GitHub contribution score and relevance.",
-    highlight: "Pre-filtered",
+    emoji: "📝",
+    title: "Candidate form flow",
+    description: "Simple, fast application forms. Candidates fill in details and submit — done in under 5 minutes.",
+    isGithub: false,
   },
   {
-    number: 4,
-    title: "Reach & hire",
-    description: "Message top matches directly or post your job to reach passive talent.",
-    highlight: "Real engineers",
+    emoji: null,
+    title: "GitHub-required screening",
+    description: "Software roles require a GitHub profile. Crewcast reads public signals and scores on submission.",
+    isGithub: true,
   },
-]
+  {
+    emoji: "🏢",
+    title: "Admin domain management",
+    description: "Admins control hiring domains, default forms, recruiter access, and platform-wide settings.",
+  },
+  {
+    emoji: "📈",
+    title: "Analytics and reporting",
+    description: "Track views, applications, conversion rates, form quality, and recruiter activity over time.",
+  },
+];
 
 export default function HowItWorks() {
-  const [activeStep, setActiveStep] = useState(0)
-
   return (
-    <section className="relative z-10 py-32 px-6 bg-white dark:bg-neutral-950">
-      <div className="max-w-5xl mx-auto">
-        {/* Section header */}
-        <div className="mb-20 text-center">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-900 mb-6">
-            <span className="text-sm text-neutral-600 dark:text-neutral-400">How it works</span>
+    <section className="relative z-10 border-y border-[var(--landing-border)] bg-[var(--landing-bg)] px-5 py-20 sm:px-6 lg:py-28">
+      <div className="mx-auto max-w-7xl space-y-12">
+        {/* Header */}
+        <div className="grid gap-8 lg:grid-cols-2 lg:items-end">
+          <div className="space-y-3">
+            <p className="font-mono-hero text-xs uppercase tracking-widest text-[var(--landing-subtle)]">
+              // PLATFORM_FEATURES
+            </p>
+            <h2 className="font-mono-hero text-3xl font-bold text-[var(--landing-text)] sm:text-4xl">
+              Everything a hiring team needs. Nothing else.
+            </h2>
           </div>
-          <h2 className="text-4xl md:text-5xl font-black mb-6 text-balance">
-            Four steps to better hiring
-          </h2>
-          <p className="text-lg text-neutral-600 dark:text-neutral-400 max-w-2xl mx-auto">
-            From zero to your next hire in minutes, not weeks.
+          <p className="font-body text-lg text-[var(--landing-muted)] lg:text-right">
+            Crewcast covers the full loop — from posting a role to reviewing a scored shortlist.
           </p>
         </div>
 
-        {/* Timeline */}
-        <div className="space-y-6">
-          {steps.map((step, index) => (
-            <div
-              key={step.number}
-              className="relative group cursor-pointer"
-              onMouseEnter={() => setActiveStep(index)}
+        {/* Feature grid */}
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {features.map((f) => (
+            <article
+              key={f.title}
+              className={`rounded-sm border p-6 transition-all duration-150 hover:-translate-y-0.5 ${
+                f.isGithub
+                  ? "border-[var(--landing-border)] bg-[var(--landing-accent-soft)] hover:border-[var(--landing-muted)]"
+                  : "border-[var(--landing-border)] bg-[var(--landing-panel)] hover:border-[var(--landing-muted)]"
+              }`}
             >
-              {/* Connection line */}
-              {index !== steps.length - 1 && (
-                <div className="absolute left-6 top-20 w-1 h-12 bg-gradient-to-b from-blue-500/50 to-transparent group-hover:from-blue-500 transition-all" />
-              )}
-
-              {/* Step card */}
-              <div
-                className={`relative p-8 rounded-2xl border transition-all duration-300 ${
-                  activeStep === index
-                    ? "border-blue-500 bg-gradient-to-r from-blue-50 to-transparent dark:from-blue-500/10 dark:to-transparent shadow-lg shadow-blue-500/10"
-                    : "border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 hover:border-neutral-300 dark:hover:border-neutral-700"
-                }`}
-              >
-                <div className="flex gap-6">
-                  {/* Step number */}
-                  <div className="flex-shrink-0">
-                    <div
-                      className={`w-12 h-12 rounded-full flex items-center justify-center font-black text-lg transition-all duration-300 ${
-                        activeStep === index
-                          ? "bg-blue-500 text-white scale-110"
-                          : "bg-neutral-100 dark:bg-neutral-800 text-neutral-900 dark:text-white"
-                      }`}
-                    >
-                      {step.number}
-                    </div>
+              <div className="mb-4">
+                {f.isGithub ? (
+                  <div className="flex items-center gap-2">
+                    <GitHubMark className="h-6 w-6 text-[var(--landing-text)]" />
+                    <span className="font-mono-hero text-[10px] uppercase tracking-widest text-[var(--landing-muted)]">Required</span>
                   </div>
-
-                  {/* Content */}
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-start justify-between gap-4 mb-2">
-                      <h3 className="text-xl font-semibold">{step.title}</h3>
-                      {activeStep === index && (
-                        <CheckCircle2 className="w-5 h-5 text-blue-500 flex-shrink-0 animate-in fade-in" />
-                      )}
-                    </div>
-                    <p className="text-neutral-600 dark:text-neutral-400 mb-3">{step.description}</p>
-                    <span
-                      className={`inline-flex items-center px-3 py-1 rounded-lg text-xs font-semibold transition-all ${
-                        activeStep === index
-                          ? "bg-blue-500/20 text-blue-600 dark:text-blue-400"
-                          : "bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-400"
-                      }`}
-                    >
-                      {step.highlight}
-                    </span>
-                  </div>
-                </div>
+                ) : (
+                  <span className="text-2xl" role="img" aria-hidden="true">{f.emoji}</span>
+                )}
               </div>
-            </div>
+              <h3 className="font-mono-hero text-sm font-semibold text-[var(--landing-text)]">
+                {f.title}
+              </h3>
+              <p className="font-body mt-2 text-sm leading-6 text-[var(--landing-muted)]">{f.description}</p>
+            </article>
           ))}
         </div>
       </div>
     </section>
-  )
+  );
 }

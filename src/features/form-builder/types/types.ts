@@ -1,6 +1,6 @@
 import { RoleType } from "@/generated/prisma/enums";
 
-export type FieldType = "text" | "email" | "number" | "textarea" | "select" | "checkbox" | "date" | "file";
+export type FieldType = "text" | "email" | "number" | "textarea" | "select" | "checkbox" | "date" | "file" | "url";
 export interface FormField {
   id: string;
   type: FieldType;
@@ -8,6 +8,7 @@ export interface FormField {
   placeholder?: string;
   required: boolean;
   options?: string[]; 
+  locked?: boolean;
 }
 
 export interface FormPreviewProps {
@@ -47,4 +48,3 @@ export interface JobFormDetails {
   currency: string
   contractDurationMonths: number
 }
-
