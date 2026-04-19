@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 
-import { Prisma } from "@/generated/prisma/client";
+import { Prisma } from "@prisma/client";
 import { withRequiredGitHubField } from "@/lib/formFields";
 import { prisma } from "@/lib/prisma";
 

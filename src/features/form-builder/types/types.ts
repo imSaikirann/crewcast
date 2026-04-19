@@ -1,4 +1,4 @@
-import { RoleType } from "@/generated/prisma/enums";
+import { RoleType } from "@prisma/client";
 
 export type FieldType = "text" | "email" | "number" | "textarea" | "select" | "checkbox" | "date" | "file" | "url";
 export interface FormField {
