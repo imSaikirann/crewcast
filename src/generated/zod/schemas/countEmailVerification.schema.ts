@@ -1,0 +1,10 @@
+import type { Prisma } from '@prisma/client';
+import * as z from 'zod';
+import { EmailVerificationOrderByWithRelationInputObjectSchema as EmailVerificationOrderByWithRelationInputObjectSchema } from './objects/EmailVerificationOrderByWithRelationInput.schema';
+import { EmailVerificationWhereInputObjectSchema as EmailVerificationWhereInputObjectSchema } from './objects/EmailVerificationWhereInput.schema';
+import { EmailVerificationWhereUniqueInputObjectSchema as EmailVerificationWhereUniqueInputObjectSchema } from './objects/EmailVerificationWhereUniqueInput.schema';
+import { EmailVerificationCountAggregateInputObjectSchema as EmailVerificationCountAggregateInputObjectSchema } from './objects/EmailVerificationCountAggregateInput.schema';
+
+export const EmailVerificationCountSchema: z.ZodType<Prisma.EmailVerificationCountArgs> = z.object({ orderBy: z.union([EmailVerificationOrderByWithRelationInputObjectSchema, EmailVerificationOrderByWithRelationInputObjectSchema.array()]).optional(), where: EmailVerificationWhereInputObjectSchema.optional(), cursor: EmailVerificationWhereUniqueInputObjectSchema.optional(), take: z.number().optional(), skip: z.number().optional(), select: z.union([ z.literal(true), EmailVerificationCountAggregateInputObjectSchema ]).optional() }).strict() as unknown as z.ZodType<Prisma.EmailVerificationCountArgs>;
+
+export const EmailVerificationCountZodSchema = z.object({ orderBy: z.union([EmailVerificationOrderByWithRelationInputObjectSchema, EmailVerificationOrderByWithRelationInputObjectSchema.array()]).optional(), where: EmailVerificationWhereInputObjectSchema.optional(), cursor: EmailVerificationWhereUniqueInputObjectSchema.optional(), take: z.number().optional(), skip: z.number().optional(), select: z.union([ z.literal(true), EmailVerificationCountAggregateInputObjectSchema ]).optional() }).strict();

@@ -1,0 +1,15 @@
+import type { Prisma } from '@prisma/client';
+import * as z from 'zod';
+import { DomainsWhereInputObjectSchema as DomainsWhereInputObjectSchema } from './objects/DomainsWhereInput.schema';
+import { DomainsOrderByWithAggregationInputObjectSchema as DomainsOrderByWithAggregationInputObjectSchema } from './objects/DomainsOrderByWithAggregationInput.schema';
+import { DomainsScalarWhereWithAggregatesInputObjectSchema as DomainsScalarWhereWithAggregatesInputObjectSchema } from './objects/DomainsScalarWhereWithAggregatesInput.schema';
+import { DomainsScalarFieldEnumSchema } from './enums/DomainsScalarFieldEnum.schema';
+import { DomainsCountAggregateInputObjectSchema as DomainsCountAggregateInputObjectSchema } from './objects/DomainsCountAggregateInput.schema';
+import { DomainsMinAggregateInputObjectSchema as DomainsMinAggregateInputObjectSchema } from './objects/DomainsMinAggregateInput.schema';
+import { DomainsMaxAggregateInputObjectSchema as DomainsMaxAggregateInputObjectSchema } from './objects/DomainsMaxAggregateInput.schema';
+import { DomainsAvgAggregateInputObjectSchema as DomainsAvgAggregateInputObjectSchema } from './objects/DomainsAvgAggregateInput.schema';
+import { DomainsSumAggregateInputObjectSchema as DomainsSumAggregateInputObjectSchema } from './objects/DomainsSumAggregateInput.schema';
+
+export const DomainsGroupBySchema: z.ZodType<Prisma.DomainsGroupByArgs> = z.object({ where: DomainsWhereInputObjectSchema.optional(), orderBy: z.union([DomainsOrderByWithAggregationInputObjectSchema, DomainsOrderByWithAggregationInputObjectSchema.array()]).optional(), having: DomainsScalarWhereWithAggregatesInputObjectSchema.optional(), take: z.number().optional(), skip: z.number().optional(), by: z.array(DomainsScalarFieldEnumSchema), _count: z.union([ z.literal(true), DomainsCountAggregateInputObjectSchema ]).optional(), _min: DomainsMinAggregateInputObjectSchema.optional(), _max: DomainsMaxAggregateInputObjectSchema.optional(), _avg: DomainsAvgAggregateInputObjectSchema.optional(), _sum: DomainsSumAggregateInputObjectSchema.optional() }).strict() as unknown as z.ZodType<Prisma.DomainsGroupByArgs>;
+
+export const DomainsGroupByZodSchema = z.object({ where: DomainsWhereInputObjectSchema.optional(), orderBy: z.union([DomainsOrderByWithAggregationInputObjectSchema, DomainsOrderByWithAggregationInputObjectSchema.array()]).optional(), having: DomainsScalarWhereWithAggregatesInputObjectSchema.optional(), take: z.number().optional(), skip: z.number().optional(), by: z.array(DomainsScalarFieldEnumSchema), _count: z.union([ z.literal(true), DomainsCountAggregateInputObjectSchema ]).optional(), _min: DomainsMinAggregateInputObjectSchema.optional(), _max: DomainsMaxAggregateInputObjectSchema.optional(), _avg: DomainsAvgAggregateInputObjectSchema.optional(), _sum: DomainsSumAggregateInputObjectSchema.optional() }).strict();

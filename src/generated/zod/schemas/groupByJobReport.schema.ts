@@ -1,0 +1,13 @@
+import type { Prisma } from '@prisma/client';
+import * as z from 'zod';
+import { JobReportWhereInputObjectSchema as JobReportWhereInputObjectSchema } from './objects/JobReportWhereInput.schema';
+import { JobReportOrderByWithAggregationInputObjectSchema as JobReportOrderByWithAggregationInputObjectSchema } from './objects/JobReportOrderByWithAggregationInput.schema';
+import { JobReportScalarWhereWithAggregatesInputObjectSchema as JobReportScalarWhereWithAggregatesInputObjectSchema } from './objects/JobReportScalarWhereWithAggregatesInput.schema';
+import { JobReportScalarFieldEnumSchema } from './enums/JobReportScalarFieldEnum.schema';
+import { JobReportCountAggregateInputObjectSchema as JobReportCountAggregateInputObjectSchema } from './objects/JobReportCountAggregateInput.schema';
+import { JobReportMinAggregateInputObjectSchema as JobReportMinAggregateInputObjectSchema } from './objects/JobReportMinAggregateInput.schema';
+import { JobReportMaxAggregateInputObjectSchema as JobReportMaxAggregateInputObjectSchema } from './objects/JobReportMaxAggregateInput.schema';
+
+export const JobReportGroupBySchema: z.ZodType<Prisma.JobReportGroupByArgs> = z.object({ where: JobReportWhereInputObjectSchema.optional(), orderBy: z.union([JobReportOrderByWithAggregationInputObjectSchema, JobReportOrderByWithAggregationInputObjectSchema.array()]).optional(), having: JobReportScalarWhereWithAggregatesInputObjectSchema.optional(), take: z.number().optional(), skip: z.number().optional(), by: z.array(JobReportScalarFieldEnumSchema), _count: z.union([ z.literal(true), JobReportCountAggregateInputObjectSchema ]).optional(), _min: JobReportMinAggregateInputObjectSchema.optional(), _max: JobReportMaxAggregateInputObjectSchema.optional() }).strict() as unknown as z.ZodType<Prisma.JobReportGroupByArgs>;
+
+export const JobReportGroupByZodSchema = z.object({ where: JobReportWhereInputObjectSchema.optional(), orderBy: z.union([JobReportOrderByWithAggregationInputObjectSchema, JobReportOrderByWithAggregationInputObjectSchema.array()]).optional(), having: JobReportScalarWhereWithAggregatesInputObjectSchema.optional(), take: z.number().optional(), skip: z.number().optional(), by: z.array(JobReportScalarFieldEnumSchema), _count: z.union([ z.literal(true), JobReportCountAggregateInputObjectSchema ]).optional(), _min: JobReportMinAggregateInputObjectSchema.optional(), _max: JobReportMaxAggregateInputObjectSchema.optional() }).strict();

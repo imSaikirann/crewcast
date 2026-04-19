@@ -1,0 +1,17 @@
+import * as z from 'zod';
+import type { Prisma } from '@prisma/client';
+import { DefaultFormSchemaCreateNestedManyWithoutDomainInputObjectSchema as DefaultFormSchemaCreateNestedManyWithoutDomainInputObjectSchema } from './DefaultFormSchemaCreateNestedManyWithoutDomainInput.schema'
+
+const makeSchema = () => z.object({
+  id: z.string().max(24).optional(),
+  title: z.string(),
+  description: z.string(),
+  jobCount: z.number().int().optional(),
+  haveDefaultForm: z.boolean().optional(),
+  isActive: z.boolean().optional(),
+  createdAt: z.coerce.date().optional(),
+  updatedAt: z.coerce.date().optional(),
+  defaultFormSchemas: z.lazy(() => DefaultFormSchemaCreateNestedManyWithoutDomainInputObjectSchema).optional()
+}).strict();
+export const DomainsCreateWithoutRecruiterFormsInputObjectSchema: z.ZodType<Prisma.DomainsCreateWithoutRecruiterFormsInput> = makeSchema() as unknown as z.ZodType<Prisma.DomainsCreateWithoutRecruiterFormsInput>;
+export const DomainsCreateWithoutRecruiterFormsInputObjectZodSchema = makeSchema();

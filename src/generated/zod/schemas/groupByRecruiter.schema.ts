@@ -1,0 +1,15 @@
+import type { Prisma } from '@prisma/client';
+import * as z from 'zod';
+import { RecruiterWhereInputObjectSchema as RecruiterWhereInputObjectSchema } from './objects/RecruiterWhereInput.schema';
+import { RecruiterOrderByWithAggregationInputObjectSchema as RecruiterOrderByWithAggregationInputObjectSchema } from './objects/RecruiterOrderByWithAggregationInput.schema';
+import { RecruiterScalarWhereWithAggregatesInputObjectSchema as RecruiterScalarWhereWithAggregatesInputObjectSchema } from './objects/RecruiterScalarWhereWithAggregatesInput.schema';
+import { RecruiterScalarFieldEnumSchema } from './enums/RecruiterScalarFieldEnum.schema';
+import { RecruiterCountAggregateInputObjectSchema as RecruiterCountAggregateInputObjectSchema } from './objects/RecruiterCountAggregateInput.schema';
+import { RecruiterMinAggregateInputObjectSchema as RecruiterMinAggregateInputObjectSchema } from './objects/RecruiterMinAggregateInput.schema';
+import { RecruiterMaxAggregateInputObjectSchema as RecruiterMaxAggregateInputObjectSchema } from './objects/RecruiterMaxAggregateInput.schema';
+import { RecruiterAvgAggregateInputObjectSchema as RecruiterAvgAggregateInputObjectSchema } from './objects/RecruiterAvgAggregateInput.schema';
+import { RecruiterSumAggregateInputObjectSchema as RecruiterSumAggregateInputObjectSchema } from './objects/RecruiterSumAggregateInput.schema';
+
+export const RecruiterGroupBySchema: z.ZodType<Prisma.RecruiterGroupByArgs> = z.object({ where: RecruiterWhereInputObjectSchema.optional(), orderBy: z.union([RecruiterOrderByWithAggregationInputObjectSchema, RecruiterOrderByWithAggregationInputObjectSchema.array()]).optional(), having: RecruiterScalarWhereWithAggregatesInputObjectSchema.optional(), take: z.number().optional(), skip: z.number().optional(), by: z.array(RecruiterScalarFieldEnumSchema), _count: z.union([ z.literal(true), RecruiterCountAggregateInputObjectSchema ]).optional(), _min: RecruiterMinAggregateInputObjectSchema.optional(), _max: RecruiterMaxAggregateInputObjectSchema.optional(), _avg: RecruiterAvgAggregateInputObjectSchema.optional(), _sum: RecruiterSumAggregateInputObjectSchema.optional() }).strict() as unknown as z.ZodType<Prisma.RecruiterGroupByArgs>;
+
+export const RecruiterGroupByZodSchema = z.object({ where: RecruiterWhereInputObjectSchema.optional(), orderBy: z.union([RecruiterOrderByWithAggregationInputObjectSchema, RecruiterOrderByWithAggregationInputObjectSchema.array()]).optional(), having: RecruiterScalarWhereWithAggregatesInputObjectSchema.optional(), take: z.number().optional(), skip: z.number().optional(), by: z.array(RecruiterScalarFieldEnumSchema), _count: z.union([ z.literal(true), RecruiterCountAggregateInputObjectSchema ]).optional(), _min: RecruiterMinAggregateInputObjectSchema.optional(), _max: RecruiterMaxAggregateInputObjectSchema.optional(), _avg: RecruiterAvgAggregateInputObjectSchema.optional(), _sum: RecruiterSumAggregateInputObjectSchema.optional() }).strict();

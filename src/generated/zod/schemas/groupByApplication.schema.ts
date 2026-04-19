@@ -1,0 +1,13 @@
+import type { Prisma } from '@prisma/client';
+import * as z from 'zod';
+import { ApplicationWhereInputObjectSchema as ApplicationWhereInputObjectSchema } from './objects/ApplicationWhereInput.schema';
+import { ApplicationOrderByWithAggregationInputObjectSchema as ApplicationOrderByWithAggregationInputObjectSchema } from './objects/ApplicationOrderByWithAggregationInput.schema';
+import { ApplicationScalarWhereWithAggregatesInputObjectSchema as ApplicationScalarWhereWithAggregatesInputObjectSchema } from './objects/ApplicationScalarWhereWithAggregatesInput.schema';
+import { ApplicationScalarFieldEnumSchema } from './enums/ApplicationScalarFieldEnum.schema';
+import { ApplicationCountAggregateInputObjectSchema as ApplicationCountAggregateInputObjectSchema } from './objects/ApplicationCountAggregateInput.schema';
+import { ApplicationMinAggregateInputObjectSchema as ApplicationMinAggregateInputObjectSchema } from './objects/ApplicationMinAggregateInput.schema';
+import { ApplicationMaxAggregateInputObjectSchema as ApplicationMaxAggregateInputObjectSchema } from './objects/ApplicationMaxAggregateInput.schema';
+
+export const ApplicationGroupBySchema: z.ZodType<Prisma.ApplicationGroupByArgs> = z.object({ where: ApplicationWhereInputObjectSchema.optional(), orderBy: z.union([ApplicationOrderByWithAggregationInputObjectSchema, ApplicationOrderByWithAggregationInputObjectSchema.array()]).optional(), having: ApplicationScalarWhereWithAggregatesInputObjectSchema.optional(), take: z.number().optional(), skip: z.number().optional(), by: z.array(ApplicationScalarFieldEnumSchema), _count: z.union([ z.literal(true), ApplicationCountAggregateInputObjectSchema ]).optional(), _min: ApplicationMinAggregateInputObjectSchema.optional(), _max: ApplicationMaxAggregateInputObjectSchema.optional() }).strict() as unknown as z.ZodType<Prisma.ApplicationGroupByArgs>;
+
+export const ApplicationGroupByZodSchema = z.object({ where: ApplicationWhereInputObjectSchema.optional(), orderBy: z.union([ApplicationOrderByWithAggregationInputObjectSchema, ApplicationOrderByWithAggregationInputObjectSchema.array()]).optional(), having: ApplicationScalarWhereWithAggregatesInputObjectSchema.optional(), take: z.number().optional(), skip: z.number().optional(), by: z.array(ApplicationScalarFieldEnumSchema), _count: z.union([ z.literal(true), ApplicationCountAggregateInputObjectSchema ]).optional(), _min: ApplicationMinAggregateInputObjectSchema.optional(), _max: ApplicationMaxAggregateInputObjectSchema.optional() }).strict();

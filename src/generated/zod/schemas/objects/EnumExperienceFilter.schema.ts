@@ -1,0 +1,13 @@
+import * as z from 'zod';
+import type { Prisma } from '@prisma/client';
+import { ExperienceSchema } from '../enums/Experience.schema';
+import { NestedEnumExperienceFilterObjectSchema as NestedEnumExperienceFilterObjectSchema } from './NestedEnumExperienceFilter.schema'
+
+const makeSchema = () => z.object({
+  equals: ExperienceSchema.optional(),
+  in: ExperienceSchema.array().optional(),
+  notIn: ExperienceSchema.array().optional(),
+  not: z.union([ExperienceSchema, z.lazy(() => NestedEnumExperienceFilterObjectSchema)]).optional()
+}).strict();
+export const EnumExperienceFilterObjectSchema: z.ZodType<Prisma.EnumExperienceFilter> = makeSchema() as unknown as z.ZodType<Prisma.EnumExperienceFilter>;
+export const EnumExperienceFilterObjectZodSchema = makeSchema();

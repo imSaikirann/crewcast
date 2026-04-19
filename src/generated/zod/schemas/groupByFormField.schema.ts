@@ -1,0 +1,13 @@
+import type { Prisma } from '@prisma/client';
+import * as z from 'zod';
+import { FormFieldWhereInputObjectSchema as FormFieldWhereInputObjectSchema } from './objects/FormFieldWhereInput.schema';
+import { FormFieldOrderByWithAggregationInputObjectSchema as FormFieldOrderByWithAggregationInputObjectSchema } from './objects/FormFieldOrderByWithAggregationInput.schema';
+import { FormFieldScalarWhereWithAggregatesInputObjectSchema as FormFieldScalarWhereWithAggregatesInputObjectSchema } from './objects/FormFieldScalarWhereWithAggregatesInput.schema';
+import { FormFieldScalarFieldEnumSchema } from './enums/FormFieldScalarFieldEnum.schema';
+import { FormFieldCountAggregateInputObjectSchema as FormFieldCountAggregateInputObjectSchema } from './objects/FormFieldCountAggregateInput.schema';
+import { FormFieldMinAggregateInputObjectSchema as FormFieldMinAggregateInputObjectSchema } from './objects/FormFieldMinAggregateInput.schema';
+import { FormFieldMaxAggregateInputObjectSchema as FormFieldMaxAggregateInputObjectSchema } from './objects/FormFieldMaxAggregateInput.schema';
+
+export const FormFieldGroupBySchema: z.ZodType<Prisma.FormFieldGroupByArgs> = z.object({ where: FormFieldWhereInputObjectSchema.optional(), orderBy: z.union([FormFieldOrderByWithAggregationInputObjectSchema, FormFieldOrderByWithAggregationInputObjectSchema.array()]).optional(), having: FormFieldScalarWhereWithAggregatesInputObjectSchema.optional(), take: z.number().optional(), skip: z.number().optional(), by: z.array(FormFieldScalarFieldEnumSchema), _count: z.union([ z.literal(true), FormFieldCountAggregateInputObjectSchema ]).optional(), _min: FormFieldMinAggregateInputObjectSchema.optional(), _max: FormFieldMaxAggregateInputObjectSchema.optional() }).strict() as unknown as z.ZodType<Prisma.FormFieldGroupByArgs>;
+
+export const FormFieldGroupByZodSchema = z.object({ where: FormFieldWhereInputObjectSchema.optional(), orderBy: z.union([FormFieldOrderByWithAggregationInputObjectSchema, FormFieldOrderByWithAggregationInputObjectSchema.array()]).optional(), having: FormFieldScalarWhereWithAggregatesInputObjectSchema.optional(), take: z.number().optional(), skip: z.number().optional(), by: z.array(FormFieldScalarFieldEnumSchema), _count: z.union([ z.literal(true), FormFieldCountAggregateInputObjectSchema ]).optional(), _min: FormFieldMinAggregateInputObjectSchema.optional(), _max: FormFieldMaxAggregateInputObjectSchema.optional() }).strict();

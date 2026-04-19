@@ -1,0 +1,11 @@
+import * as z from 'zod';
+import type { Prisma } from '@prisma/client';
+import { VerificationTokenIdentifierTokenCompoundUniqueInputObjectSchema as VerificationTokenIdentifierTokenCompoundUniqueInputObjectSchema } from './VerificationTokenIdentifierTokenCompoundUniqueInput.schema'
+
+const makeSchema = () => z.object({
+  id: z.string().max(24).optional(),
+  token: z.string().optional(),
+  identifier_token: z.lazy(() => VerificationTokenIdentifierTokenCompoundUniqueInputObjectSchema).optional()
+}).strict();
+export const VerificationTokenWhereUniqueInputObjectSchema: z.ZodType<Prisma.VerificationTokenWhereUniqueInput> = makeSchema() as unknown as z.ZodType<Prisma.VerificationTokenWhereUniqueInput>;
+export const VerificationTokenWhereUniqueInputObjectZodSchema = makeSchema();

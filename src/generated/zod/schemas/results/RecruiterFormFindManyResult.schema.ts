@@ -1,0 +1,45 @@
+import * as z from 'zod';
+export const RecruiterFormFindManyResultSchema = z.object({
+  data: z.array(z.object({
+  id: z.string(),
+  recruiterId: z.string(),
+  recruiter: z.unknown(),
+  domainId: z.string(),
+  domain: z.unknown(),
+  publicId: z.string(),
+  title: z.string(),
+  description: z.string(),
+  specialization: z.string(),
+  roleType: z.unknown(),
+  experience: z.unknown(),
+  workMode: z.unknown(),
+  location: z.string().optional(),
+  salaryMin: z.number().int().optional(),
+  salaryMax: z.number().int().optional(),
+  currency: z.string().optional(),
+  techStack: z.array(z.string()),
+  contractDurationMonths: z.number().int().optional(),
+  showCompanyName: z.boolean(),
+  status: z.unknown(),
+  version: z.number().int(),
+  publishedAt: z.date().optional(),
+  fields: z.unknown(),
+  expiresAt: z.date(),
+  applications: z.array(z.unknown()),
+  createdAt: z.date(),
+  updatedAt: z.date(),
+  reportCount: z.number().int(),
+  isFlagged: z.boolean(),
+  viewCount: z.number().int(),
+  views: z.array(z.unknown()),
+  jobReport: z.array(z.unknown())
+})),
+  pagination: z.object({
+  page: z.number().int().min(1),
+  pageSize: z.number().int().min(1),
+  total: z.number().int().min(0),
+  totalPages: z.number().int().min(0),
+  hasNext: z.boolean(),
+  hasPrev: z.boolean()
+})
+});

@@ -1,0 +1,14 @@
+import type { Prisma } from '@prisma/client';
+import * as z from 'zod';
+import { RecruiterOrderByWithRelationInputObjectSchema as RecruiterOrderByWithRelationInputObjectSchema } from './objects/RecruiterOrderByWithRelationInput.schema';
+import { RecruiterWhereInputObjectSchema as RecruiterWhereInputObjectSchema } from './objects/RecruiterWhereInput.schema';
+import { RecruiterWhereUniqueInputObjectSchema as RecruiterWhereUniqueInputObjectSchema } from './objects/RecruiterWhereUniqueInput.schema';
+import { RecruiterCountAggregateInputObjectSchema as RecruiterCountAggregateInputObjectSchema } from './objects/RecruiterCountAggregateInput.schema';
+import { RecruiterMinAggregateInputObjectSchema as RecruiterMinAggregateInputObjectSchema } from './objects/RecruiterMinAggregateInput.schema';
+import { RecruiterMaxAggregateInputObjectSchema as RecruiterMaxAggregateInputObjectSchema } from './objects/RecruiterMaxAggregateInput.schema';
+import { RecruiterAvgAggregateInputObjectSchema as RecruiterAvgAggregateInputObjectSchema } from './objects/RecruiterAvgAggregateInput.schema';
+import { RecruiterSumAggregateInputObjectSchema as RecruiterSumAggregateInputObjectSchema } from './objects/RecruiterSumAggregateInput.schema';
+
+export const RecruiterAggregateSchema: z.ZodType<Prisma.RecruiterAggregateArgs> = z.object({ orderBy: z.union([RecruiterOrderByWithRelationInputObjectSchema, RecruiterOrderByWithRelationInputObjectSchema.array()]).optional(), where: RecruiterWhereInputObjectSchema.optional(), cursor: RecruiterWhereUniqueInputObjectSchema.optional(), take: z.number().optional(), skip: z.number().optional(), _count: z.union([ z.literal(true), RecruiterCountAggregateInputObjectSchema ]).optional(), _min: RecruiterMinAggregateInputObjectSchema.optional(), _max: RecruiterMaxAggregateInputObjectSchema.optional(), _avg: RecruiterAvgAggregateInputObjectSchema.optional(), _sum: RecruiterSumAggregateInputObjectSchema.optional() }).strict() as unknown as z.ZodType<Prisma.RecruiterAggregateArgs>;
+
+export const RecruiterAggregateZodSchema = z.object({ orderBy: z.union([RecruiterOrderByWithRelationInputObjectSchema, RecruiterOrderByWithRelationInputObjectSchema.array()]).optional(), where: RecruiterWhereInputObjectSchema.optional(), cursor: RecruiterWhereUniqueInputObjectSchema.optional(), take: z.number().optional(), skip: z.number().optional(), _count: z.union([ z.literal(true), RecruiterCountAggregateInputObjectSchema ]).optional(), _min: RecruiterMinAggregateInputObjectSchema.optional(), _max: RecruiterMaxAggregateInputObjectSchema.optional(), _avg: RecruiterAvgAggregateInputObjectSchema.optional(), _sum: RecruiterSumAggregateInputObjectSchema.optional() }).strict();

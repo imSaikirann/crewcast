@@ -1,0 +1,13 @@
+import type { Prisma } from '@prisma/client';
+import * as z from 'zod';
+import { EmailVerificationWhereInputObjectSchema as EmailVerificationWhereInputObjectSchema } from './objects/EmailVerificationWhereInput.schema';
+import { EmailVerificationOrderByWithAggregationInputObjectSchema as EmailVerificationOrderByWithAggregationInputObjectSchema } from './objects/EmailVerificationOrderByWithAggregationInput.schema';
+import { EmailVerificationScalarWhereWithAggregatesInputObjectSchema as EmailVerificationScalarWhereWithAggregatesInputObjectSchema } from './objects/EmailVerificationScalarWhereWithAggregatesInput.schema';
+import { EmailVerificationScalarFieldEnumSchema } from './enums/EmailVerificationScalarFieldEnum.schema';
+import { EmailVerificationCountAggregateInputObjectSchema as EmailVerificationCountAggregateInputObjectSchema } from './objects/EmailVerificationCountAggregateInput.schema';
+import { EmailVerificationMinAggregateInputObjectSchema as EmailVerificationMinAggregateInputObjectSchema } from './objects/EmailVerificationMinAggregateInput.schema';
+import { EmailVerificationMaxAggregateInputObjectSchema as EmailVerificationMaxAggregateInputObjectSchema } from './objects/EmailVerificationMaxAggregateInput.schema';
+
+export const EmailVerificationGroupBySchema: z.ZodType<Prisma.EmailVerificationGroupByArgs> = z.object({ where: EmailVerificationWhereInputObjectSchema.optional(), orderBy: z.union([EmailVerificationOrderByWithAggregationInputObjectSchema, EmailVerificationOrderByWithAggregationInputObjectSchema.array()]).optional(), having: EmailVerificationScalarWhereWithAggregatesInputObjectSchema.optional(), take: z.number().optional(), skip: z.number().optional(), by: z.array(EmailVerificationScalarFieldEnumSchema), _count: z.union([ z.literal(true), EmailVerificationCountAggregateInputObjectSchema ]).optional(), _min: EmailVerificationMinAggregateInputObjectSchema.optional(), _max: EmailVerificationMaxAggregateInputObjectSchema.optional() }).strict() as unknown as z.ZodType<Prisma.EmailVerificationGroupByArgs>;
+
+export const EmailVerificationGroupByZodSchema = z.object({ where: EmailVerificationWhereInputObjectSchema.optional(), orderBy: z.union([EmailVerificationOrderByWithAggregationInputObjectSchema, EmailVerificationOrderByWithAggregationInputObjectSchema.array()]).optional(), having: EmailVerificationScalarWhereWithAggregatesInputObjectSchema.optional(), take: z.number().optional(), skip: z.number().optional(), by: z.array(EmailVerificationScalarFieldEnumSchema), _count: z.union([ z.literal(true), EmailVerificationCountAggregateInputObjectSchema ]).optional(), _min: EmailVerificationMinAggregateInputObjectSchema.optional(), _max: EmailVerificationMaxAggregateInputObjectSchema.optional() }).strict();

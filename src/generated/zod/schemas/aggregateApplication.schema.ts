@@ -1,0 +1,12 @@
+import type { Prisma } from '@prisma/client';
+import * as z from 'zod';
+import { ApplicationOrderByWithRelationInputObjectSchema as ApplicationOrderByWithRelationInputObjectSchema } from './objects/ApplicationOrderByWithRelationInput.schema';
+import { ApplicationWhereInputObjectSchema as ApplicationWhereInputObjectSchema } from './objects/ApplicationWhereInput.schema';
+import { ApplicationWhereUniqueInputObjectSchema as ApplicationWhereUniqueInputObjectSchema } from './objects/ApplicationWhereUniqueInput.schema';
+import { ApplicationCountAggregateInputObjectSchema as ApplicationCountAggregateInputObjectSchema } from './objects/ApplicationCountAggregateInput.schema';
+import { ApplicationMinAggregateInputObjectSchema as ApplicationMinAggregateInputObjectSchema } from './objects/ApplicationMinAggregateInput.schema';
+import { ApplicationMaxAggregateInputObjectSchema as ApplicationMaxAggregateInputObjectSchema } from './objects/ApplicationMaxAggregateInput.schema';
+
+export const ApplicationAggregateSchema: z.ZodType<Prisma.ApplicationAggregateArgs> = z.object({ orderBy: z.union([ApplicationOrderByWithRelationInputObjectSchema, ApplicationOrderByWithRelationInputObjectSchema.array()]).optional(), where: ApplicationWhereInputObjectSchema.optional(), cursor: ApplicationWhereUniqueInputObjectSchema.optional(), take: z.number().optional(), skip: z.number().optional(), _count: z.union([ z.literal(true), ApplicationCountAggregateInputObjectSchema ]).optional(), _min: ApplicationMinAggregateInputObjectSchema.optional(), _max: ApplicationMaxAggregateInputObjectSchema.optional() }).strict() as unknown as z.ZodType<Prisma.ApplicationAggregateArgs>;
+
+export const ApplicationAggregateZodSchema = z.object({ orderBy: z.union([ApplicationOrderByWithRelationInputObjectSchema, ApplicationOrderByWithRelationInputObjectSchema.array()]).optional(), where: ApplicationWhereInputObjectSchema.optional(), cursor: ApplicationWhereUniqueInputObjectSchema.optional(), take: z.number().optional(), skip: z.number().optional(), _count: z.union([ z.literal(true), ApplicationCountAggregateInputObjectSchema ]).optional(), _min: ApplicationMinAggregateInputObjectSchema.optional(), _max: ApplicationMaxAggregateInputObjectSchema.optional() }).strict();

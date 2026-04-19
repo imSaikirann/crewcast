@@ -1,0 +1,13 @@
+import type { Prisma } from '@prisma/client';
+import * as z from 'zod';
+import { UpgradeRequestWhereInputObjectSchema as UpgradeRequestWhereInputObjectSchema } from './objects/UpgradeRequestWhereInput.schema';
+import { UpgradeRequestOrderByWithAggregationInputObjectSchema as UpgradeRequestOrderByWithAggregationInputObjectSchema } from './objects/UpgradeRequestOrderByWithAggregationInput.schema';
+import { UpgradeRequestScalarWhereWithAggregatesInputObjectSchema as UpgradeRequestScalarWhereWithAggregatesInputObjectSchema } from './objects/UpgradeRequestScalarWhereWithAggregatesInput.schema';
+import { UpgradeRequestScalarFieldEnumSchema } from './enums/UpgradeRequestScalarFieldEnum.schema';
+import { UpgradeRequestCountAggregateInputObjectSchema as UpgradeRequestCountAggregateInputObjectSchema } from './objects/UpgradeRequestCountAggregateInput.schema';
+import { UpgradeRequestMinAggregateInputObjectSchema as UpgradeRequestMinAggregateInputObjectSchema } from './objects/UpgradeRequestMinAggregateInput.schema';
+import { UpgradeRequestMaxAggregateInputObjectSchema as UpgradeRequestMaxAggregateInputObjectSchema } from './objects/UpgradeRequestMaxAggregateInput.schema';
+
+export const UpgradeRequestGroupBySchema: z.ZodType<Prisma.UpgradeRequestGroupByArgs> = z.object({ where: UpgradeRequestWhereInputObjectSchema.optional(), orderBy: z.union([UpgradeRequestOrderByWithAggregationInputObjectSchema, UpgradeRequestOrderByWithAggregationInputObjectSchema.array()]).optional(), having: UpgradeRequestScalarWhereWithAggregatesInputObjectSchema.optional(), take: z.number().optional(), skip: z.number().optional(), by: z.array(UpgradeRequestScalarFieldEnumSchema), _count: z.union([ z.literal(true), UpgradeRequestCountAggregateInputObjectSchema ]).optional(), _min: UpgradeRequestMinAggregateInputObjectSchema.optional(), _max: UpgradeRequestMaxAggregateInputObjectSchema.optional() }).strict() as unknown as z.ZodType<Prisma.UpgradeRequestGroupByArgs>;
+
+export const UpgradeRequestGroupByZodSchema = z.object({ where: UpgradeRequestWhereInputObjectSchema.optional(), orderBy: z.union([UpgradeRequestOrderByWithAggregationInputObjectSchema, UpgradeRequestOrderByWithAggregationInputObjectSchema.array()]).optional(), having: UpgradeRequestScalarWhereWithAggregatesInputObjectSchema.optional(), take: z.number().optional(), skip: z.number().optional(), by: z.array(UpgradeRequestScalarFieldEnumSchema), _count: z.union([ z.literal(true), UpgradeRequestCountAggregateInputObjectSchema ]).optional(), _min: UpgradeRequestMinAggregateInputObjectSchema.optional(), _max: UpgradeRequestMaxAggregateInputObjectSchema.optional() }).strict();

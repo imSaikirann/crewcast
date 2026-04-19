@@ -1,0 +1,12 @@
+import type { Prisma } from '@prisma/client';
+import * as z from 'zod';
+import { EmailVerificationOrderByWithRelationInputObjectSchema as EmailVerificationOrderByWithRelationInputObjectSchema } from './objects/EmailVerificationOrderByWithRelationInput.schema';
+import { EmailVerificationWhereInputObjectSchema as EmailVerificationWhereInputObjectSchema } from './objects/EmailVerificationWhereInput.schema';
+import { EmailVerificationWhereUniqueInputObjectSchema as EmailVerificationWhereUniqueInputObjectSchema } from './objects/EmailVerificationWhereUniqueInput.schema';
+import { EmailVerificationCountAggregateInputObjectSchema as EmailVerificationCountAggregateInputObjectSchema } from './objects/EmailVerificationCountAggregateInput.schema';
+import { EmailVerificationMinAggregateInputObjectSchema as EmailVerificationMinAggregateInputObjectSchema } from './objects/EmailVerificationMinAggregateInput.schema';
+import { EmailVerificationMaxAggregateInputObjectSchema as EmailVerificationMaxAggregateInputObjectSchema } from './objects/EmailVerificationMaxAggregateInput.schema';
+
+export const EmailVerificationAggregateSchema: z.ZodType<Prisma.EmailVerificationAggregateArgs> = z.object({ orderBy: z.union([EmailVerificationOrderByWithRelationInputObjectSchema, EmailVerificationOrderByWithRelationInputObjectSchema.array()]).optional(), where: EmailVerificationWhereInputObjectSchema.optional(), cursor: EmailVerificationWhereUniqueInputObjectSchema.optional(), take: z.number().optional(), skip: z.number().optional(), _count: z.union([ z.literal(true), EmailVerificationCountAggregateInputObjectSchema ]).optional(), _min: EmailVerificationMinAggregateInputObjectSchema.optional(), _max: EmailVerificationMaxAggregateInputObjectSchema.optional() }).strict() as unknown as z.ZodType<Prisma.EmailVerificationAggregateArgs>;
+
+export const EmailVerificationAggregateZodSchema = z.object({ orderBy: z.union([EmailVerificationOrderByWithRelationInputObjectSchema, EmailVerificationOrderByWithRelationInputObjectSchema.array()]).optional(), where: EmailVerificationWhereInputObjectSchema.optional(), cursor: EmailVerificationWhereUniqueInputObjectSchema.optional(), take: z.number().optional(), skip: z.number().optional(), _count: z.union([ z.literal(true), EmailVerificationCountAggregateInputObjectSchema ]).optional(), _min: EmailVerificationMinAggregateInputObjectSchema.optional(), _max: EmailVerificationMaxAggregateInputObjectSchema.optional() }).strict();

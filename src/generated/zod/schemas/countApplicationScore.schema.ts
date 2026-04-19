@@ -1,0 +1,10 @@
+import type { Prisma } from '@prisma/client';
+import * as z from 'zod';
+import { ApplicationScoreOrderByWithRelationInputObjectSchema as ApplicationScoreOrderByWithRelationInputObjectSchema } from './objects/ApplicationScoreOrderByWithRelationInput.schema';
+import { ApplicationScoreWhereInputObjectSchema as ApplicationScoreWhereInputObjectSchema } from './objects/ApplicationScoreWhereInput.schema';
+import { ApplicationScoreWhereUniqueInputObjectSchema as ApplicationScoreWhereUniqueInputObjectSchema } from './objects/ApplicationScoreWhereUniqueInput.schema';
+import { ApplicationScoreCountAggregateInputObjectSchema as ApplicationScoreCountAggregateInputObjectSchema } from './objects/ApplicationScoreCountAggregateInput.schema';
+
+export const ApplicationScoreCountSchema: z.ZodType<Prisma.ApplicationScoreCountArgs> = z.object({ orderBy: z.union([ApplicationScoreOrderByWithRelationInputObjectSchema, ApplicationScoreOrderByWithRelationInputObjectSchema.array()]).optional(), where: ApplicationScoreWhereInputObjectSchema.optional(), cursor: ApplicationScoreWhereUniqueInputObjectSchema.optional(), take: z.number().optional(), skip: z.number().optional(), select: z.union([ z.literal(true), ApplicationScoreCountAggregateInputObjectSchema ]).optional() }).strict() as unknown as z.ZodType<Prisma.ApplicationScoreCountArgs>;
+
+export const ApplicationScoreCountZodSchema = z.object({ orderBy: z.union([ApplicationScoreOrderByWithRelationInputObjectSchema, ApplicationScoreOrderByWithRelationInputObjectSchema.array()]).optional(), where: ApplicationScoreWhereInputObjectSchema.optional(), cursor: ApplicationScoreWhereUniqueInputObjectSchema.optional(), take: z.number().optional(), skip: z.number().optional(), select: z.union([ z.literal(true), ApplicationScoreCountAggregateInputObjectSchema ]).optional() }).strict();

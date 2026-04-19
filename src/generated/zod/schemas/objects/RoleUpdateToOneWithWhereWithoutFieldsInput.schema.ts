@@ -1,0 +1,12 @@
+import * as z from 'zod';
+import type { Prisma } from '@prisma/client';
+import { RoleWhereInputObjectSchema as RoleWhereInputObjectSchema } from './RoleWhereInput.schema';
+import { RoleUpdateWithoutFieldsInputObjectSchema as RoleUpdateWithoutFieldsInputObjectSchema } from './RoleUpdateWithoutFieldsInput.schema';
+import { RoleUncheckedUpdateWithoutFieldsInputObjectSchema as RoleUncheckedUpdateWithoutFieldsInputObjectSchema } from './RoleUncheckedUpdateWithoutFieldsInput.schema'
+
+const makeSchema = () => z.object({
+  where: z.lazy(() => RoleWhereInputObjectSchema).optional(),
+  data: z.union([z.lazy(() => RoleUpdateWithoutFieldsInputObjectSchema), z.lazy(() => RoleUncheckedUpdateWithoutFieldsInputObjectSchema)])
+}).strict();
+export const RoleUpdateToOneWithWhereWithoutFieldsInputObjectSchema: z.ZodType<Prisma.RoleUpdateToOneWithWhereWithoutFieldsInput> = makeSchema() as unknown as z.ZodType<Prisma.RoleUpdateToOneWithWhereWithoutFieldsInput>;
+export const RoleUpdateToOneWithWhereWithoutFieldsInputObjectZodSchema = makeSchema();

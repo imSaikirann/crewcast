@@ -1,0 +1,14 @@
+import type { Prisma } from '@prisma/client';
+import * as z from 'zod';
+import { RecruiterFormOrderByWithRelationInputObjectSchema as RecruiterFormOrderByWithRelationInputObjectSchema } from './objects/RecruiterFormOrderByWithRelationInput.schema';
+import { RecruiterFormWhereInputObjectSchema as RecruiterFormWhereInputObjectSchema } from './objects/RecruiterFormWhereInput.schema';
+import { RecruiterFormWhereUniqueInputObjectSchema as RecruiterFormWhereUniqueInputObjectSchema } from './objects/RecruiterFormWhereUniqueInput.schema';
+import { RecruiterFormCountAggregateInputObjectSchema as RecruiterFormCountAggregateInputObjectSchema } from './objects/RecruiterFormCountAggregateInput.schema';
+import { RecruiterFormMinAggregateInputObjectSchema as RecruiterFormMinAggregateInputObjectSchema } from './objects/RecruiterFormMinAggregateInput.schema';
+import { RecruiterFormMaxAggregateInputObjectSchema as RecruiterFormMaxAggregateInputObjectSchema } from './objects/RecruiterFormMaxAggregateInput.schema';
+import { RecruiterFormAvgAggregateInputObjectSchema as RecruiterFormAvgAggregateInputObjectSchema } from './objects/RecruiterFormAvgAggregateInput.schema';
+import { RecruiterFormSumAggregateInputObjectSchema as RecruiterFormSumAggregateInputObjectSchema } from './objects/RecruiterFormSumAggregateInput.schema';
+
+export const RecruiterFormAggregateSchema: z.ZodType<Prisma.RecruiterFormAggregateArgs> = z.object({ orderBy: z.union([RecruiterFormOrderByWithRelationInputObjectSchema, RecruiterFormOrderByWithRelationInputObjectSchema.array()]).optional(), where: RecruiterFormWhereInputObjectSchema.optional(), cursor: RecruiterFormWhereUniqueInputObjectSchema.optional(), take: z.number().optional(), skip: z.number().optional(), _count: z.union([ z.literal(true), RecruiterFormCountAggregateInputObjectSchema ]).optional(), _min: RecruiterFormMinAggregateInputObjectSchema.optional(), _max: RecruiterFormMaxAggregateInputObjectSchema.optional(), _avg: RecruiterFormAvgAggregateInputObjectSchema.optional(), _sum: RecruiterFormSumAggregateInputObjectSchema.optional() }).strict() as unknown as z.ZodType<Prisma.RecruiterFormAggregateArgs>;
+
+export const RecruiterFormAggregateZodSchema = z.object({ orderBy: z.union([RecruiterFormOrderByWithRelationInputObjectSchema, RecruiterFormOrderByWithRelationInputObjectSchema.array()]).optional(), where: RecruiterFormWhereInputObjectSchema.optional(), cursor: RecruiterFormWhereUniqueInputObjectSchema.optional(), take: z.number().optional(), skip: z.number().optional(), _count: z.union([ z.literal(true), RecruiterFormCountAggregateInputObjectSchema ]).optional(), _min: RecruiterFormMinAggregateInputObjectSchema.optional(), _max: RecruiterFormMaxAggregateInputObjectSchema.optional(), _avg: RecruiterFormAvgAggregateInputObjectSchema.optional(), _sum: RecruiterFormSumAggregateInputObjectSchema.optional() }).strict();

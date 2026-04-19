@@ -1,0 +1,10 @@
+import type { Prisma } from '@prisma/client';
+import * as z from 'zod';
+import { DefaultFormSchemaOrderByWithRelationInputObjectSchema as DefaultFormSchemaOrderByWithRelationInputObjectSchema } from './objects/DefaultFormSchemaOrderByWithRelationInput.schema';
+import { DefaultFormSchemaWhereInputObjectSchema as DefaultFormSchemaWhereInputObjectSchema } from './objects/DefaultFormSchemaWhereInput.schema';
+import { DefaultFormSchemaWhereUniqueInputObjectSchema as DefaultFormSchemaWhereUniqueInputObjectSchema } from './objects/DefaultFormSchemaWhereUniqueInput.schema';
+import { DefaultFormSchemaCountAggregateInputObjectSchema as DefaultFormSchemaCountAggregateInputObjectSchema } from './objects/DefaultFormSchemaCountAggregateInput.schema';
+
+export const DefaultFormSchemaCountSchema: z.ZodType<Prisma.DefaultFormSchemaCountArgs> = z.object({ orderBy: z.union([DefaultFormSchemaOrderByWithRelationInputObjectSchema, DefaultFormSchemaOrderByWithRelationInputObjectSchema.array()]).optional(), where: DefaultFormSchemaWhereInputObjectSchema.optional(), cursor: DefaultFormSchemaWhereUniqueInputObjectSchema.optional(), take: z.number().optional(), skip: z.number().optional(), select: z.union([ z.literal(true), DefaultFormSchemaCountAggregateInputObjectSchema ]).optional() }).strict() as unknown as z.ZodType<Prisma.DefaultFormSchemaCountArgs>;
+
+export const DefaultFormSchemaCountZodSchema = z.object({ orderBy: z.union([DefaultFormSchemaOrderByWithRelationInputObjectSchema, DefaultFormSchemaOrderByWithRelationInputObjectSchema.array()]).optional(), where: DefaultFormSchemaWhereInputObjectSchema.optional(), cursor: DefaultFormSchemaWhereUniqueInputObjectSchema.optional(), take: z.number().optional(), skip: z.number().optional(), select: z.union([ z.literal(true), DefaultFormSchemaCountAggregateInputObjectSchema ]).optional() }).strict();
