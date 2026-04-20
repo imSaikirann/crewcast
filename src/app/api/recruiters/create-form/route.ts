@@ -77,6 +77,13 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ message: "Recruiter not found" }, { status: 403 });
     }
 
+    if (!recruiter.verified) {
+      return NextResponse.json(
+        { message: "Verify your company email before creating job forms." },
+        { status: 403 }
+      );
+    }
+
  
     if (recruiter.totalFormsCount >= recruiter.totalFormsLimit) {
       return NextResponse.json(

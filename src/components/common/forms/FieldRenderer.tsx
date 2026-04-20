@@ -2,6 +2,7 @@ import { useFormContext } from "react-hook-form"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
+import { Upload } from "lucide-react"
 
 export function FieldRenderer({ field }: any) {
   const {
@@ -16,9 +17,9 @@ export function FieldRenderer({ field }: any) {
 
   return (
     <div className="space-y-2">
-      <Label className="text-sm font-medium">
+      <Label className="text-[13px] font-medium text-foreground">
         {field.label}
-        {field.required && <span className="text-destructive"> *</span>}
+        {field.required && <span className="text-primary"> *</span>}
       </Label>
 
       {/* TEXT / EMAIL / NUMBER / URL / DATE */}
@@ -32,18 +33,23 @@ export function FieldRenderer({ field }: any) {
           disabled={field.disabled}
           readOnly={field.readOnly}
           {...common}
-          className="h-12 text-base"
+          className="cc-input"
         />
       )}
 
       {/* FILE */}
       {field.type === "file" && (
-        <Input
-          type="file"
-          accept={field.accept}
-          disabled={field.disabled}
-          {...register(field.id, { required: field.required })}
-        />
+        <label className="flex min-h-28 cursor-pointer flex-col items-center justify-center rounded-xl border border-dashed bg-secondary p-4 text-center text-sm text-muted-foreground transition hover:border-primary/50">
+          <Upload className="mb-2 size-5" />
+          Drag & drop or click to browse
+          <Input
+            type="file"
+            accept={field.accept}
+            disabled={field.disabled}
+            {...register(field.id, { required: field.required })}
+            className="sr-only"
+          />
+        </label>
       )}
 
       {/* TEXTAREA */}
@@ -53,7 +59,7 @@ export function FieldRenderer({ field }: any) {
           disabled={field.disabled}
           readOnly={field.readOnly}
           {...common}
-          className="min-h-30"
+          className="min-h-30 rounded-[10px] bg-secondary text-sm focus-visible:border-primary"
         />
       )}
 
@@ -62,7 +68,7 @@ export function FieldRenderer({ field }: any) {
         <select
           {...common}
           disabled={field.disabled}
-          className="w-full h-12 px-3 rounded-md border bg-background text-sm"
+          className="h-11 w-full rounded-[10px] border bg-secondary px-3 text-sm text-foreground outline-none focus:border-primary"
         >
           <option value="">
             {field.placeholder || "Select an option"}
@@ -114,7 +120,7 @@ export function FieldRenderer({ field }: any) {
       {/* Validation error */}
       {errors[field.id] && (
         <p className="text-xs text-destructive">
-          {field.errorMessage || "This field is required"}
+          x {field.errorMessage || "This field is required"}
         </p>
       )}
     </div>

@@ -6,7 +6,7 @@ export type Recruiter = {
   linkedinLink: string
   verified: boolean
 
-  plan: "STARTER" | "PRO" | "BUSINESS"
+  plan: "STARTER" | "HIRING" | "SCALE"
 
   formLimit: number
   activeFormCount: number

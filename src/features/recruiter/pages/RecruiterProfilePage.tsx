@@ -1,35 +1,48 @@
 "use client"
 
-import { useRecruiterProfile } from "@/features/recruiter/hooks/useRecruiterProfile"
-import ProfileHeader from "../components/ProfileHeader"
-import ProfileCard from "../components/ProfileCard"
-// import ProfileStats from "../components/ProfileStats"
-
-import PlanUsageCard from "../components/PlanUsageCard"
-import ProfileSetupForm from "../components/ProfileSetupForm"
 import { useState } from "react"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { CheckCircle, Trash2 } from "lucide-react"
+
 import { Button } from "@/components/ui/button"
+import { api } from "@/lib/api"
+import { toast } from "@/lib/toast"
+import { useRecruiterProfile } from "@/features/recruiter/hooks/useRecruiterProfile"
+import ProfileSetupForm from "../components/ProfileSetupForm"
 
 export default function RecruiterProfilePage() {
   const { data: recruiter, isLoading, error } = useRecruiterProfile()
   const [isEditing, setIsEditing] = useState(false)
+  const queryClient = useQueryClient()
+  const resendVerification = useMutation({
+    mutationFn: async () => {
+      const response = await api.post("/api/recruiters/new-account/resend-verification")
+      return response.data
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["recruiter-profile"] })
+      toast.success("Verification email sent", {
+        description: "Check your company inbox for the new link.",
+      })
+    },
+    onError: (err: any) => {
+      toast.error("Could not send verification email", {
+        description: err?.response?.data?.message || err?.message || "Please try again.",
+      })
+    },
+  })
+
   if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center text-muted-foreground">
-        Loading your company profile…
-      </div>
-    )
+    return <div className="min-h-screen py-24 text-center text-muted-foreground">Loading your company profile...</div>
   }
 
-  // Check if profile doesn't exist (404 error) or if editing
-  const profileNotFound = error && 
-    ((error as any)?.response?.status === 404 || 
-     (error as any)?.status === 404)
+  const profileNotFound =
+    error && ((error as any)?.response?.status === 404 || (error as any)?.status === 404)
   const showSetupForm = profileNotFound || isEditing
 
   if (showSetupForm) {
     return (
-      <div className="min-h-screen bg-background py-10">
+      <div>
         <ProfileSetupForm
           existingProfile={isEditing ? recruiter : null}
           onSuccess={() => setIsEditing(false)}
@@ -40,85 +53,70 @@ export default function RecruiterProfilePage() {
   }
 
   if (error || !recruiter) {
-    return (
-      <div className="min-h-screen flex items-center justify-center text-destructive">
-        Failed to load recruiter profile
-      </div>
-    )
+    return <div className="min-h-screen py-24 text-center text-destructive">Failed to load recruiter profile</div>
   }
-
-  const plan = {
-    name: recruiter.plan,
-    used: recruiter.activeFormCount,
-    limit: recruiter.formLimit,
-    totalUsed: recruiter.totalFormsCount,
-    totalLimit: recruiter.totalFormsLimit,
-  }
-
-  const isBlocked =
-    !recruiter.verified || recruiter.activeFormCount >= recruiter.formLimit
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10 space-y-6">
-        {/* Header Section */}
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-6 border-b">
-          <ProfileHeader recruiter={recruiter} />
-          <Button
-          size="default"
-            onClick={() => setIsEditing(true)}
-            className="text-xs cursor-pointer"
-          >
-            Edit Profile
-          </Button>
-        </div>
+    <div>
+      <div className="mx-auto max-w-[560px] space-y-8">
+        <section className="rounded-xl border bg-card p-5">
+          <div className="mb-5 flex items-center justify-between">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">Company profile</p>
+              <h1 className="mt-2 font-display text-xl font-semibold">{recruiter.companyName}</h1>
+            </div>
+            <Button size="sm" className="bg-primary text-primary-foreground hover:bg-primary/90" onClick={() => setIsEditing(true)}>
+              Save changes
+            </Button>
+          </div>
+          <div className="space-y-3 text-sm">
+            <Info label="Company email" value={recruiter.companyEmail} />
+            <Info label="Website URL" value={recruiter.website || "Not set"} />
+            <Info label="LinkedIn URL" value={recruiter.linkedinLink || "Not set"} />
+          </div>
+        </section>
 
-        {/* Alerts */}
-        <div className="space-y-3">
-          {!recruiter.verified && (
-            <div className="border border-yellow-500/30 bg-yellow-500/10 text-yellow-600 dark:text-yellow-500 px-4 py-3 rounded-lg flex items-center gap-2">
-              <svg className="w-5 h-5 shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
-              </svg>
-              <span>We've sent a verification link to your email. Please verify to create job forms.</span>
+        <section className="border-t pt-8">
+          {!recruiter.verified ? (
+            <div className="rounded-xl border border-primary/30 bg-accent p-4 text-accent-foreground">
+              <p className="font-medium">Your company email is not verified.</p>
+              <p className="mt-1 text-sm opacity-80">
+                You cannot publish forms until verified.
+              </p>
+              <Button
+                variant="outline"
+                className="mt-4 border-primary/50 bg-background text-primary hover:bg-secondary"
+                onClick={() => resendVerification.mutate()}
+                disabled={resendVerification.isPending}
+              >
+                {resendVerification.isPending ? "Sending..." : "Send verification email"}
+              </Button>
+              <p className="mt-3 text-xs text-muted-foreground">Check your inbox at {recruiter.companyEmail}</p>
+            </div>
+          ) : (
+            <div className="flex items-center gap-3 text-sm text-[#4CAF82]">
+              <CheckCircle className="size-5" />
+              <span>{recruiter.companyEmail} is verified</span>
             </div>
           )}
+        </section>
 
-          {recruiter.verified && recruiter.activeFormCount >= recruiter.formLimit && (
-            <div className="border border-red-500/30 bg-red-500/10 text-red-500 dark:text-red-400 px-4 py-3 rounded-lg flex items-center gap-2">
-              <svg className="w-5 h-5 shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-              </svg>
-              <span>You've reached your active job limit. Upgrade your plan to post more jobs.</span>
-            </div>
-          )}
-
-          {recruiter.verified && recruiter.activeFormCount < recruiter.formLimit && (
-           <div className="
-      flex items-start sm:items-center gap-3
-      border border-emerald-500/30
-      bg-emerald-500/10
-      text-emerald-700 dark:text-emerald-400
-      px-4 py-3 rounded-xl
-    ">
-
-
-      <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
-        <span className="font-medium">Profile verified</span>
-        <span className="text-sm opacity-80">
-          You can now create job forms.
-        </span>
+        <section className="border-t pt-6">
+          <button className="inline-flex items-center gap-2 text-[13px] text-destructive">
+            <Trash2 className="size-4" />
+            Delete account
+          </button>
+        </section>
       </div>
     </div>
-          )}
-        </div>
+  )
+}
 
-        {/* Cards Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <ProfileCard recruiter={recruiter} />
-          <PlanUsageCard plan={plan} />
-        </div>
-      </div>
+function Info({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="rounded-lg bg-secondary px-3 py-2">
+      <p className="text-xs text-muted-foreground">{label}</p>
+      <p className="mt-1 truncate text-foreground">{value}</p>
     </div>
   )
 }

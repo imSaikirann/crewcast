@@ -1,15 +1,16 @@
 "use client"
 
+import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { CreateRecruiterSchema } from "@/lib/validators/recruiter"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
+
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Button } from "@/components/ui/button"
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
-import { useState } from "react"
-import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { api } from "@/lib/api"
+import { CreateRecruiterSchema } from "@/lib/validators/recruiter"
 import type { Recruiter } from "../types/recruiter"
 
 type FormData = {
@@ -28,7 +29,6 @@ interface ProfileSetupFormProps {
 export default function ProfileSetupForm({ existingProfile, onSuccess, onCancel }: ProfileSetupFormProps) {
   const [error, setError] = useState<string | null>(null)
   const queryClient = useQueryClient()
-
   const {
     register,
     handleSubmit,
@@ -46,10 +46,7 @@ export default function ProfileSetupForm({ existingProfile, onSuccess, onCancel 
   })
 
   const createMutation = useMutation({
-    mutationFn: async (data: FormData) => {
-      const response = await api.post("/api/recruiters/new-account", data)
-      return response.data
-    },
+    mutationFn: async (data: FormData) => (await api.post("/api/recruiters/new-account", data)).data,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["recruiter-profile"] })
       onSuccess?.()
@@ -57,10 +54,7 @@ export default function ProfileSetupForm({ existingProfile, onSuccess, onCancel 
   })
 
   const updateMutation = useMutation({
-    mutationFn: async (data: FormData) => {
-      const response = await api.put("/api/recruiters/profile", data)
-      return response.data
-    },
+    mutationFn: async (data: FormData) => (await api.put("/api/recruiters/profile", data)).data,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["recruiter-profile"] })
       onSuccess?.()
@@ -70,138 +64,66 @@ export default function ProfileSetupForm({ existingProfile, onSuccess, onCancel 
   const onSubmit = async (data: FormData) => {
     setError(null)
     try {
-      if (existingProfile) {
-        await updateMutation.mutateAsync(data)
-      } else {
-        await createMutation.mutateAsync(data)
-      }
+      if (existingProfile) await updateMutation.mutateAsync(data)
+      else await createMutation.mutateAsync(data)
     } catch (err: any) {
-      // Handle field-specific errors
-      const fieldErrors = err.response?.data?.errors
-      if (fieldErrors) {
-        const errorMessages = Object.entries(fieldErrors)
-          .map(([field, messages]) => `${field}: ${(messages as string[]).join(", ")}`)
-          .join("\n")
-        setError(errorMessages)
-      } else {
-        const errorMessage =
-          err.response?.data?.message ||
-          err.response?.data?.error ||
-          "Failed to save profile. Please try again."
-        setError(errorMessage)
-      }
+      setError(err.response?.data?.message || err.response?.data?.error || "Failed to save profile. Please try again.")
     }
   }
 
+  const pending = isSubmitting || createMutation.isPending || updateMutation.isPending
+
   return (
-    <div className="max-w-2xl mx-auto">
-      <div className="bg-card border rounded-lg p-6 space-y-6">
+    <div className="mx-auto max-w-[560px]">
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 rounded-xl border bg-card p-5">
         <div>
-          <h2 className="text-2xl font-semibold">
-            {existingProfile ? "Edit Company Profile" : "Setup Profile for Hiring"}
-          </h2>
-          <p className="text-muted-foreground mt-1">
-            {existingProfile
-              ? "Update your company information"
-              : "Create your company profile to start posting jobs"}
-          </p>
+          <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">Company profile</p>
+          <h1 className="mt-2 font-display text-xl font-semibold">
+            {existingProfile ? "Edit profile" : "Create profile"}
+          </h1>
         </div>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
-          <div className="space-y-2">
-            <Label htmlFor="companyName">
-              Company Name <span className="text-destructive">*</span>
-            </Label>
-            <Input
-              id="companyName"
-              type="text"
-              placeholder="Acme Inc."
-              {...register("companyName")}
-              className="h-11"
-            />
-            {errors.companyName && (
-              <p className="text-sm text-destructive">{errors.companyName.message}</p>
-            )}
-          </div>
+        <ProfileField label="Company name" error={errors.companyName?.message}>
+          <Input className="cc-input" placeholder="Acme Inc." {...register("companyName")} />
+        </ProfileField>
+        <ProfileField label="Company email" error={errors.companyEmail?.message}>
+          <Input className="cc-input" type="email" placeholder="contact@acme.com" {...register("companyEmail")} />
+        </ProfileField>
+        <ProfileField label="Website URL" error={errors.website?.message}>
+          <Input className="cc-input" type="url" placeholder="https://acme.com" {...register("website")} />
+        </ProfileField>
+        <ProfileField label="LinkedIn URL" error={errors.linkedinLink?.message}>
+          <Input className="cc-input" type="url" placeholder="https://linkedin.com/company/acme" {...register("linkedinLink")} />
+        </ProfileField>
 
-          <div className="space-y-2">
-            <Label htmlFor="companyEmail">
-              Company Email <span className="text-destructive">*</span>
-            </Label>
-            <Input
-              id="companyEmail"
-              type="email"
-              placeholder="contact@acme.com"
-              {...register("companyEmail")}
-              className="h-11"
-            />
-            {errors.companyEmail && (
-              <p className="text-sm text-destructive">{errors.companyEmail.message}</p>
-            )}
-          </div>
+        {error && (
+          <Alert variant="destructive">
+            <AlertTitle>Profile not saved</AlertTitle>
+            <AlertDescription>{error}</AlertDescription>
+          </Alert>
+        )}
 
-          <div className="space-y-2">
-            <Label htmlFor="website">Website</Label>
-            <Input
-              id="website"
-              type="url"
-              placeholder="https://acme.com"
-              {...register("website")}
-              className="h-11"
-            />
-            {errors.website && (
-              <p className="text-sm text-destructive">{errors.website.message}</p>
-            )}
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="linkedinLink">LinkedIn URL</Label>
-            <Input
-              id="linkedinLink"
-              type="url"
-              placeholder="https://linkedin.com/company/acme"
-              {...register("linkedinLink")}
-              className="h-11"
-            />
-            {errors.linkedinLink && (
-              <p className="text-sm text-destructive">{errors.linkedinLink.message}</p>
-            )}
-          </div>
-
-          {error && (
-            <Alert variant="destructive">
-              <AlertTitle>Profile not saved</AlertTitle>
-              <AlertDescription className="whitespace-pre-line">
-                {error}
-              </AlertDescription>
-            </Alert>
-          )}
-
-          <div className="flex gap-3 pt-2">
-            {existingProfile && onCancel && (
-              <Button
-                type="button"
-                variant="outline"
-                onClick={onCancel}
-                disabled={isSubmitting || createMutation.isPending || updateMutation.isPending}
-              >
-                Cancel
-              </Button>
-            )}
-            <Button
-              type="submit"
-              disabled={isSubmitting || createMutation.isPending || updateMutation.isPending}
-              className={existingProfile && onCancel ? "flex-1" : "w-full"}
-            >
-              {isSubmitting || createMutation.isPending || updateMutation.isPending
-                ? "Saving..."
-                : existingProfile
-                  ? "Update Profile"
-                  : "Create Profile"}
+        <div className="flex gap-3 border-t pt-5">
+          {existingProfile && onCancel && (
+            <Button type="button" variant="ghost" onClick={onCancel} disabled={pending}>
+              Cancel
             </Button>
-          </div>
-        </form>
-      </div>
+          )}
+          <Button type="submit" disabled={pending} className="ml-auto bg-primary text-primary-foreground hover:bg-primary/90">
+            {pending ? "Saving..." : "Save changes"}
+          </Button>
+        </div>
+      </form>
+    </div>
+  )
+}
+
+function ProfileField({ label, error, children }: { label: string; error?: string; children: React.ReactNode }) {
+  return (
+    <div className="space-y-2">
+      <Label className="text-[13px] font-medium text-muted-foreground">{label}</Label>
+      {children}
+      {error && <p className="text-xs text-destructive">x {error}</p>}
     </div>
   )
 }

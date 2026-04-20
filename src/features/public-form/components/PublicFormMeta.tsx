@@ -1,100 +1,51 @@
 function expiryText(expiresAt: string) {
-  const diff = Math.ceil(
-    (new Date(expiresAt).getTime() - Date.now()) / 86400000
-  );
-
-  if (diff <= 0) return "Expired";
-  if (diff === 1) return "Expires today";
-  return `Expires in ${diff} days`;
+  return `Applications close ${new Date(expiresAt).toLocaleDateString()}`;
 }
 
 export function PublicFormMeta({ form }: any) {
   const salary =
     form.salaryMin && form.salaryMax
-      ? `${form.currency ?? ""} ${formatNumber(form.salaryMin)} – ${formatNumber(form.salaryMax)}`
+      ? `${form.currency ?? ""} ${formatNumber(form.salaryMin)} - ${formatNumber(form.salaryMax)} / month`
       : null;
 
   return (
-    <div className="space-y-10">
-
-      {/* ───────── Hero ───────── */}
-      <div className="space-y-3">
-        <h1 className="text-3xl sm:text-4xl font-semibold tracking-tight">
-          {form.title}
-        </h1>
-
-        <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-muted-foreground">
-          {form.expiresAt && <span>{expiryText(form.expiresAt)}</span>}
-          {form.specialization && <span>• {form.specialization}</span>}
-          {form.location && <span>• {form.location}</span>}
-          {form.workMode && <span>• {formatWorkMode(form.workMode)}</span>}
-        </div>
-      </div>
-
-      {/* ───────── Highlights ───────── */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-        {salary && <MetaItem label="Pay" value={salary} />}
-        {form.roleType && <MetaItem label="Role type" value={formatRoleType(form.roleType)} />}
-        {form.experience && <MetaItem label="Experience" value={formatExperience(form.experience)} />}
-        {form.contractDurationMonths && (
-          <MetaItem
-            label="Contract"
-            value={`${form.contractDurationMonths} months`}
-          />
-        )}
-        {form.workMode && <MetaItem label="Work mode" value={formatWorkMode(form.workMode)} />}
-        {form.location && <MetaItem label="Location" value={form.location} />}
-      </div>
-
-      {/* ───────── Tech Stack ───────── */}
-      {form.techStack?.length > 0 && (
-        <div className="space-y-2">
-          <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
-            Tech stack
-          </h2>
-          <div className="flex flex-wrap gap-2">
-            {form.techStack.map((tech: string) => (
-              <span
-                key={tech}
-                className="px-3 py-1 text-sm rounded-full bg-muted border"
-              >
-                {tech}
-              </span>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* ───────── Description ───────── */}
-      {form.description && (
-        <div className="space-y-2">
-          <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
-            Job description
-          </h2>
-
-          <p className="text-base leading-relaxed text-foreground/90 max-w-prose">
-            {form.description}
-          </p>
-        </div>
-      )}
-    </div>
-  );
-}
-
-/* ---------- UI ---------- */
-
-function MetaItem({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="rounded-xl border bg-background p-4 shadow-sm">
-      <p className="text-xs uppercase tracking-wide text-muted-foreground">
-        {label}
+    <section className="rounded-xl border bg-card p-5">
+      <p className="text-[13px] text-muted-foreground">
+        {form.recruiter?.companyName || "Confidential Employer"}
       </p>
-      <p className="text-base font-medium mt-1">{value}</p>
-    </div>
+      <h1 className="mt-2 font-display text-2xl font-semibold tracking-tight">
+        {form.title}
+      </h1>
+
+      <div className="mt-4 flex flex-wrap gap-2">
+        {form.domain?.title && <Pill>{form.domain.title}</Pill>}
+        {form.workMode && <Pill>{formatWorkMode(form.workMode)}</Pill>}
+        {form.experience && <Pill>{formatExperience(form.experience)}</Pill>}
+        {form.location && <Pill>{form.location}</Pill>}
+      </div>
+
+      {salary && <p className="mt-4 text-sm text-muted-foreground">{salary}</p>}
+
+      {form.description && (
+        <p className="mt-5 line-clamp-4 text-sm leading-6 text-foreground/90">
+          {form.description}
+        </p>
+      )}
+
+      {form.expiresAt && (
+        <p className="mt-4 text-xs text-muted-foreground">{expiryText(form.expiresAt)}</p>
+      )}
+    </section>
   );
 }
 
-/* ---------- Formatters ---------- */
+function Pill({ children }: { children: React.ReactNode }) {
+  return (
+    <span className="rounded-full bg-secondary px-2.5 py-1 text-xs text-muted-foreground">
+      {children}
+    </span>
+  );
+}
 
 function formatWorkMode(mode: string) {
   if (mode === "REMOTE") return "Remote";
@@ -103,18 +54,10 @@ function formatWorkMode(mode: string) {
   return mode;
 }
 
-function formatRoleType(type: string) {
-  if (type === "FULL_TIME") return "Full-time";
-  if (type === "PART_TIME") return "Part-time";
-  if (type === "CONTRACT") return "Contract";
-  if (type === "INTERN") return "Internship";
-  return type;
-}
-
 function formatExperience(exp: string) {
-  if (exp === "JUNIOR") return "Junior (0–2 yrs)";
-  if (exp === "MID") return "Mid (2–5 yrs)";
-  if (exp === "SENIOR") return "Senior (5+ yrs)";
+  if (exp === "JUNIOR") return "Junior";
+  if (exp === "MID") return "Mid";
+  if (exp === "SENIOR") return "Senior";
   return exp;
 }
 

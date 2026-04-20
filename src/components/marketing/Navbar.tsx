@@ -52,13 +52,6 @@ export default function Navbar() {
 
   return (
     <>
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&display=swap');
-        .nav-mono { font-family: 'IBM Plex Mono', monospace; }
-        @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
-        .cursor-blink { animation: blink 1s step-end infinite; }
-      `}</style>
-
       <nav
         className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${
           hidden ? "-translate-y-full" : "translate-y-0"

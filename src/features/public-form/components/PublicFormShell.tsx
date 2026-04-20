@@ -1,55 +1,49 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useForm, FormProvider } from "react-hook-form";
+import { FormProvider, useForm } from "react-hook-form";
 import { usePublicForm } from "@/features/hooks/usePublicForm";
 import { getPublicFormStorageKey } from "../lib/storage";
 
-import { PublicFormHeader } from "./PublicFormHeader";
-import { PublicFormMeta } from "./PublicFormMeta";
 import { PublicFormFields } from "./PublicFormFields";
+import { PublicFormMeta } from "./PublicFormMeta";
 import { PublicFormReview } from "./PublicFormReview";
 import { PublicFormSuccess } from "./PublicFormSuccess";
-import { PublicFormFooter } from "./PublicFormFooter";
 
 export function PublicFormShell({ form }: { form: any }) {
   const { step, setStep, submit, loading, error } = usePublicForm();
   const methods = useForm();
   const [hydrated, setHydrated] = useState(false);
 
-  // 1. Restore
   useEffect(() => {
     const saved = localStorage.getItem(getPublicFormStorageKey(form.publicId));
-    if (saved) {
-      methods.reset(JSON.parse(saved));
-    }
+    if (saved) methods.reset(JSON.parse(saved));
     setHydrated(true);
-  }, [form.publicId]);
+  }, [form.publicId, methods]);
 
-  // 2. Persist (only after restore)
   useEffect(() => {
     if (!hydrated) return;
 
     const sub = methods.watch((values) => {
-      localStorage.setItem(
-        getPublicFormStorageKey(form.publicId),
-        JSON.stringify(values)
-      );
+      localStorage.setItem(getPublicFormStorageKey(form.publicId), JSON.stringify(values));
     });
 
     return () => sub.unsubscribe();
   }, [hydrated, methods, form.publicId]);
 
-  if(step === "done")
-  {
+  if (step === "done") {
     localStorage.removeItem(getPublicFormStorageKey(form.publicId));
   }
 
   return (
     <FormProvider {...methods}>
-      <div className="min-h-screen bg-background">
-        <div className="max-w-3xl mx-auto px-4 py-10 space-y-12">
-          <PublicFormHeader recruiter={form.recruiter} />
+      <main className="min-h-screen bg-background px-4 py-8">
+        <div className="mx-auto max-w-[600px] space-y-6">
+          <header className="flex items-center justify-between text-xs text-muted-foreground">
+            <span className="font-display font-semibold text-foreground">Crewcast</span>
+            <span>Powered by Crewcast</span>
+          </header>
+
           <PublicFormMeta form={form} />
 
           {step === "form" && (
@@ -72,9 +66,7 @@ export function PublicFormShell({ form }: { form: any }) {
 
           {step === "done" && <PublicFormSuccess />}
         </div>
-
-        <PublicFormFooter formPublicId={form.publicId} />
-      </div>
+      </main>
     </FormProvider>
   );
 }

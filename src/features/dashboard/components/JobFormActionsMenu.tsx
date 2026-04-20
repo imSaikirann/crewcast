@@ -7,7 +7,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { HugeIcon } from "@/utils/hugeicons";
 import Link from "next/link";
 
 export function JobFormActionsMenu({ publicId }: { publicId: string }) {
@@ -20,37 +19,24 @@ export function JobFormActionsMenu({ publicId }: { publicId: string }) {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" size="icon">
-          <HugeIcon name="more-vertical" />
+          <span className="text-lg leading-none">...</span>
         </Button>
       </DropdownMenuTrigger>
 
       <DropdownMenuContent align="end">
-        <DropdownMenuItem onClick={copyLink}>
-          <HugeIcon name="link" className="mr-2" />
-          Copy link
+        <DropdownMenuItem disabled>Edit</DropdownMenuItem>
+        <DropdownMenuItem onClick={copyLink}>Copy link</DropdownMenuItem>
+        <DropdownMenuItem disabled>Toggle status</DropdownMenuItem>
+
+        <DropdownMenuItem asChild>
+          <Link href={`/dashboard/submissions/${publicId}`}>Submissions</Link>
         </DropdownMenuItem>
 
         <DropdownMenuItem asChild>
-          <Link href={`/dashboard/submissions/${publicId}`}>
-            <HugeIcon name="menu" className="mr-2" />
-            Submissions
-          </Link>
-        </DropdownMenuItem>
-
-        <DropdownMenuItem asChild>
-          <Link href={`/form/${publicId}`}>
-            <HugeIcon name="menu" className="mr-2" />
-            View
-          </Link>
-        </DropdownMenuItem>
-
-        <DropdownMenuItem disabled>
-          <HugeIcon name="edit" className="mr-2" />
-          Edit
+          <Link href={`/form/${publicId}`}>View public form</Link>
         </DropdownMenuItem>
 
         <DropdownMenuItem className="text-destructive" disabled>
-          <HugeIcon name="cancel" className="mr-2" />
           Delete
         </DropdownMenuItem>
       </DropdownMenuContent>

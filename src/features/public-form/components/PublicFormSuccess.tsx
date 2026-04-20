@@ -1,15 +1,12 @@
-import { CheckCircle } from "lucide-react";
-
 export function PublicFormSuccess() {
-
-
   return (
-    <div className="py-20 text-center space-y-4">
-      <CheckCircle className="w-14 h-14 mx-auto text-green-600" />
-      <h2 className="text-2xl font-semibold">Application submitted</h2>
-      <p className="text-muted-foreground">
-        Your response has been recorded.
-      </p>
+    <div className="rounded-xl border bg-card px-6 py-20 text-center">
+      <svg className="mx-auto mb-5 h-16 w-16 text-[#4CAF82]" viewBox="0 0 64 64" fill="none">
+        <circle cx="32" cy="32" r="24" stroke="currentColor" strokeWidth="2" />
+        <path d="M21 33.5 28.5 41 44 24" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+      <h2 className="font-display text-[22px] font-semibold">Application submitted!</h2>
+      <p className="mt-2 text-sm text-muted-foreground">We'll be in touch soon.</p>
     </div>
   );
 }

@@ -4,44 +4,41 @@ import type { JobForm } from "../types/dashboard.types";
 import { JobFormActionsMenu } from "./JobFormActionsMenu";
 
 export function JobFormRow({ form }: { form: JobForm }) {
+  const expired = new Date(form.expiresAt) < new Date();
+  const status = form.isActive ? "Active" : expired ? "Expired" : "Draft";
+
   return (
-    <div className="grid gap-4 rounded-lg border bg-background p-4 transition hover:bg-muted/30 lg:grid-cols-[1fr_auto]">
-      <div className="min-w-0 space-y-3">
-        <div className="flex flex-wrap items-center gap-2">
-          <h3 className="truncate text-base font-semibold">{form.title}</h3>
-          {form.isActive && (
-            <Badge className="bg-emerald-600 text-white">Active</Badge>
-          )}
-          {!form.isActive && (
-            <Badge variant="secondary">{form.status.toLowerCase()}</Badge>
-          )}
-        </div>
-
-        <p className="max-w-2xl text-sm text-muted-foreground">
-          {form.description}
+    <div className="grid items-center gap-3 rounded-xl border bg-card px-4 py-3 text-sm transition duration-120 hover:-translate-y-0.5 hover:bg-secondary/60 md:grid-cols-[minmax(0,1.5fr)_auto_auto_auto_auto_36px]">
+      <div className="min-w-0">
+        <h3 className="truncate font-semibold text-foreground">{form.title}</h3>
+        <p className="mt-0.5 truncate text-xs text-muted-foreground md:hidden">
+          {form.domainTitle || "General"} · {form.submissions} applications · {formatDate(form.createdAt)}
         </p>
-
-        <div className="grid gap-2 text-xs text-muted-foreground sm:grid-cols-2 xl:grid-cols-5">
-          <Metric label="Fields" value={form.fieldsCount} />
-          <Metric label="Views" value={form.views} />
-          <Metric label="Applications" value={form.submissions} />
-          <Metric label="Created" value={formatDate(form.createdAt)} />
-          <Metric label="Expires" value={formatDate(form.expiresAt)} />
-        </div>
       </div>
-
-      <div className="flex items-center justify-end">
+      <Badge className="w-fit rounded-full border-0 bg-accent px-2.5 py-1 text-[11px] text-accent-foreground hover:bg-accent">
+        {form.domainTitle || "General"}
+      </Badge>
+      <StatusBadge status={status} />
+      <p className="hidden text-muted-foreground md:block">{form.submissions} apps</p>
+      <p className="hidden text-muted-foreground md:block">{formatDate(form.createdAt)}</p>
+      <div className="flex justify-end">
         <JobFormActionsMenu publicId={form.publicId} />
       </div>
     </div>
   );
 }
 
-function Metric({ label, value }: { label: string; value: string | number }) {
+function StatusBadge({ status }: { status: "Active" | "Draft" | "Expired" }) {
+  const className =
+    status === "Active"
+      ? "bg-[#4CAF82]/10 text-[#4CAF82]"
+      : status === "Expired"
+        ? "bg-destructive/10 text-destructive"
+        : "bg-muted text-muted-foreground";
+
   return (
-    <div className="rounded-md bg-muted/60 px-3 py-2">
-      <p className="font-medium text-foreground">{value}</p>
-      <p>{label}</p>
-    </div>
+    <span className={`w-fit rounded-full px-2.5 py-1 text-[11px] font-medium ${className}`}>
+      {status}
+    </span>
   );
 }

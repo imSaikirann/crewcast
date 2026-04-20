@@ -1,5 +1,5 @@
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import Breadcrumbs from "@/components/common/Breadcrumbs";
+import AppPage from "@/components/app/AppPage";
 import ApplicationsView from "@/features/submissions/components/ApplicationsView";
 import { prisma } from "@/lib/prisma";
 import { getServerSession } from "next-auth";
@@ -75,32 +75,28 @@ export default async function Page({
   }));
 
   return (
-    <div className="min-h-screen">
-      <div className="mx-auto max-w-7xl space-y-8 px-4 py-6 sm:px-6 lg:px-8">
-        <Breadcrumbs
-          items={[
-            { label: "Dashboard", href: "/dashboard" },
-            { label: form.title },
-          ]}
-        />
-
-        <ApplicationsView
-          data={data}
-          form={{
-            title: form.title,
-            description: form.description,
-            publicId: form.publicId,
-            viewCount: form.viewCount,
-            status: form.status,
-            expiresAt: form.expiresAt.toISOString(),
-            techStack: form.techStack,
-            workMode: form.workMode,
-            experience: form.experience,
-            roleType: form.roleType,
-            location: form.location,
-          }}
-        />
-      </div>
-    </div>
+    <AppPage
+      breadcrumbs={[
+        { label: "Dashboard", href: "/dashboard" },
+        { label: form.title },
+      ]}
+    >
+      <ApplicationsView
+        data={data}
+        form={{
+          title: form.title,
+          description: form.description,
+          publicId: form.publicId,
+          viewCount: form.viewCount,
+          status: form.status,
+          expiresAt: form.expiresAt.toISOString(),
+          techStack: form.techStack,
+          workMode: form.workMode,
+          experience: form.experience,
+          roleType: form.roleType,
+          location: form.location,
+        }}
+      />
+    </AppPage>
   );
 }

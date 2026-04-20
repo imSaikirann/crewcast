@@ -3,9 +3,8 @@ import { prisma } from "@/lib/prisma"
 
 import { getServerSession } from "next-auth"
 import { CreateRecruiterSchema } from "@/lib/validators/recruiter"
-import { generateToken, hashToken } from "@/lib/tokens"
-import { sendRecruiterVerificationEmail } from "@/lib/resend/email"
 import { authOptions } from "../../auth/[...nextauth]/route"
+import { createAndSendRecruiterVerification } from "@/lib/recruiterVerification"
 
 export async function POST(req: NextRequest) {
   try {
@@ -26,9 +25,6 @@ export async function POST(req: NextRequest) {
 
     const { companyName, website, linkedinLink,companyEmail } = parsed.data
 
-    const rawToken = generateToken()
-    const tokenHash = hashToken(rawToken)
-
     const recruiter = await prisma.$transaction(async (tx) => {
       const exists = await tx.recruiter.findUnique({
         where: { userId: session.user.id },
@@ -46,19 +42,10 @@ export async function POST(req: NextRequest) {
         },
       })
 
-      await tx.emailVerification.create({
-        data: {
-          userId: session.user.id,
-          email: companyEmail,
-          tokenHash,
-          expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24),
-        },
-      })
-
       return rec
     })
 
-    await sendRecruiterVerificationEmail(companyEmail, rawToken)
+    await createAndSendRecruiterVerification(session.user.id, companyEmail)
 
     return NextResponse.json(
       { message: "Verification email sent", recruiter },

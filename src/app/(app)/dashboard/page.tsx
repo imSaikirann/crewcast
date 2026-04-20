@@ -1,4 +1,5 @@
 import DashboardScreen from "@/features/dashboard/screens/DashboardScreen";
+import AppPage from "@/components/app/AppPage";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { ROLES } from "@/lib/constants/roles";
 import { prisma } from "@/lib/prisma";
@@ -18,7 +19,12 @@ export default async function Page() {
 
   const recruiter = await prisma.recruiter.findUnique({
     where: { userId: session.user.id },
-    select: { id: true },
+    select: {
+      id: true,
+      companyName: true,
+      companyEmail: true,
+      verified: true,
+    },
   });
 
   if (!recruiter) {
@@ -37,6 +43,9 @@ export default async function Page() {
       createdAt: true,
       expiresAt: true,
       viewCount: true,
+      domain: {
+        select: { title: true },
+      },
       _count: {
         select: { applications: true },
       },
@@ -57,7 +66,12 @@ export default async function Page() {
     submissions: form._count.applications,
     newSubmissions: form._count.applications,
     views: form.viewCount,
+    domainTitle: form.domain?.title,
   }));
 
-  return <DashboardScreen forms={dashboardForms} />;
+  return (
+    <AppPage breadcrumbs={[{ label: "Dashboard" }]}>
+      <DashboardScreen forms={dashboardForms} recruiter={recruiter} />
+    </AppPage>
+  );
 }

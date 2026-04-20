@@ -1,8 +1,6 @@
 import { useState, useEffect } from "react"
-import { useRouter, useSearchParams } from "next/navigation"
-import axios from "axios"
-import { FieldType, FormField } from "../types/types"
-import { RoleType } from "@prisma/client"
+import { useSearchParams } from "next/navigation"
+import { FieldType, FormField, JobFormDetails } from "../types/types"
 import { nanoid } from "nanoid"
 import { useDomainDefaultForm } from "./useDominDefaults"
 import { useCreateForm } from "./useCreateForm"
@@ -10,33 +8,12 @@ import { toast } from "@/lib/toast"
 import { withRequiredGitHubField } from "@/lib/formFields"
 
 /* ---------------------------------------------
-   Step-1 business model
----------------------------------------------- */
-export interface JobFormDetails {
-  formTitle: string
-  formDescription: string
-  expiresAt: string
-  domainId: string
-  roleType: string
-  experience: string
-  workMode: string
-  location: string
-  specialization: string
-  techStack: string[]
-  salaryMin: number
-  salaryMax: number
-  currency: string
-  contractDurationMonths: number
-}
-
-/* ---------------------------------------------
    Hook
 ---------------------------------------------- */
 export function useFormBuilder() {
-  const router = useRouter()
   const params = useSearchParams()
   const domainId = params.get("domain")
-const createFormMutation = useCreateForm()
+  const createFormMutation = useCreateForm()
   const { data: defaults } = useDomainDefaultForm(domainId)
 
   /* -------------------------

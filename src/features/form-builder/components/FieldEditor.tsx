@@ -1,7 +1,6 @@
 "use client"
 
 import React from "react"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
@@ -35,9 +34,9 @@ export function FieldEditor({
   }
 
   return (
-    <Card>
-      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4 gap-2">
-        <CardTitle className="text-base sm:text-lg truncate flex-1">{field.label || "Untitled Field"}</CardTitle>
+    <div className="rounded-lg border bg-card p-4 shadow-xs sm:p-5">
+      <div className="flex flex-row items-center justify-between gap-2 pb-4">
+        <h3 className="min-w-0 flex-1 truncate text-base font-semibold sm:text-lg">{field.label || "Untitled Field"}</h3>
         <Button
           variant="ghost"
           size="icon"
@@ -48,8 +47,8 @@ export function FieldEditor({
         >
           <HugeIcon name={locked ? "lock" : "delete"} className="h-4 w-4" />
         </Button>
-      </CardHeader>
-      <CardContent className="space-y-4">
+      </div>
+      <div className="space-y-4">
         <div>
           <Label>Field Label *</Label>
           <Input
@@ -140,7 +139,7 @@ export function FieldEditor({
             )}
           </div>
         )}
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   )
 }

@@ -11,4 +11,11 @@ export type JobForm = {
   submissions: number;
   newSubmissions: number;
   views: number;
+  domainTitle?: string;
+};
+
+export type DashboardRecruiter = {
+  companyName: string;
+  companyEmail: string;
+  verified: boolean;
 };

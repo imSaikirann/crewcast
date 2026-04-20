@@ -1,10 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { prisma } from "@/lib/prisma";
-import { redis } from "@/lib/redis";
-import { cacheKeys } from "@/lib/cacheKeys";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { CreateRecruiterSchema } from "@/lib/validators/recruiter";
+import { createAndSendRecruiterVerification } from "@/lib/recruiterVerification";
 
 export async function GET(
   req: NextRequest,
@@ -76,8 +75,8 @@ export async function PUT(
       return NextResponse.json({ error: "Profile not found" }, { status: 404 });
     }
 
-    // If email changed, reset verification status
-    const verified = existingProfile.companyEmail === companyEmail 
+    const emailChanged = existingProfile.companyEmail !== companyEmail;
+    const verified = !emailChanged
       ? existingProfile.verified 
       : false;
 
@@ -106,6 +105,10 @@ export async function PUT(
         createdAt: true,
       },
     });
+
+    if (emailChanged) {
+      await createAndSendRecruiterVerification(session.user.id!, companyEmail);
+    }
 
     return NextResponse.json(updatedProfile);
   } catch (e) {

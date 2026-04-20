@@ -17,7 +17,7 @@ export function Providers({ children }: { children: ReactNode }) {
           <Toaster 
             richColors 
             closeButton 
-            position="top-right"
+            position="bottom-right"
             expand={true}
             duration={4000}
             toastOptions={{
