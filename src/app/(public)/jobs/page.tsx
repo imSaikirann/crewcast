@@ -5,11 +5,13 @@ import { prisma } from "@/lib/prisma";
 export const dynamic = "force-dynamic";
 
 export default async function JobsPage() {
+  const today = startOfToday();
+
   const jobs = await prisma.recruiterForm.findMany({
     where: {
       isFlagged: false,
       status: { not: "ARCHIVED" },
-      expiresAt: { gt: new Date() },
+      expiresAt: { gte: today },
     },
     select: {
       id: true,
@@ -117,4 +119,9 @@ function BoardStat({ label, value }: { label: string; value: number }) {
       <p className="text-xs text-muted-foreground">{label}</p>
     </div>
   );
+}
+
+function startOfToday() {
+  const now = new Date();
+  return new Date(now.getFullYear(), now.getMonth(), now.getDate());
 }

@@ -5,6 +5,7 @@ import { useSession, signIn, signOut } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { CrewcastWordmark } from "@/components/brand/CrewcastLogo";
 import { DarkModeToggle } from "@/components/marketing/DarkModeToggle";
 import { HugeIcon } from "@/utils/hugeicons";
 
@@ -69,8 +70,8 @@ export default function Navbar() {
 
             {/* Logo */}
             <Link href="/" className="group flex items-center gap-2.5">
-              <GitHubMark />
-              <span className="nav-mono text-lg font-bold tracking-tight text-[var(--landing-text)]">
+              <CrewcastWordmark markClassName="h-11 w-40 rounded-md" />
+              <span className="hidden">
                 crewcast<span className="cursor-blink text-[var(--landing-muted)]">▋</span>
               </span>
             </Link>

@@ -10,11 +10,13 @@ export async function GET() {
       return NextResponse.json(JSON.parse(cached));
     }
 
+    const today = startOfToday();
+
     const jobs = await prisma.recruiterForm.findMany({
       where: {
         isFlagged: false,
         status: { not: "ARCHIVED" },
-        expiresAt: { gt: new Date() },
+        expiresAt: { gte: today },
       },
       select: {
         id: true,
@@ -83,4 +85,9 @@ export async function GET() {
     console.error(e);
     return NextResponse.json({ error: "Server error" }, { status: 500 });
   }
+}
+
+function startOfToday() {
+  const now = new Date();
+  return new Date(now.getFullYear(), now.getMonth(), now.getDate());
 }

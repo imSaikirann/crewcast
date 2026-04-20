@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
+import { CrewcastMark } from "@/components/brand/CrewcastLogo";
 
 const GitHubMark = ({ className = "h-4 w-4" }: { className?: string }) => (
   <svg viewBox="0 0 16 16" className={`fill-current ${className}`} aria-hidden="true">
@@ -15,7 +16,7 @@ export default function FinalCTA() {
         <div className="relative overflow-hidden rounded-sm border border-[var(--landing-border)] bg-[var(--landing-accent-soft)] px-8 py-14 sm:px-12 lg:px-16">
           {/* Corner decoration */}
           <div className="pointer-events-none absolute right-0 top-0 h-32 w-32 opacity-10">
-            <GitHubMark className="h-full w-full text-[var(--landing-text)]" />
+            <CrewcastMark className="h-full w-full rounded-sm bg-white/90" />
           </div>
 
           <div className="grid gap-10 lg:grid-cols-[1fr_auto] lg:items-center">

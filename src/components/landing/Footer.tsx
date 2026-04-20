@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { CrewcastWordmark } from "@/components/brand/CrewcastLogo";
 
 const GitHubMark = ({ className = "h-4 w-4" }: { className?: string }) => (
   <svg viewBox="0 0 16 16" className={`fill-current ${className}`} aria-hidden="true">
@@ -31,10 +32,7 @@ export default function Footer() {
         <div className="grid gap-12 lg:grid-cols-[1.5fr_repeat(3,1fr)]">
           {/* Brand */}
           <div className="space-y-4">
-            <div className="flex items-center gap-2">
-              <GitHubMark className="h-5 w-5 text-[var(--landing-text)]" />
-              <span className="font-mono-hero text-lg font-bold text-[var(--landing-text)]">Crewcast</span>
-            </div>
+            <CrewcastWordmark />
             <p className="font-body max-w-xs text-sm leading-6 text-[var(--landing-subtle)]">
               GitHub-first hiring forms for software teams. Score real engineering work, not just resumes.
             </p>
