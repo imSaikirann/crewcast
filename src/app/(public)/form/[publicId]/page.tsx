@@ -40,6 +40,7 @@ if (cached) {
       fields: true,
       createdAt: true,
       expiresAt: true,
+      openings: true,
 
       // Hiring metadata
       roleType: true,

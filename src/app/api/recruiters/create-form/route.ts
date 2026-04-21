@@ -28,6 +28,7 @@ export async function POST(req: NextRequest) {
       location,
       specialization,
       techStack,
+      openings,
       salaryMin,
       salaryMax,
       currency,
@@ -123,6 +124,10 @@ export async function POST(req: NextRequest) {
 
     // Ensure specialization is always provided (required field in Prisma)
     const finalSpecialization = specialization ?? "";
+    const finalOpenings =
+      Number.isFinite(Number(openings)) && Number(openings) > 0
+        ? Math.floor(Number(openings))
+        : 1;
 
     const createdForm = await prisma.recruiterForm.create({
       data: {
@@ -138,6 +143,7 @@ export async function POST(req: NextRequest) {
         location,
         specialization: finalSpecialization,
         techStack: normalizeTechStack(techStack),
+        openings: finalOpenings,
         salaryMin,
         salaryMax,
         currency,

@@ -7,6 +7,10 @@ export function usePublicForm() {
   const [step, setStep] = useState<PublicFormStep>("form");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [result, setResult] = useState<{
+    trackingUrl?: string;
+    applicationId?: string;
+  } | null>(null);
 
   const submit = async (publicId: string, values: Record<string, any>) => {
     try {
@@ -27,6 +31,10 @@ export function usePublicForm() {
 
       // Clear draft
       localStorage.removeItem(getPublicFormStorageKey(publicId));
+      setResult({
+        trackingUrl: data.trackingUrl,
+        applicationId: data.id,
+      });
 
       setStep("done");
     } catch (e: any) {
@@ -42,5 +50,6 @@ export function usePublicForm() {
     submit,
     loading,
     error,
+    result,
   };
 }

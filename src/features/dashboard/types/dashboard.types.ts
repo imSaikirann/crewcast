@@ -9,6 +9,8 @@ export type JobForm = {
   createdAt: string;
   expiresAt: string;
   submissions: number;
+  openings: number;
+  hiredCount: number;
   newSubmissions: number;
   views: number;
   domainTitle?: string;

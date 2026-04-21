@@ -1,25 +1,17 @@
-type GitHubUser = {
-  login: string;
-  public_repos: number;
-  followers: number;
-  following: number;
-  created_at: string;
-};
-
-type GitHubRepo = {
-  name: string;
-  fork: boolean;
-  stargazers_count: number;
-  forks_count: number;
-  language: string | null;
-  pushed_at: string | null;
-  updated_at: string | null;
-};
+import { scoreGitHubProfile as scoreGitHubProfileWithGraphQL } from "@/services/githubScore";
 
 export type GitHubScore = {
   totalScore: number;
   breakdown: {
     github: number;
+    skillsMatch: {
+      score: number;
+      percentage: number;
+      required: string[];
+      matched: string[];
+      missing: string[];
+      extra: string[];
+    };
     profile: {
       username: string | null;
       publicRepos: number;
@@ -35,6 +27,10 @@ export type GitHubScore = {
     };
     notes: string[];
   };
+};
+
+type ScoreOptions = {
+  requiredTechStack?: string[];
 };
 
 const GITHUB_FIELD_HINTS = ["github", "git hub", "github username", "github profile"];
@@ -75,83 +71,145 @@ export function hasGitHubField(fields: unknown) {
   });
 }
 
-export async function scoreGitHubProfile(username: string | null): Promise<GitHubScore> {
+export async function scoreGitHubProfile(
+  username: string | null,
+  options: ScoreOptions = {}
+): Promise<GitHubScore> {
   if (!username) {
     return emptyScore("No GitHub profile was provided.");
   }
 
   try {
-    const [userRes, reposRes] = await Promise.all([
-      fetch(`https://api.github.com/users/${username}`, {
-        headers: githubHeaders(),
-        next: { revalidate: 3600 },
-      }),
-      fetch(`https://api.github.com/users/${username}/repos?per_page=100&sort=updated`, {
-        headers: githubHeaders(),
-        next: { revalidate: 3600 },
-      }),
-    ]);
+    const graphQLScore = await scoreGitHubProfileWithGraphQL(username);
+    const skillsMatch = calculateSkillsMatch(
+      options.requiredTechStack,
+      graphQLScore.languages
+    );
+    const githubScore = Math.round(graphQLScore.totalScore * 0.45);
+    const totalScore = Math.min(
+      100,
+      Math.round(skillsMatch.score + githubScore)
+    );
+    const notes = [...graphQLScore.notes];
 
-    if (!userRes.ok) {
-      return emptyScore(`GitHub user "${username}" could not be found.`);
+    if (skillsMatch.required.length > 0) {
+      if (skillsMatch.missing.length > 0) {
+        notes.push(
+          `Missing required GitHub language signals: ${skillsMatch.missing.join(", ")}`
+        );
+      }
+      if (skillsMatch.matched.length > 0) {
+        notes.push(
+          `Matched required skills from GitHub: ${skillsMatch.matched.join(", ")}`
+        );
+      }
     }
 
-    const user = (await userRes.json()) as GitHubUser;
-    const repos = reposRes.ok ? ((await reposRes.json()) as GitHubRepo[]) : [];
-    const originalRepos = repos.filter((repo) => !repo.fork);
-    const now = Date.now();
-    const sixMonthsMs = 1000 * 60 * 60 * 24 * 183;
-    const recentRepos = originalRepos.filter((repo) => {
-      const date = repo.pushed_at || repo.updated_at;
-      return date ? now - new Date(date).getTime() <= sixMonthsMs : false;
-    });
-
-    const stars = originalRepos.reduce((sum, repo) => sum + repo.stargazers_count, 0);
-    const forks = originalRepos.reduce((sum, repo) => sum + repo.forks_count, 0);
-    const languages = originalRepos.reduce<Record<string, number>>((acc, repo) => {
-      if (!repo.language) return acc;
-      acc[repo.language] = (acc[repo.language] ?? 0) + 1;
-      return acc;
-    }, {});
-
-    const accountAgeYears = Math.max(
-      0,
-      (now - new Date(user.created_at).getTime()) / (1000 * 60 * 60 * 24 * 365)
-    );
-
-    const repoScore = Math.min(originalRepos.length * 2, 25);
-    const activityScore = Math.min(recentRepos.length * 5, 25);
-    const impactScore = Math.min(stars * 1.5 + forks * 2 + user.followers, 25);
-    const breadthScore = Math.min(Object.keys(languages).length * 4, 15);
-    const maturityScore = Math.min(accountAgeYears * 2, 10);
-    const totalScore = Math.round(repoScore + activityScore + impactScore + breadthScore + maturityScore);
-
     return {
-      totalScore: Math.min(totalScore, 100),
+      totalScore,
       breakdown: {
-        github: Math.min(totalScore, 100),
-        profile: {
-          username: user.login,
-          publicRepos: user.public_repos,
-          followers: user.followers,
-          accountAgeYears: Number(accountAgeYears.toFixed(1)),
-        },
-        languages,
-        signals: {
-          originalRepos: originalRepos.length,
-          recentRepos: recentRepos.length,
-          stars,
-          forks,
-        },
-        notes: reposRes.ok
-          ? []
-          : ["GitHub repositories could not be fetched, so the score is based on profile data only."],
+        github: graphQLScore.totalScore,
+        skillsMatch,
+        profile: graphQLScore.profile,
+        languages: graphQLScore.languages,
+        signals: graphQLScore.signals,
+        notes,
       },
     };
   } catch {
     return emptyScore("GitHub scoring is temporarily unavailable.");
   }
 }
+
+function calculateSkillsMatch(
+  requiredTechStack: string[] | undefined,
+  languages: Record<string, number>
+) {
+  const required = normalizeUnique(requiredTechStack ?? []);
+  const githubSkills = normalizeUnique(Object.keys(languages));
+
+  if (required.length === 0) {
+    return {
+      score: 55,
+      percentage: 100,
+      required,
+      matched: [],
+      missing: [],
+      extra: githubSkills,
+    };
+  }
+
+  const matched = required.filter((skill) =>
+    githubSkills.some((githubSkill) => skillsMatch(skill, githubSkill))
+  );
+  const missing = required.filter((skill) => !matched.includes(skill));
+  const extra = githubSkills.filter(
+    (githubSkill) =>
+      !required.some((requiredSkill) => skillsMatch(requiredSkill, githubSkill))
+  );
+  const percentage = Math.round((matched.length / required.length) * 100);
+
+  return {
+    score: Math.round(percentage * 0.55),
+    percentage,
+    required,
+    matched,
+    missing,
+    extra,
+  };
+}
+
+function normalizeUnique(values: string[]) {
+  return Array.from(
+    new Set(
+      values
+        .map((value) => normalizeSkillName(value))
+        .filter((value): value is string => Boolean(value))
+    )
+  );
+}
+
+function normalizeSkillName(value: string) {
+  const normalized = value.trim().toLowerCase();
+  if (!normalized) return null;
+  return SKILL_ALIASES[normalized] ?? normalized;
+}
+
+function skillsMatch(requiredSkill: string, githubSkill: string) {
+  return requiredSkill === githubSkill;
+}
+
+const SKILL_ALIASES: Record<string, string> = {
+  js: "javascript",
+  jsx: "javascript",
+  ts: "typescript",
+  tsx: "typescript",
+  node: "javascript",
+  "node.js": "javascript",
+  nodejs: "javascript",
+  reactjs: "javascript",
+  react: "javascript",
+  next: "typescript",
+  "next.js": "typescript",
+  nextjs: "typescript",
+  vue: "javascript",
+  "vue.js": "javascript",
+  angular: "typescript",
+  py: "python",
+  golang: "go",
+  postgres: "sql",
+  postgresql: "sql",
+  mysql: "sql",
+  mongodb: "javascript",
+  mongo: "javascript",
+  tailwind: "css",
+  "tailwind css": "css",
+  html5: "html",
+  css3: "css",
+  csharp: "c#",
+  dotnet: "c#",
+  ".net": "c#",
+};
 
 function normalizeGitHubUsername(value: unknown) {
   if (typeof value !== "string") return null;
@@ -163,23 +221,19 @@ function normalizeGitHubUsername(value: unknown) {
   return /^[A-Za-z0-9-]{1,39}$/.test(username) ? username : null;
 }
 
-function githubHeaders() {
-  const headers: Record<string, string> = {
-    Accept: "application/vnd.github+json",
-  };
-
-  if (process.env.GITHUB_TOKEN) {
-    headers.Authorization = `Bearer ${process.env.GITHUB_TOKEN}`;
-  }
-
-  return headers;
-}
-
 function emptyScore(note: string): GitHubScore {
   return {
     totalScore: 0,
     breakdown: {
       github: 0,
+      skillsMatch: {
+        score: 0,
+        percentage: 0,
+        required: [],
+        matched: [],
+        missing: [],
+        extra: [],
+      },
       profile: {
         username: null,
         publicRepos: 0,

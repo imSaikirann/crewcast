@@ -43,6 +43,7 @@ export interface JobFormDetails {
   location: string
   specialization: string
   techStack: string[]
+  openings: number
   salaryMin: number
   salaryMax: number
   currency: string

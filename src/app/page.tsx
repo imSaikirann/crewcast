@@ -1,27 +1,23 @@
-import BackgroundGrid from "@/components/landing/BackgroundGrid";
+// app/page.tsx  (or pages/index.tsx)
+
 import Hero from "@/components/landing/Hero";
-import Benefits from "@/components/landing/Benefits";
-import HowItWorks from "@/components/landing/HowItWorks";
-import FinalCTA from "@/components/landing/FinalCTA";
-import Footer from "@/components/landing/Footer";
-import DevelopersShowcase from "@/components/landing/Devs";
-import Testimonials from "@/components/landing/Reviews";
-import StatsBento from "@/components/landing/StatsBento";
+import { FinalCTA } from "@/components/landing/FinalCTA";
+import { StatsBar, HowItWorks, Features, Comparison, Footer } from "@/components/landing/Stats";
 
 export default function Home() {
   return (
-    <main className="relative min-h-screen w-full overflow-hidden bg-[var(--landing-bg)] text-[var(--landing-text)]">
-      <BackgroundGrid />
-      <div className="relative z-10">
-        <Hero />
-        <StatsBento />
-        <Benefits />
-        <HowItWorks />
-        <DevelopersShowcase />
-        <Testimonials />
-        <FinalCTA />
-        <Footer />
-      </div>
+    <main
+      className="relative min-h-screen w-full overflow-x-hidden"
+      style={{ background: "var(--lc-bg)", color: "var(--lc-text)", fontFamily: "var(--lc-sans)" }}
+    >
+
+      <Hero />
+      <StatsBar />
+      <HowItWorks />
+      <Features />
+      <Comparison />
+      <FinalCTA />
+      <Footer />
     </main>
   );
 }

@@ -61,7 +61,7 @@ export const hugeIcons = {
   // communication
   mail: HugeIcons.Mail01Icon,
 
-  // fallback funny one you had 🙂
+  // fallback
   save: HugeIcons.Sad01Icon,
 } as const;
 

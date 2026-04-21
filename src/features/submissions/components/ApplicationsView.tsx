@@ -26,6 +26,8 @@ type FormSummary = {
   viewCount: number;
   status: string;
   expiresAt: string;
+  openings: number;
+  hiredCount: number;
   techStack: string[];
   workMode: string;
   experience: string;
@@ -52,6 +54,7 @@ export default function ApplicationsView({
     ? Math.round(scores.reduce((sum, score) => sum + score, 0) / scores.length)
     : 0;
   const topScore = scores.length ? Math.max(...scores) : 0;
+  const roleFilled = form.hiredCount >= form.openings;
 
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
@@ -105,10 +108,18 @@ export default function ApplicationsView({
           <div className="min-w-0 space-y-3">
             <div className="flex flex-wrap items-center gap-2">
               <Badge variant="secondary">{form.status.toLowerCase()}</Badge>
+              <Badge className={roleFilled ? "bg-emerald-600 text-white" : ""} variant={roleFilled ? "default" : "outline"}>
+                {form.hiredCount}/{form.openings} hired
+              </Badge>
               <Badge variant="outline">{formatLabel(form.workMode)}</Badge>
               <Badge variant="outline">{formatLabel(form.experience)}</Badge>
               <Badge variant="outline">{formatLabel(form.roleType)}</Badge>
             </div>
+            {roleFilled && (
+              <div className="rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-300">
+                This role is fully staffed. Remaining candidates are marked rejected with a clear closure message.
+              </div>
+            )}
             <div>
               <h1 className="text-3xl font-bold tracking-tight">{form.title}</h1>
               <p className="mt-2 max-w-3xl text-sm leading-6 text-muted-foreground">
@@ -166,7 +177,7 @@ export default function ApplicationsView({
         setSort={setSort}
       />
 
-      <ApplicationTable applications={filtered} />
+      <ApplicationTable applications={filtered} publicId={form.publicId} openings={form.openings} hiredCount={form.hiredCount} />
     </div>
   );
 }

@@ -144,6 +144,7 @@ model RecruiterForm {
 
   // Tech
   techStack String[]
+  openings  Int      @default(1)
 
   // Contract
   contractDurationMonths Int?
@@ -259,6 +260,7 @@ model FormField {
 
 model Application {
   id String @id @default(auto()) @map("_id") @db.ObjectId
+  trackingToken String @unique @default(uuid())
 
   jobId String        @db.ObjectId
   job   RecruiterForm @relation(fields: [jobId], references: [id], onDelete: Cascade)

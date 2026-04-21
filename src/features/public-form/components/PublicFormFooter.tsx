@@ -52,11 +52,11 @@ export function PublicFormFooter({ formPublicId }: Props) {
 
       {/* Modal */}
       {open && (
-        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center">
-          <div className="bg-white w-full max-w-md rounded-xl shadow-xl relative">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-4">
+          <div className="relative w-full max-w-md overflow-hidden rounded-xl border border-border bg-card shadow-xl">
             <button
               onClick={() => setOpen(false)}
-              className="absolute top-3 right-3 text-gray-400 hover:text-black"
+              className="absolute right-3 top-3 z-10 text-muted-foreground transition hover:text-foreground"
             >
               ✕
             </button>

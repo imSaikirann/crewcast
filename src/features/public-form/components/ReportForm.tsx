@@ -53,17 +53,17 @@ export default function ReportForm({ formPublicId, onClose }: Props) {
 
   if (done) {
     return (
-      <div className="p-6 text-center space-y-3 bg-white dark:bg-neutral-900">
-        <p className="text-lg font-semibold text-green-600 dark:text-green-500">
+      <div className="space-y-3 bg-card p-6 text-center text-card-foreground">
+        <p className="text-lg font-semibold text-primary">
           Report submitted ✔
         </p>
-        <p className="text-sm text-gray-500 dark:text-gray-400">
+        <p className="text-sm text-muted-foreground">
           Our moderation system will review this form.
         </p>
         {onClose && (
           <button
             onClick={onClose}
-            className="mt-4 text-sm text-blue-600 dark:text-blue-400 underline"
+            className="mt-4 text-sm text-primary underline"
           >
             Close
           </button>
@@ -73,7 +73,7 @@ export default function ReportForm({ formPublicId, onClose }: Props) {
   }
 
   return (
-    <div className="p-6 space-y-5 bg-white dark:bg-neutral-900 text-gray-900 dark:text-gray-100 ">
+    <div className="space-y-5 bg-card p-6 text-card-foreground">
       <h3 className="text-lg font-semibold">Report this job</h3>
 
       {/* Reason */}
@@ -81,7 +81,7 @@ export default function ReportForm({ formPublicId, onClose }: Props) {
         {REASONS.map((r) => (
           <label
             key={r}
-            className="flex items-center gap-3 text-sm cursor-pointer text-gray-700 dark:text-gray-300"
+            className="flex cursor-pointer items-center gap-3 text-sm text-muted-foreground"
           >
             <Input
               type="radio"
@@ -99,10 +99,10 @@ export default function ReportForm({ formPublicId, onClose }: Props) {
       {/* Message */}
       <textarea
         className="w-full rounded-md p-3 text-sm resize-none
-          border border-gray-300 dark:border-neutral-700
-          bg-white dark:bg-neutral-800
-          text-gray-900 dark:text-gray-100
-          placeholder:text-gray-400 dark:placeholder:text-gray-500
+          border border-border
+          bg-background
+          text-foreground
+          placeholder:text-muted-foreground
           focus:outline-none focus:ring-2 focus:ring-red-600"
         placeholder="Explain why this job is suspicious..."
         rows={4}
@@ -111,7 +111,7 @@ export default function ReportForm({ formPublicId, onClose }: Props) {
       />
 
       {error && (
-        <p className="text-sm text-red-600 dark:text-red-500">{error}</p>
+        <p className="text-sm text-destructive">{error}</p>
       )}
 
       <Button

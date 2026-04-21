@@ -74,7 +74,7 @@ export default async function JobsPage() {
   }));
 
   return (
-    <main className="min-h-screen bg-[#f8faf7] px-4 py-24 text-slate-950 transition-colors dark:bg-neutral-950 dark:text-white sm:px-6">
+    <main className="min-h-screen bg-background px-4 py-24 text-foreground transition-colors sm:px-6">
       <div className="mx-auto max-w-7xl space-y-8">
         <section className="grid gap-6 lg:grid-cols-[1fr_360px] lg:items-end">
           <div className="space-y-3">

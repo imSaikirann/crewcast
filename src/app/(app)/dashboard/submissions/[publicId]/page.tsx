@@ -36,6 +36,7 @@ export default async function Page({
       viewCount: true,
       status: true,
       expiresAt: true,
+      openings: true,
       techStack: true,
       workMode: true,
       experience: true,
@@ -60,6 +61,13 @@ export default async function Page({
           },
         },
         orderBy: { createdAt: "desc" },
+      },
+      _count: {
+        select: {
+          applications: {
+            where: { status: "HIRED" },
+          },
+        },
       },
     },
   });
@@ -90,6 +98,8 @@ export default async function Page({
           viewCount: form.viewCount,
           status: form.status,
           expiresAt: form.expiresAt.toISOString(),
+          openings: form.openings ?? 1,
+          hiredCount: form._count.applications,
           techStack: form.techStack,
           workMode: form.workMode,
           experience: form.experience,

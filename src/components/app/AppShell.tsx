@@ -2,12 +2,11 @@
 
 import type { Session } from "next-auth";
 import { signOut, useSession } from "next-auth/react";
-import { ChevronRight, LogOut, Menu, Moon, Sun } from "lucide-react";
+import { ChevronRight, LogOut, Menu } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState, type ReactNode } from "react";
 
-import { useTheme } from "@/components/ThemeProvider";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -56,7 +55,6 @@ const mobileNavHrefs = [
 export default function AppShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const { data: session } = useSession();
-  const { theme, toggleTheme } = useTheme();
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const isAdmin = pathname.startsWith("/admin") || session?.user?.role === "admin";
@@ -144,9 +142,6 @@ export default function AppShell({ children }: { children: ReactNode }) {
           collapsed ? "md:pl-14" : "md:pl-[220px]"
         )}
       >
-        <div className="hidden justify-end px-6 pt-5 md:flex">
-          <ThemeToggleButton theme={theme} onToggle={toggleTheme} compact />
-        </div>
         {children}
       </main>
 
@@ -319,32 +314,6 @@ function NavLink({
 
   if (mobile) return <SheetClose asChild>{link}</SheetClose>;
   return link;
-}
-
-function ThemeToggleButton({
-  theme,
-  onToggle,
-  compact = false,
-}: {
-  theme: "dark" | "light";
-  onToggle: () => void;
-  compact?: boolean;
-}) {
-  const isDark = theme === "dark";
-
-  return (
-    <Button
-      variant="ghost"
-      size={compact ? "icon-sm" : "sm"}
-      onClick={onToggle}
-      aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
-      title={isDark ? "Light mode" : "Dark mode"}
-      className="text-muted-foreground hover:text-foreground"
-    >
-      {isDark ? <Sun className="size-4" /> : <Moon className="size-4" />}
-      {!compact && (isDark ? "Light mode" : "Dark mode")}
-    </Button>
-  );
 }
 
 function UserMenu({

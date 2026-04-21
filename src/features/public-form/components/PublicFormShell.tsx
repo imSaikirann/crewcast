@@ -12,7 +12,7 @@ import { PublicFormReview } from "./PublicFormReview";
 import { PublicFormSuccess } from "./PublicFormSuccess";
 
 export function PublicFormShell({ form }: { form: any }) {
-  const { step, setStep, submit, loading, error } = usePublicForm();
+  const { step, setStep, submit, loading, error, result } = usePublicForm();
   const methods = useForm();
   const [hydrated, setHydrated] = useState(false);
 
@@ -65,7 +65,7 @@ export function PublicFormShell({ form }: { form: any }) {
             />
           )}
 
-          {step === "done" && <PublicFormSuccess />}
+          {step === "done" && <PublicFormSuccess trackingUrl={result?.trackingUrl} />}
         </div>
       </main>
     </FormProvider>

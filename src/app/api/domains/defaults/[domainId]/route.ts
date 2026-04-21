@@ -1,17 +1,16 @@
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
+
 import { requireRole } from "@/lib/auth";
 import { ROLES } from "@/lib/constants/roles";
+import { prisma } from "@/lib/prisma";
 
 export async function GET(
   _req: Request,
   context: { params: Promise<{ domainId: string }> }
 ) {
   try {
-    // 🔐 Auth
     await requireRole(ROLES.USER);
 
-    // 🔥 THIS IS THE FIX
     const { domainId } = await context.params;
 
     if (!domainId) {
@@ -21,22 +20,14 @@ export async function GET(
       );
     }
 
-    const fields = await prisma.defaultFormSchema.findUnique({
+    const defaultForm = await prisma.defaultFormSchema.findUnique({
       where: { domainId },
-      select:{
-        fields:true
-      }
+      select: { fields: true },
     });
 
-    console.log(fields)
-
-
-    return NextResponse.json(fields);
+    return NextResponse.json(defaultForm);
   } catch (err) {
     console.error("GET DEFAULT FORM ERROR:", err);
-    return NextResponse.json(
-      { message: "Server error" },
-      { status: 500 }
-    );
+    return NextResponse.json({ message: "Server error" }, { status: 500 });
   }
 }

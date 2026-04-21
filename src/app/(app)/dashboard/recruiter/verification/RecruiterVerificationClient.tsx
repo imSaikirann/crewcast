@@ -24,12 +24,12 @@ export default function RecruiterVerificationClient() {
   }, [token, router])
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-white dark:bg-neutral-950 text-black dark:text-white">
+    <div className="flex min-h-screen items-center justify-center bg-background text-foreground">
       <div className="text-center space-y-4">
         <h1 className="text-xl font-semibold">
           Verifying your company…
         </h1>
-        <p className="text-neutral-500">
+        <p className="text-muted-foreground">
           Please wait while we confirm your email.
         </p>
       </div>

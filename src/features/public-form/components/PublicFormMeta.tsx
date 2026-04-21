@@ -1,5 +1,12 @@
 function expiryText(expiresAt: string) {
-  return `Applications close ${new Date(expiresAt).toLocaleDateString()}`;
+  const date = new Intl.DateTimeFormat("en-US", {
+    day: "numeric",
+    month: "numeric",
+    year: "numeric",
+    timeZone: "UTC",
+  }).format(new Date(expiresAt));
+
+  return `Applications close ${date}`;
 }
 
 export function PublicFormMeta({ form }: any) {
@@ -22,6 +29,7 @@ export function PublicFormMeta({ form }: any) {
         {form.workMode && <Pill>{formatWorkMode(form.workMode)}</Pill>}
         {form.experience && <Pill>{formatExperience(form.experience)}</Pill>}
         {form.location && <Pill>{form.location}</Pill>}
+        {form.openings && <Pill>{form.openings} opening{form.openings > 1 ? "s" : ""}</Pill>}
       </div>
 
       {salary && <p className="mt-4 text-sm text-muted-foreground">{salary}</p>}

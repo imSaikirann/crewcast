@@ -8,7 +8,7 @@ export function JobFormRow({ form }: { form: JobForm }) {
   const status = form.isActive ? "Active" : expired ? "Expired" : "Draft";
 
   return (
-    <div className="grid items-center gap-3 rounded-xl border bg-card px-4 py-3 text-sm transition duration-120 hover:-translate-y-0.5 hover:bg-secondary/60 md:grid-cols-[minmax(0,1.5fr)_auto_auto_auto_auto_36px]">
+    <div className="grid items-center gap-3 rounded-xl border bg-card px-4 py-3 text-sm transition duration-120 hover:-translate-y-0.5 hover:bg-secondary/60 md:grid-cols-[minmax(0,1.5fr)_auto_auto_auto_auto_auto_36px]">
       <div className="min-w-0">
         <h3 className="truncate font-semibold text-foreground">{form.title}</h3>
         <p className="mt-0.5 truncate text-xs text-muted-foreground md:hidden">
@@ -19,6 +19,7 @@ export function JobFormRow({ form }: { form: JobForm }) {
         {form.domainTitle || "General"}
       </Badge>
       <StatusBadge status={status} />
+      <p className="hidden font-medium text-foreground md:block">{form.hiredCount}/{form.openings} hired</p>
       <p className="hidden text-muted-foreground md:block">{form.submissions} apps</p>
       <p className="hidden text-muted-foreground md:block">{formatDate(form.createdAt)}</p>
       <div className="flex justify-end">

@@ -42,7 +42,12 @@ export default async function Page() {
       status: true,
       createdAt: true,
       expiresAt: true,
+      openings: true,
       viewCount: true,
+      applications: {
+        where: { status: "HIRED" },
+        select: { id: true },
+      },
       domain: {
         select: { title: true },
       },
@@ -64,6 +69,8 @@ export default async function Page() {
     createdAt: form.createdAt.toISOString(),
     expiresAt: form.expiresAt.toISOString(),
     submissions: form._count.applications,
+    openings: form.openings ?? 1,
+    hiredCount: form.applications.length,
     newSubmissions: form._count.applications,
     views: form.viewCount,
     domainTitle: form.domain?.title,

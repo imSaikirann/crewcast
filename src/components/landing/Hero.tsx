@@ -1,152 +1,228 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowRight, CheckCircle2 } from "lucide-react";
+import { motion } from "framer-motion";
+import type { Variants } from "framer-motion";
+import { ArrowRight } from "lucide-react";
 
-const GitHubMark = ({ className = "h-4 w-4" }: { className?: string }) => (
-  <svg viewBox="0 0 16 16" className={`fill-current ${className}`} aria-hidden="true">
-    <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z" />
-  </svg>
-);
+const fadeUp: Variants = {
+  hidden: { opacity: 0, y: 20 },
+  show: (delay: number = 0) => ({
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1], delay },
+  }),
+};
 
-const signals = [
-  { label: "GitHub identity", value: "Verified" },
-  { label: "Primary languages", value: "TS, Go, Rust" },
-  { label: "OSS signal", value: "Strong" },
-  { label: "Role match", value: "Frontend 91%" },
+const candidates = [
+  { initials: "AK", name: "Aditya Kumar", role: "github.com/adityak · TS, React", score: 88, tier: "high" },
+  { initials: "PR", name: "Priya Rajan",  role: "github.com/priyarajan · Go, gRPC", score: 74, tier: "mid" },
+  { initials: "MS", name: "Mihail Stoev", role: "github.com/mihails · Node, Python", score: 51, tier: "low" },
 ];
+
+const bars = [
+  { label: "Repositories",    pct: 91 },
+  { label: "Language match",  pct: 84 },
+  { label: "Activity streak", pct: 76 },
+  { label: "Profile maturity",pct: 88 },
+];
+
+const scoreClasses: Record<string, string> = {
+  high: "bg-[rgba(173,250,29,0.12)] text-[var(--lc-accent)]",
+  mid:  "bg-[rgba(255,185,0,0.12)] text-[#ffb900]",
+  low:  "bg-[rgba(255,68,68,0.10)] text-[var(--lc-danger)]",
+};
 
 export default function Hero() {
   return (
-    <section className="relative z-10 px-5 pt-28 pb-16 sm:px-6 lg:pt-36">
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=DM+Sans:wght@400;500;600&display=swap');
-        .font-mono-hero { font-family: 'IBM Plex Mono', monospace; }
-        .font-body { font-family: 'DM Sans', sans-serif; }
-        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
-        .cursor-blink { animation: blink 1s step-end infinite; }
-        .card-hover { transition: border-color 0.15s, transform 0.15s; }
-        .card-hover:hover { border-color: var(--landing-muted); transform: translateY(-1px); }
-      `}</style>
+    <section
+      className="relative min-h-screen flex items-center pt-28 pb-20 px-6 overflow-hidden"
+      style={{ background: "var(--lc-bg)" }}
+    >
+      {/* Grid background */}
+      <div
+        className="pointer-events-none absolute inset-0"
+        style={{
+          backgroundImage:
+            "linear-gradient(var(--lc-border) 1px,transparent 1px), linear-gradient(90deg,var(--lc-border) 1px,transparent 1px)",
+          backgroundSize: "60px 60px",
+          maskImage: "radial-gradient(ellipse 80% 60% at 50% 0%, black 30%, transparent 100%)",
+        }}
+      />
+      {/* Accent glow */}
+      <div
+        className="pointer-events-none absolute -top-40 left-1/2 -translate-x-1/2 w-[600px] h-[400px]"
+        style={{ background: "radial-gradient(ellipse, rgba(173,250,29,0.06) 0%, transparent 70%)" }}
+      />
 
-      <div className="mx-auto grid w-full max-w-7xl items-center gap-12 lg:grid-cols-[1.05fr_0.95fr]">
-        {/* Left col */}
-        <div className="space-y-8 font-body">
-          {/* Badge */}
-          <div className="inline-flex items-center gap-2 rounded-sm border border-[var(--landing-border)] bg-[var(--landing-panel)] px-3 py-2 text-sm text-[var(--landing-muted)]">
-            <GitHubMark className="h-4 w-4 text-[var(--landing-text)]" />
-            GitHub-required for software roles
-          </div>
+      <div className="relative z-10 w-full max-w-[1100px] mx-auto">
+        {/* Headline block */}
+        <div className="text-center max-w-[860px] mx-auto">
+          <motion.div
+            variants={fadeUp}
+            initial="hidden"
+            animate="show"
+            custom={0}
+            className="inline-flex items-center gap-2 px-3 py-[5px] rounded-full border border-[var(--lc-border)]
+                       font-mono text-[11px] text-[var(--lc-text-2)] mb-8 tracking-wide"
+          >
+            <span className="w-[5px] h-[5px] rounded-full bg-[var(--lc-accent)]" />
+            GitHub-first hiring platform for engineering teams
+          </motion.div>
 
-          {/* Headline */}
-          <div className="space-y-3">
-            <h1 className="font-mono-hero max-w-2xl text-4xl font-bold leading-[1.1] tracking-tight text-[var(--landing-text)] sm:text-5xl lg:text-6xl">
-              Build smarter<br />hiring forms.
-            </h1>
-            <p className="font-mono-hero text-4xl font-bold text-[var(--landing-accent)] sm:text-5xl lg:text-6xl">
-              Score real code.<span className="cursor-blink">▋</span>
-            </p>
-          </div>
+          <motion.h1
+            variants={fadeUp}
+            initial="hidden"
+            animate="show"
+            custom={0.1}
+            className="text-[clamp(42px,7vw,80px)] font-semibold leading-[1.05] tracking-[-0.04em]
+                       text-[var(--lc-text)] mb-6"
+            style={{ fontFamily: "var(--lc-sans)" }}
+          >
+            Hire engineers by<br />
+            their{" "}
+            <em className="not-italic text-[var(--lc-accent)]">actual work.</em>
+          </motion.h1>
 
-          <p className="max-w-xl text-lg leading-8 text-[var(--landing-muted)]">
-            Crewcast adds a GitHub scoring layer to every software job form. Candidates apply with their public profile. You get signal, not just a CV.
-          </p>
+          <motion.p
+            variants={fadeUp}
+            initial="hidden"
+            animate="show"
+            custom={0.18}
+            className="text-[17px] text-[var(--lc-text-2)] max-w-[520px] mx-auto leading-[1.7] mb-10"
+          >
+            Stop reading the same resume keywords. Crewcast attaches GitHub
+            scoring to every engineering job form — ranked candidates with real
+            signal, not claimed skills.
+          </motion.p>
 
-          {/* Check items */}
-          <div className="space-y-3">
-            {[
-              "Collect GitHub profiles in every form",
-              "Score public repos, activity, and languages",
-              "Review ranked candidates with evidence",
-            ].map((item) => (
-              <div key={item} className="flex items-center gap-3 text-sm text-[var(--landing-muted)]">
-                <CheckCircle2 className="h-4 w-4 shrink-0 text-[var(--landing-accent)]" />
-                {item}
-              </div>
-            ))}
-          </div>
-
-          {/* CTAs */}
-          <div className="flex flex-col gap-3 pt-2 sm:flex-row">
-            <Link
-              href="/dashboard"
-              className="font-mono-hero inline-flex items-center justify-center gap-2 rounded-sm bg-[var(--landing-accent)] px-6 py-3 text-sm font-bold text-[var(--landing-bg)] transition-colors hover:bg-[var(--landing-accent-strong)]"
-            >
-              Start hiring <ArrowRight className="h-4 w-4" />
+          <motion.div
+            variants={fadeUp}
+            initial="hidden"
+            animate="show"
+            custom={0.24}
+            className="flex gap-3 justify-center"
+          >
+            <Link href="/dashboard" className="lc-btn-primary">
+              Start hiring free <ArrowRight size={14} />
             </Link>
-            <Link
-              href="/jobs"
-              className="font-mono-hero inline-flex items-center justify-center gap-2 rounded-sm border border-[var(--landing-border)] px-6 py-3 text-sm font-medium text-[var(--landing-text)] transition-colors hover:border-[var(--landing-muted)] hover:bg-[var(--landing-panel)]"
-            >
-              Browse open jobs
+            <Link href="/jobs" className="lc-btn-ghost">
+              See a live form
             </Link>
-          </div>
+          </motion.div>
         </div>
 
-        {/* Right col — terminal card */}
-        <div className="relative">
-          <div className="rounded-sm border border-[var(--landing-border)] bg-[var(--landing-panel)] shadow-sm">
-            {/* Terminal bar */}
-            <div className="flex items-center gap-2 border-b border-[var(--landing-border)] px-4 py-3">
-              <span className="h-3 w-3 rounded-full bg-[var(--landing-danger)]" />
-              <span className="h-3 w-3 rounded-full bg-[var(--landing-warning)]" />
-              <span className="h-3 w-3 rounded-full bg-[var(--landing-success)]" />
-              <span className="font-mono-hero ml-3 text-xs text-[var(--landing-subtle)]">
-                crewcast — candidate-review
+        {/* Browser mockup */}
+        <motion.div
+          initial={{ opacity: 0, y: 32 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1], delay: 0.4 }}
+          className="mt-16 max-w-[860px] mx-auto"
+        >
+          <div
+            className="rounded-xl border border-[var(--lc-border)] overflow-hidden"
+            style={{
+              background: "var(--lc-bg-1)",
+              boxShadow: "0 0 0 1px rgba(255,255,255,0.03), 0 40px 80px rgba(0,0,0,0.8)",
+            }}
+          >
+            {/* Titlebar */}
+            <div className="h-10 flex items-center px-4 gap-1.5 border-b border-[var(--lc-border)]"
+                 style={{ background: "var(--lc-bg-2)" }}>
+              <span className="w-[10px] h-[10px] rounded-full bg-[#ff5f57]" />
+              <span className="w-[10px] h-[10px] rounded-full bg-[#ffbd2e]" />
+              <span className="w-[10px] h-[10px] rounded-full bg-[#28c840]" />
+              <span className="font-mono text-[11px] text-[var(--lc-text-3)] mx-auto">
+                crewcast.io / dashboard / frontend-engineer-2024
               </span>
             </div>
 
-            <div className="p-5 space-y-4">
-              {/* Candidate row */}
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-sm bg-[var(--landing-panel-strong)] border border-[var(--landing-border)] font-mono-hero text-sm font-bold text-[var(--landing-accent)]">
-                    SK
-                  </div>
-                  <div>
-                    <p className="font-body text-sm font-semibold text-[var(--landing-text)]">Sai Kumar</p>
-                    <p className="font-body text-xs text-[var(--landing-subtle)]">Applied · Full-stack Engineer</p>
-                  </div>
+            {/* Toolbar row */}
+            <div className="flex items-center justify-between px-5 py-3 border-b border-[var(--lc-border)]"
+                 style={{ background: "var(--lc-bg-1)" }}>
+              <div>
+                <div className="text-[13px] font-medium text-[var(--lc-text)]">
+                  Frontend Engineer
                 </div>
-                <div className="rounded-sm bg-[var(--landing-accent)] px-4 py-2 text-center">
-                  <p className="font-mono-hero text-[10px] font-bold uppercase tracking-widest text-[var(--landing-bg)] opacity-70">CrewScore</p>
-                  <p className="font-mono-hero text-3xl font-bold leading-tight text-[var(--landing-bg)]">86</p>
+                <div className="font-mono text-[10px] text-[var(--lc-text-3)] mt-0.5">
+                  24 applicants · last 7 days
                 </div>
               </div>
+              <div className="flex gap-2">
+                <span className="font-mono text-[10px] px-3 py-1 border border-[var(--lc-border)] rounded text-[var(--lc-text-3)]">
+                  Export CSV
+                </span>
+                <span className="font-mono text-[10px] px-3 py-1 rounded text-[var(--lc-accent)]"
+                      style={{ background: "var(--lc-accent-dim)", border: "1px solid rgba(173,250,29,0.2)" }}>
+                  Share form
+                </span>
+              </div>
+            </div>
 
-              {/* Signal grid */}
-              <div className="grid grid-cols-2 gap-2">
-                {signals.map((s) => (
-                  <div key={s.label} className="card-hover rounded-sm border border-[var(--landing-border)] bg-[var(--landing-bg)] p-3">
-                    <p className="font-mono-hero text-[10px] uppercase tracking-widest text-[var(--landing-subtle)]">{s.label}</p>
-                    <p className="font-mono-hero mt-1.5 text-sm font-semibold text-[var(--landing-text)]">{s.value}</p>
+            {/* Two-col body */}
+            <div className="grid grid-cols-2">
+              {/* Candidates */}
+              <div className="p-5 border-r border-[var(--lc-border)]">
+                <div className="font-mono text-[9px] uppercase tracking-[0.12em] text-[var(--lc-text-3)] mb-3">
+                  Ranked candidates
+                </div>
+                {candidates.map((c, i) => (
+                  <div
+                    key={c.name}
+                    className="flex items-center justify-between py-2.5"
+                    style={{ borderBottom: i < candidates.length - 1 ? "1px solid var(--lc-border)" : "none" }}
+                  >
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-7 h-7 rounded-[6px] border border-[var(--lc-border)] flex items-center justify-center
+                                      font-mono text-[9px] text-[var(--lc-text-2)]"
+                           style={{ background: "var(--lc-bg-3)" }}>
+                        {c.initials}
+                      </div>
+                      <div>
+                        <div className="text-[12px] font-medium text-[var(--lc-text)]">{c.name}</div>
+                        <div className="text-[10px] text-[var(--lc-text-3)] mt-0.5">{c.role}</div>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                      <span className="font-mono text-[10px] text-[var(--lc-text-3)]">CrewScore</span>
+                      <span className={`font-mono text-[12px] font-medium px-2 py-0.5 rounded ${scoreClasses[c.tier]}`}>
+                        {c.score}
+                      </span>
+                    </div>
                   </div>
                 ))}
               </div>
 
-              {/* Stats row */}
-              <div className="flex items-center gap-2 rounded-sm border border-[var(--landing-border)] bg-[var(--landing-bg)] px-4 py-3">
-                <GitHubMark className="h-4 w-4 text-[var(--landing-muted)] shrink-0" />
-                <span className="font-mono-hero text-xs text-[var(--landing-subtle)]">github.com/saikumar</span>
-                <span className="ml-auto font-mono-hero text-xs text-[var(--landing-accent)]">12 active repos · 6mo streak</span>
-              </div>
-
-              {/* Bottom metrics */}
-              <div className="grid grid-cols-3 gap-2 border-t border-[var(--landing-border)] pt-4">
-                {[
-                  { v: "12", l: "repos" },
-                  { v: "6mo", l: "streak" },
-                  { v: "91%", l: "role match" },
-                ].map((m) => (
-                  <div key={m.l} className="text-center">
-                    <p className="font-mono-hero text-lg font-bold text-[var(--landing-accent)]">{m.v}</p>
-                    <p className="font-body text-[10px] text-[var(--landing-subtle)]">{m.l}</p>
+              {/* Score breakdown */}
+              <div className="p-5">
+                <div className="font-mono text-[9px] uppercase tracking-[0.12em] text-[var(--lc-text-3)] mb-3">
+                  Score breakdown · Aditya Kumar
+                </div>
+                {bars.map((b) => (
+                  <div key={b.label} className="mb-3">
+                    <div className="flex justify-between mb-1">
+                      <span className="text-[11px] text-[var(--lc-text-2)]">{b.label}</span>
+                      <span className="font-mono text-[11px] text-[var(--lc-accent)]">{b.pct}</span>
+                    </div>
+                    <div className="h-[3px] rounded-full" style={{ background: "var(--lc-bg-3)" }}>
+                      <div
+                        className="h-[3px] rounded-full"
+                        style={{ width: `${b.pct}%`, background: "var(--lc-accent)", opacity: 0.7 }}
+                      />
+                    </div>
                   </div>
                 ))}
+                <div
+                  className="mt-4 flex items-center justify-between px-3 py-2.5 rounded-lg border"
+                  style={{ background: "var(--lc-accent-dim)", borderColor: "rgba(173,250,29,0.15)" }}
+                >
+                  <span className="text-[12px] text-[var(--lc-text-2)]">Final CrewScore</span>
+                  <span className="font-mono text-[28px] font-medium leading-none text-[var(--lc-accent)]">88</span>
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        </motion.div>
       </div>
     </section>
   );

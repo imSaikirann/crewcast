@@ -13,6 +13,8 @@ export const forms: JobForm[] = [
     createdAt: "2025-01-26",
     expiresAt: "2026-01-11",
     submissions: 6,
+    openings: 3,
+    hiredCount: 1,
     newSubmissions: 3,
     views: 24,
   },

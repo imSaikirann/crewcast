@@ -106,6 +106,21 @@ export function FormDetailsStep({
         </Section>
 
         <Section title="Tech & Deadline">
+          <Field label="Openings for this role">
+            <Input
+              type="number"
+              min={1}
+              className="cc-input"
+              placeholder="3"
+              {...form.register("openings", {
+                valueAsNumber: true,
+                min: 1,
+              })}
+            />
+            <p className="text-xs text-muted-foreground">
+              Used to track hiring progress, for example 0/3 hired.
+            </p>
+          </Field>
           <Field label="Tech stack">
             <div className="rounded-[10px] border bg-secondary p-2 focus-within:border-primary">
               <div className="mb-2 flex flex-wrap gap-2">

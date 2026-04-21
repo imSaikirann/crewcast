@@ -30,6 +30,7 @@ export function useFormBuilder() {
     location: "",
     specialization: "",
     techStack: [],
+    openings: 1,
     salaryMin: 0,
     salaryMax: 0,
     currency: "INR",

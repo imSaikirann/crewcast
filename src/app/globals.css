@@ -1,5 +1,5 @@
 @import "tailwindcss";
-@import "tw-animate-css";
+
 
 /* Add these to the top of your globals.css */
 
@@ -21,8 +21,6 @@
   animation: blink 1s step-end infinite;
 }
  
-
-@custom-variant dark (&:is(.dark *));
 
 @theme inline {
   --color-background: var(--background);
@@ -68,100 +66,70 @@
 }
 
 :root {
-  --landing-bg: #f7f6f2;
-  --landing-bg-alt: #ffffff;
-  --landing-panel: #ffffff;
-  --landing-panel-strong: #f1f5f9;
-  --landing-border: #d8ded6;
-  --landing-text: #101412;
-  --landing-muted: #59635d;
-  --landing-subtle: #8a948d;
-  --landing-accent: #c9a73a;
-  --landing-accent-strong: #ad8f27;
-  --landing-accent-soft: rgba(201, 167, 58, 0.12);
-  --landing-danger: #d44d4d;
-  --landing-warning: #b45309;
+  --font-dm-sans: "Inter", "Segoe UI", Arial, Helvetica, sans-serif;
+  --font-sora: "Segoe UI", Arial, Helvetica, sans-serif;
+  --lc-bg: #0a0a0a;
+  --lc-bg-1: #111111;
+  --lc-bg-2: #161616;
+  --lc-bg-3: #1c1c1c;
+  --lc-border: rgba(255, 255, 255, 0.08);
+  --lc-border-hover: rgba(255, 255, 255, 0.15);
+  --lc-text: #f5f5f5;
+  --lc-text-2: #a1a1a1;
+  --lc-text-3: #555555;
+  --lc-accent: #adfa1d;
+  --lc-accent-dim: rgba(173, 250, 29, 0.1);
+  --lc-accent-text: #0a0a0a;
+  --lc-danger: #ff4444;
+  --lc-mono: "Consolas", "SFMono-Regular", monospace;
+  --lc-sans: var(--font-dm-sans);
+  color-scheme: dark;
+  --landing-bg: var(--lc-bg);
+  --landing-bg-alt: var(--lc-bg-1);
+  --landing-panel: var(--lc-bg-1);
+  --landing-panel-strong: var(--lc-bg-2);
+  --landing-border: var(--lc-border);
+  --landing-text: var(--lc-text);
+  --landing-muted: var(--lc-text-2);
+  --landing-subtle: var(--lc-text-3);
+  --landing-accent: var(--lc-accent);
+  --landing-accent-strong: #c6ff52;
+  --landing-accent-soft: var(--lc-accent-dim);
+  --landing-danger: var(--lc-danger);
+  --landing-warning: #ffb900;
   --landing-success: #4caf82;
   --radius: 0.75rem;
-  --background: #f7f6f2;
-  --foreground: #1a1917;
-  --card: #ffffff;
-  --card-foreground: #1a1917;
-  --popover: #ffffff;
-  --popover-foreground: #1a1917;
-  --primary: #c9a73a;
-  --primary-foreground: #17150f;
-  --secondary: #eeece4;
-  --secondary-foreground: #1a1917;
-  --muted: #edebe3;
-  --muted-foreground: #726f68;
-  --accent: rgba(201, 167, 58, 0.12);
-  --accent-foreground: #9a7e21;
-  --destructive: #d44d4d;
-  --border: rgba(0, 0, 0, 0.08);
-  --input: rgba(0, 0, 0, 0.08);
-  --ring: #c9a73a;
+  --background: var(--lc-bg);
+  --foreground: var(--lc-text);
+  --card: var(--lc-bg-1);
+  --card-foreground: var(--lc-text);
+  --popover: var(--lc-bg-2);
+  --popover-foreground: var(--lc-text);
+  --primary: var(--lc-accent);
+  --primary-foreground: var(--lc-accent-text);
+  --secondary: var(--lc-bg-2);
+  --secondary-foreground: var(--lc-text);
+  --muted: var(--lc-bg-3);
+  --muted-foreground: var(--lc-text-2);
+  --accent: var(--lc-accent-dim);
+  --accent-foreground: var(--lc-accent);
+  --destructive: var(--lc-danger);
+  --border: var(--lc-border);
+  --input: var(--lc-border);
+  --ring: var(--lc-accent);
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);
   --chart-4: oklch(0.828 0.189 84.429);
   --chart-5: oklch(0.769 0.188 70.08);
-  --sidebar: #ffffff;
-  --sidebar-foreground: #1a1917;
-  --sidebar-primary: #c9a73a;
-  --sidebar-primary-foreground: #17150f;
-  --sidebar-accent: rgba(201, 167, 58, 0.12);
-  --sidebar-accent-foreground: #9a7e21;
-  --sidebar-border: rgba(0, 0, 0, 0.08);
-  --sidebar-ring: #c9a73a;
-}
-
-.dark {
-  --landing-bg: #0e0e0f;
-  --landing-bg-alt: #161618;
-  --landing-panel: #161618;
-  --landing-panel-strong: #1f1f22;
-  --landing-border: rgba(255, 255, 255, 0.12);
-  --landing-text: #f0efe8;
-  --landing-muted: #8f8e89;
-  --landing-subtle: #5a5955;
-  --landing-accent: #e8c468;
-  --landing-accent-strong: #f0d47d;
-  --landing-accent-soft: rgba(232, 196, 104, 0.1);
-  --landing-danger: #e05c5c;
-  --landing-warning: #e8a85f;
-  --landing-success: #4caf82;
-  --background: #0e0e0f;
-  --foreground: #f0efe8;
-  --card: #161618;
-  --card-foreground: #f0efe8;
-  --popover: #1f1f22;
-  --popover-foreground: #f0efe8;
-  --primary: #e8c468;
-  --primary-foreground: #17150f;
-  --secondary: #1f1f22;
-  --secondary-foreground: #f0efe8;
-  --muted: #1f1f22;
-  --muted-foreground: #8f8e89;
-  --accent: rgba(232, 196, 104, 0.1);
-  --accent-foreground: #e8c468;
-  --destructive: #e05c5c;
-  --border: rgba(255, 255, 255, 0.12);
-  --input: rgba(255, 255, 255, 0.12);
-  --ring: #e8c468;
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: #161618;
-  --sidebar-foreground: #f0efe8;
-  --sidebar-primary: #e8c468;
-  --sidebar-primary-foreground: #17150f;
-  --sidebar-accent: rgba(232, 196, 104, 0.1);
-  --sidebar-accent-foreground: #e8c468;
-  --sidebar-border: rgba(255, 255, 255, 0.07);
-  --sidebar-ring: #e8c468;
+  --sidebar: var(--lc-bg-1);
+  --sidebar-foreground: var(--lc-text);
+  --sidebar-primary: var(--lc-accent);
+  --sidebar-primary-foreground: var(--lc-accent-text);
+  --sidebar-accent: var(--lc-accent-dim);
+  --sidebar-accent-foreground: var(--lc-accent);
+  --sidebar-border: var(--lc-border);
+  --sidebar-ring: var(--lc-accent);
 }
 
 @layer base {
@@ -174,6 +142,88 @@
 }
 
 @layer utilities {
+  .lc-tag {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 16px;
+    color: var(--lc-text-3);
+    font-family: var(--lc-mono);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .lc-tag::before {
+    display: inline-block;
+    width: 16px;
+    height: 1px;
+    background: var(--lc-text-3);
+    content: "";
+  }
+
+  .lc-h2 {
+    margin-bottom: 16px;
+    color: var(--lc-text);
+    font-family: var(--lc-sans);
+    font-size: clamp(28px, 4vw, 44px);
+    font-weight: 600;
+    line-height: 1.1;
+  }
+
+  .lc-sub {
+    max-width: 480px;
+    color: var(--lc-text-2);
+    font-size: 16px;
+    line-height: 1.7;
+  }
+
+  .lc-section {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 100px 24px;
+  }
+
+  .lc-btn-primary,
+  .lc-btn-ghost {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    border-radius: 8px;
+    padding: 10px 20px;
+    font-family: var(--lc-mono);
+    font-size: 13px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: border-color 0.15s, color 0.15s, opacity 0.15s, transform 0.1s;
+  }
+
+  .lc-btn-primary {
+    border: 0;
+    background: var(--lc-accent);
+    color: var(--lc-accent-text);
+  }
+
+  .lc-btn-primary:hover,
+  .lc-btn-ghost:hover {
+    transform: translateY(-1px);
+  }
+
+  .lc-btn-primary:hover {
+    opacity: 0.9;
+  }
+
+  .lc-btn-ghost {
+    border: 1px solid var(--lc-border);
+    background: transparent;
+    color: var(--lc-text-2);
+  }
+
+  .lc-btn-ghost:hover {
+    border-color: var(--lc-border-hover);
+    color: var(--lc-text);
+  }
+
   .font-display {
     font-family: var(--font-sora), sans-serif;
   }

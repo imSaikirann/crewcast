@@ -1,70 +1,46 @@
-import Link from "next/link";
+"use client";
+
+import { motion, useInView } from "framer-motion";
 import { ArrowRight } from "lucide-react";
-import { CrewcastMark } from "@/components/brand/CrewcastLogo";
+import Link from "next/link";
+import { useRef } from "react";
 
-const GitHubMark = ({ className = "h-4 w-4" }: { className?: string }) => (
-  <svg viewBox="0 0 16 16" className={`fill-current ${className}`} aria-hidden="true">
-    <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z" />
-  </svg>
-);
-
-export default function FinalCTA() {
+export function FinalCTA() {
+  const ref = useRef(null);
+  const inView = useInView(ref, { once: true, margin: "-80px" });
   return (
-    <section className="relative z-10 bg-[var(--landing-bg)] px-5 py-20 sm:px-6 lg:py-28">
-      <div className="mx-auto max-w-7xl">
-        {/* Main CTA block */}
-        <div className="relative overflow-hidden rounded-sm border border-[var(--landing-border)] bg-[var(--landing-accent-soft)] px-8 py-14 sm:px-12 lg:px-16">
-          {/* Corner decoration */}
-          <div className="pointer-events-none absolute right-0 top-0 h-32 w-32 opacity-10">
-            <CrewcastMark className="h-full w-full rounded-sm bg-white/90" />
-          </div>
-
-          <div className="grid gap-10 lg:grid-cols-[1fr_auto] lg:items-center">
-            <div className="space-y-5 max-w-2xl">
-              <div className="inline-flex items-center gap-2 rounded-sm border border-[var(--landing-border)] px-3 py-1.5">
-                <GitHubMark className="h-3.5 w-3.5 text-[var(--landing-text)]" />
-                <span className="font-mono-hero text-xs text-[var(--landing-text)]">GitHub-first hiring platform</span>
-              </div>
-              <h2 className="font-mono-hero text-4xl font-bold text-[var(--landing-text)] sm:text-5xl">
-                Create your first<br />hiring form.
-              </h2>
-              <p className="font-body text-lg leading-8 text-[var(--landing-muted)]">
-                Set up a domain, publish a job form, and let Crewcast score GitHub evidence as applications arrive. Takes less than 10 minutes to go live.
-              </p>
-            </div>
-
-            <div className="flex flex-col gap-3 sm:flex-row lg:flex-col">
-              <Link
-                href="/dashboard"
-                className="font-mono-hero inline-flex items-center justify-center gap-2 rounded-sm bg-[var(--landing-accent)] px-8 py-4 text-sm font-bold text-[var(--landing-bg)] transition-colors hover:bg-[var(--landing-accent-strong)]"
-              >
-                Start hiring <ArrowRight className="h-4 w-4" />
-              </Link>
-              <Link
-                href="/jobs"
-                className="font-mono-hero inline-flex items-center justify-center gap-2 rounded-sm border border-[var(--landing-border)] px-8 py-4 text-sm font-medium text-[var(--landing-text)] transition-colors hover:border-[var(--landing-muted)] hover:bg-[var(--landing-panel)]"
-              >
-                View open jobs
-              </Link>
-            </div>
-          </div>
-        </div>
-
-        {/* Bottom footnote row */}
-        <div className="mt-6 flex flex-col items-center justify-between gap-4 sm:flex-row">
-          <p className="font-body text-sm text-[var(--landing-subtle)]">
-            No credit card required to get started.
+    <section className="lc-section" style={{ paddingBottom: 120 }} ref={ref}>
+      <motion.div
+        className="relative overflow-hidden border border-[var(--lc-border)] rounded-2xl px-12 py-20 text-center"
+        style={{ background: "var(--lc-bg-1)" }}
+        initial={{ opacity: 0, y: 20 }}
+        animate={inView ? { opacity: 1, y: 0 } : {}}
+        transition={{ duration: 0.6, ease: "easeOut" }}
+      >
+        <div className="pointer-events-none absolute -top-24 left-1/2 -translate-x-1/2 w-[400px] h-[300px]"
+             style={{ background: "radial-gradient(ellipse, rgba(173,250,29,0.07) 0%, transparent 70%)" }} />
+        <div className="relative z-10">
+          <p className="lc-tag justify-center mb-5">Free to start</p>
+          <h2 className="lc-h2 mb-4">Create your first<br />hiring form today.</h2>
+          <p className="lc-sub mx-auto mb-9">
+            Set up your domain, publish a job form, and let Crewcast score GitHub evidence
+            as applications arrive. No credit card required.
           </p>
-          <div className="flex items-center gap-6 text-sm text-[var(--landing-subtle)]">
-            {["Free to start", "GitHub data is public-only", "Candidates apply instantly"].map((t) => (
-              <span key={t} className="flex items-center gap-2">
-                <span className="font-mono-hero text-[var(--landing-accent)]">✓</span>
-                <span className="font-body">{t}</span>
+          <div className="flex gap-3 justify-center flex-wrap">
+            <Link href="/dashboard" className="lc-btn-primary">
+              Get started free <ArrowRight size={14} />
+            </Link>
+            <Link href="/jobs" className="lc-btn-ghost">Browse open jobs</Link>
+          </div>
+          <div className="mt-7 flex gap-6 justify-center flex-wrap">
+            {["Free to start","Public GitHub data only","Live in under 10 minutes"].map((t) => (
+              <span key={t} className="font-mono text-[11px] text-[var(--lc-text-3)] flex items-center gap-1.5">
+                <span style={{ color: "var(--lc-accent)" }}>✓</span>{t}
               </span>
             ))}
           </div>
         </div>
-      </div>
+      </motion.div>
     </section>
   );
 }
