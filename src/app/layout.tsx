@@ -6,6 +6,11 @@ import Navbar from "@/components/marketing/Navbar"
 export const metadata: Metadata = {
   title: "Crewcast",
   description: "Hiring assistant platform for quickly finding top talent.",
+  icons: {
+    icon: "/crewcast-logo.svg",
+    shortcut: "/crewcast-logo.svg",
+    apple: "/crewcast-logo.svg",
+  },
 }
 
 export default function RootLayout({

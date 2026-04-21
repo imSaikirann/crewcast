@@ -25,6 +25,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import { CrewcastMark } from "@/components/brand/CrewcastLogo";
 import { cn } from "@/lib/utils";
 import { HugeIcon, type HugeIconName } from "@/utils/hugeicons";
 
@@ -126,9 +127,7 @@ export default function AppShell({ children }: { children: ReactNode }) {
           </Sheet>
 
           <Link href={homeHref} className="flex min-w-0 flex-1 items-center justify-center gap-2 font-display font-semibold tracking-tight">
-            <span className="grid size-8 shrink-0 place-items-center rounded-lg bg-primary text-primary-foreground">
-              C
-            </span>
+            <CrewcastMark className="h-8 w-8 rounded-lg bg-transparent p-0" />
             <span className="truncate">Crewcast</span>
           </Link>
 
@@ -195,11 +194,7 @@ function SidebarContent({
         href={homeHref}
         className={cn("mb-6 flex min-w-0 items-center gap-3 px-1", collapsed && "justify-center px-0")}
       >
-        <span className="grid size-8 shrink-0 place-items-center rounded-lg bg-primary text-primary-foreground shadow-sm">
-          <span className="font-display text-xs font-semibold">
-            {workspaceName.charAt(0).toUpperCase()}
-          </span>
-        </span>
+        <CrewcastMark className="h-8 w-8 rounded-lg bg-transparent p-0 shadow-sm" />
         {!collapsed && (
           <span className="min-w-0">
             <span className="block truncate font-display text-[13px] font-medium text-sidebar-foreground">

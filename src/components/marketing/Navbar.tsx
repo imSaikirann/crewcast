@@ -6,6 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Menu, X, ChevronDown, LayoutDashboard, LogOut, ArrowRight } from "lucide-react";
+import { CrewcastMark } from "@/components/brand/CrewcastLogo";
 
 export default function Navbar() {
   const { data: session } = useSession();
@@ -76,22 +77,9 @@ export default function Navbar() {
 
           {/* ── Logo ── */}
           <Link href="/" className="flex items-center gap-2 no-underline">
-            <div
-              className="w-5 h-5 rounded flex items-center justify-center flex-shrink-0"
-              style={{ background: "var(--lc-accent)" }}
-            >
-              <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-                <path
-                  d="M2 9L5 3L8 7L9.5 5L11 9"
-                  stroke="#0a0a0a"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </div>
+            <CrewcastMark className="h-7 w-7 rounded-md bg-transparent p-0" />
             <span className="text-[13px] font-medium tracking-tight" style={{ color: "var(--lc-text)" }}>
-              crewcast
+              Crewcast
             </span>
           </Link>
 

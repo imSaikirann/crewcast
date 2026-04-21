@@ -92,7 +92,7 @@ export default function Hero() {
             className="text-[17px] text-[var(--lc-text-2)] max-w-[520px] mx-auto leading-[1.7] mb-10"
           >
             Stop reading the same resume keywords. Crewcast attaches GitHub
-            scoring to every engineering job form — ranked candidates with real
+            scoring to every engineering job form , ranked candidates with real
             signal, not claimed skills.
           </motion.p>
 
@@ -132,15 +132,15 @@ export default function Hero() {
               <span className="w-[10px] h-[10px] rounded-full bg-[#ff5f57]" />
               <span className="w-[10px] h-[10px] rounded-full bg-[#ffbd2e]" />
               <span className="w-[10px] h-[10px] rounded-full bg-[#28c840]" />
-              <span className="font-mono text-[11px] text-[var(--lc-text-3)] mx-auto">
+              <span className="min-w-0 truncate pl-3 text-center font-mono text-[11px] text-[var(--lc-text-3)] sm:mx-auto sm:pl-0">
                 crewcast.io / dashboard / frontend-engineer-2024
               </span>
             </div>
 
             {/* Toolbar row */}
-            <div className="flex items-center justify-between px-5 py-3 border-b border-[var(--lc-border)]"
+            <div className="flex flex-col gap-3 px-5 py-3 border-b border-[var(--lc-border)] sm:flex-row sm:items-center sm:justify-between"
                  style={{ background: "var(--lc-bg-1)" }}>
-              <div>
+              <div className="min-w-0">
                 <div className="text-[13px] font-medium text-[var(--lc-text)]">
                   Frontend Engineer
                 </div>
@@ -148,7 +148,7 @@ export default function Hero() {
                   24 applicants · last 7 days
                 </div>
               </div>
-              <div className="flex gap-2">
+              <div className="flex shrink-0 gap-2">
                 <span className="font-mono text-[10px] px-3 py-1 border border-[var(--lc-border)] rounded text-[var(--lc-text-3)]">
                   Export CSV
                 </span>
@@ -160,31 +160,31 @@ export default function Hero() {
             </div>
 
             {/* Two-col body */}
-            <div className="grid grid-cols-2">
+            <div className="grid md:grid-cols-2">
               {/* Candidates */}
-              <div className="p-5 border-r border-[var(--lc-border)]">
+              <div className="border-b border-[var(--lc-border)] p-5 md:border-b-0 md:border-r">
                 <div className="font-mono text-[9px] uppercase tracking-[0.12em] text-[var(--lc-text-3)] mb-3">
                   Ranked candidates
                 </div>
                 {candidates.map((c, i) => (
                   <div
                     key={c.name}
-                    className="flex items-center justify-between py-2.5"
+                    className="flex min-w-0 items-center justify-between gap-3 py-2.5"
                     style={{ borderBottom: i < candidates.length - 1 ? "1px solid var(--lc-border)" : "none" }}
                   >
-                    <div className="flex items-center gap-2.5">
-                      <div className="w-7 h-7 rounded-[6px] border border-[var(--lc-border)] flex items-center justify-center
+                    <div className="flex min-w-0 items-center gap-2.5">
+                      <div className="w-7 h-7 shrink-0 rounded-[6px] border border-[var(--lc-border)] flex items-center justify-center
                                       font-mono text-[9px] text-[var(--lc-text-2)]"
                            style={{ background: "var(--lc-bg-3)" }}>
                         {c.initials}
                       </div>
-                      <div>
-                        <div className="text-[12px] font-medium text-[var(--lc-text)]">{c.name}</div>
-                        <div className="text-[10px] text-[var(--lc-text-3)] mt-0.5">{c.role}</div>
+                      <div className="min-w-0">
+                        <div className="truncate text-[12px] font-medium text-[var(--lc-text)]">{c.name}</div>
+                        <div className="mt-0.5 truncate text-[10px] text-[var(--lc-text-3)]">{c.role}</div>
                       </div>
                     </div>
-                    <div className="flex items-center gap-1.5">
-                      <span className="font-mono text-[10px] text-[var(--lc-text-3)]">CrewScore</span>
+                    <div className="flex shrink-0 items-center gap-1.5">
+                      <span className="hidden font-mono text-[10px] text-[var(--lc-text-3)] sm:inline">CrewScore</span>
                       <span className={`font-mono text-[12px] font-medium px-2 py-0.5 rounded ${scoreClasses[c.tier]}`}>
                         {c.score}
                       </span>

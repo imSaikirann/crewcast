@@ -4,6 +4,7 @@
 import Link from "next/link";
 import { useRef, useState } from "react";
 import { motion, useInView } from "framer-motion";
+import { CrewcastMark } from "@/components/brand/CrewcastLogo";
 import {
   BarChart2,
   FileText,
@@ -464,11 +465,7 @@ export function Footer() {
         <div className="grid grid-cols-1 lg:grid-cols-[1.5fr_repeat(3,1fr)] gap-12 mb-12">
           <div>
             <div className="flex items-center gap-2 mb-4">
-              <div className="w-5 h-5 rounded bg-[var(--lc-accent)] flex items-center justify-center">
-                <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-                  <path d="M2 9L5 3L8 7L9.5 5L11 9" stroke="#0a0a0a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
-              </div>
+              <CrewcastMark className="h-7 w-7 rounded-md bg-transparent p-0" />
               <span className="font-mono text-[13px] font-medium text-[var(--lc-text)]">crewcast</span>
             </div>
             <p className="text-[13px] text-[var(--lc-text-3)] leading-[1.7] max-w-[240px]">
