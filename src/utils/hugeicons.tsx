@@ -41,7 +41,8 @@ export const hugeIcons = {
   edit: HugeIcons.Edit01Icon,
   "add-circle": HugeIcons.Add01Icon,
   delete: HugeIcons.Delete02Icon,
-  upload: HugeIcons.Link01Icon,
+  upload: HugeIcons.Upload03Icon,
+  publish: HugeIcons.Rocket02Icon,
   "arrow-right": HugeIcons.ArrowRight01Icon,
   "arrow-up-right": HugeIcons.ArrowUpRight01Icon,
   settings: HugeIcons.Settings02Icon,
@@ -62,8 +63,7 @@ export const hugeIcons = {
   // communication
   mail: HugeIcons.Mail01Icon,
 
-  // fallback
-  save: HugeIcons.Sad01Icon,
+  save: HugeIcons.FileUploadIcon,
 } as const;
 
 export type HugeIconName = keyof typeof hugeIcons;

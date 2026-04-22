@@ -101,7 +101,7 @@ export function MultiStepForm(props: {
           </Button>
         ) : (
           <Button className="bg-primary text-primary-foreground hover:bg-primary/90" onClick={props.onSave} disabled={props.isSaving}>
-            <HugeIcon name={props.isSaving ? "loading" : "save"} className="size-4" />
+   
             Publish form
           </Button>
         )}
