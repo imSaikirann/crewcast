@@ -24,11 +24,18 @@ export default async function Page() {
       companyName: true,
       companyEmail: true,
       verified: true,
+      plan: true,
+      formLimit: true,
+      totalFormsLimit: true,
     },
   });
 
   if (!recruiter) {
     redirect("/dashboard/recruiter/profile");
+  }
+
+  if (!recruiter.verified) {
+    redirect("/dashboard/recruiter/profile?onboarding=verify");
   }
 
   const forms = await prisma.recruiterForm.findMany({
@@ -40,6 +47,7 @@ export default async function Page() {
       description: true,
       fields: true,
       status: true,
+      roleType: true,
       createdAt: true,
       expiresAt: true,
       openings: true,
@@ -66,6 +74,7 @@ export default async function Page() {
     fieldsCount: Array.isArray(form.fields) ? form.fields.length : 0,
     isActive: form.status === "PUBLISHED" && form.expiresAt > new Date(),
     status: form.status,
+    roleType: form.roleType,
     createdAt: form.createdAt.toISOString(),
     expiresAt: form.expiresAt.toISOString(),
     submissions: form._count.applications,

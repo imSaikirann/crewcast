@@ -2,7 +2,8 @@
 
 import Hero from "@/components/landing/Hero";
 import { FinalCTA } from "@/components/landing/FinalCTA";
-import { StatsBar, HowItWorks, Features, Comparison, Footer } from "@/components/landing/Stats";
+import Footer from "@/components/landing/Footer";
+import { StatsBar, HowItWorks, Features, Comparison } from "@/components/landing/Stats";
 
 export default function Home() {
   return (

@@ -11,7 +11,7 @@ export default function JobCard({ job }: { job: Job }) {
   const extraTechCount = Math.max(job.techStack.length - visibleTech.length, 0);
 
   return (
-    <article className="flex h-full flex-col rounded-lg border bg-background p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-md">
+    <article className="flex h-full flex-col rounded-lg border bg-card p-5 shadow-xs transition hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-md">
       <div className="space-y-4">
         <div className="flex items-start justify-between gap-4">
           <div className="min-w-0">
@@ -21,7 +21,7 @@ export default function JobCard({ job }: { job: Job }) {
                 <span className="ml-2 text-emerald-600">Verified</span>
               )}
             </p>
-            <h2 className="mt-1 line-clamp-2 text-xl font-semibold tracking-tight">
+            <h2 className="mt-1 line-clamp-2 font-display text-xl font-semibold tracking-tight">
               {job.title}
             </h2>
           </div>

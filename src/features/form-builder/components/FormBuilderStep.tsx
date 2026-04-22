@@ -1,6 +1,6 @@
 "use client"
 
-import { useMemo, useState } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
 import { GripVertical, Lock, Pencil, Trash2 } from "lucide-react"
 
 import { Badge } from "@/components/ui/badge"
@@ -18,9 +18,10 @@ interface FormBuilderStepProps {
   fields: FormField[]
   selectedFieldType: FieldType
   setSelectedFieldType: (type: FieldType) => void
-  handleAddField: (index?: number) => void
+  handleAddField: (index?: number, typeOverride?: FieldType) => void
   handleUpdateField: (id: string, updates: Partial<FormField>) => void
   handleRemoveField: (id: string) => void
+  handleReorderField: (fromId: string, toId: string) => void
   handleAddOption: (id: string, option: string) => void
   handleRemoveOption: (id: string, index: number) => void
 }
@@ -33,12 +34,26 @@ export function FormBuilderStep({
   handleAddField,
   handleUpdateField,
   handleRemoveField,
+  handleReorderField,
   handleAddOption,
   handleRemoveOption,
 }: FormBuilderStepProps) {
   const [editingId, setEditingId] = useState<string | null>(fields[0]?.id ?? null)
   const [showTypes, setShowTypes] = useState(false)
   const [previewTab, setPreviewTab] = useState<"builder" | "preview">("builder")
+  const draggedId = useRef<string | null>(null)
+  const previousFieldCount = useRef(fields.length)
+
+  useEffect(() => {
+    if (fields.length > previousFieldCount.current) {
+      setEditingId(fields[fields.length - 1]?.id ?? null)
+    }
+    previousFieldCount.current = fields.length
+
+    if (!editingId && fields[0]) {
+      setEditingId(fields[0].id)
+    }
+  }, [editingId, fields])
 
   const fieldTypes = useMemo(
     () => [
@@ -55,23 +70,26 @@ export function FormBuilderStep({
     []
   )
 
-  const addSelectedField = () => {
-    handleAddField()
+  const addSelectedField = (type: FieldType) => {
+    handleAddField(undefined, type)
     setShowTypes(false)
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-5">
       <div className="grid grid-cols-2 gap-2 lg:hidden">
         <Button variant={previewTab === "builder" ? "default" : "outline"} onClick={() => setPreviewTab("builder")}>Builder</Button>
         <Button variant={previewTab === "preview" ? "default" : "outline"} onClick={() => setPreviewTab("preview")}>Preview</Button>
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-[minmax(0,55fr)_minmax(360px,45fr)]">
-        <section className={previewTab === "preview" ? "hidden lg:block" : "space-y-4"}>
-          <header>
-            <h2 className="font-display text-lg font-semibold">Candidate fields</h2>
-            <p className="mt-1 text-[13px] text-muted-foreground">Define what applicants will fill out.</p>
+      <div className="grid gap-6 lg:grid-cols-[minmax(0,54fr)_minmax(360px,46fr)]">
+        <section className={previewTab === "preview" ? "hidden lg:block" : "space-y-4 rounded-lg border bg-card p-4 shadow-xs"}>
+          <header className="flex flex-col gap-3 border-b pb-4 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <h2 className="font-display text-lg font-semibold">Candidate fields</h2>
+              <p className="mt-1 text-[13px] text-muted-foreground">Drag fields to reorder. Click the pencil to edit.</p>
+            </div>
+            <Badge variant="secondary" className="w-fit rounded-md">{fields.length} fields</Badge>
           </header>
 
           <div className="space-y-2">
@@ -80,23 +98,77 @@ export function FormBuilderStep({
               const editing = editingId === field.id
 
               return (
-                <div key={field.id} className="rounded-xl border bg-card">
-                  <div className="flex items-center gap-3 px-3 py-2.5">
-                    <GripVertical className="size-4 text-muted-foreground" />
-                    <HugeIcon name={locked ? "lock" : "edit"} className="size-4 text-muted-foreground" />
-                    <div className="min-w-0 flex-1">
-                      <p className="truncate text-sm font-medium">{field.label || "Untitled field"}</p>
-                      <p className="text-xs text-muted-foreground">{field.type}</p>
-                    </div>
-                    {field.required && <Badge variant="secondary" className="rounded-full">Required</Badge>}
-                    {locked && <Badge className="rounded-full bg-accent text-accent-foreground">AI scoring</Badge>}
-                    <Button variant="ghost" size="icon-sm" onClick={() => setEditingId(editing ? null : field.id)}>
+                <div
+                  key={field.id}
+                  draggable
+                  onDragStart={(event) => {
+                    draggedId.current = field.id
+                    event.dataTransfer.effectAllowed = "move"
+                  }}
+                  onDragOver={(event) => {
+                    event.preventDefault()
+                    event.dataTransfer.dropEffect = "move"
+                  }}
+                  onDrop={(event) => {
+                    event.preventDefault()
+                    if (draggedId.current) {
+                      handleReorderField(draggedId.current, field.id)
+                      draggedId.current = null
+                    }
+                  }}
+                  onDragEnd={() => {
+                    draggedId.current = null
+                  }}
+                  className={`rounded-lg border bg-background transition ${
+                    editing ? "border-primary" : "hover:bg-secondary/50"
+                  }`}
+                >
+                  <div className="flex items-center gap-3 px-3 py-3">
+                    <button
+                      type="button"
+                      className="cursor-grab text-muted-foreground active:cursor-grabbing"
+                      aria-label={`Drag ${field.label || "field"}`}
+                      title="Drag to reorder"
+                    >
+                      <GripVertical className="size-4" />
+                    </button>
+                    <HugeIcon name={locked ? "lock" : "edit"} className="size-4 shrink-0 text-muted-foreground" />
+                    <button
+                      type="button"
+                      onClick={() => setEditingId(field.id)}
+                      className="min-w-0 flex-1 text-left"
+                    >
+                      <span className="block truncate text-sm font-medium text-foreground">
+                        {field.label || "Untitled field"}
+                      </span>
+                      <span className="mt-1 flex flex-wrap gap-1.5">
+                        <Badge variant="outline" className="rounded-md">{labelize(field.type)}</Badge>
+                        {field.required && <Badge variant="secondary" className="rounded-md">Required</Badge>}
+                        {locked && <Badge className="rounded-md bg-accent text-accent-foreground">AI scoring</Badge>}
+                      </span>
+                    </button>
+                    <Button
+                      type="button"
+                      variant={editing ? "secondary" : "ghost"}
+                      size="icon-sm"
+                      onClick={() => setEditingId(editing ? null : field.id)}
+                      aria-label={`Edit ${field.label || "field"}`}
+                    >
                       {locked ? <Lock className="size-4" /> : <Pencil className="size-4" />}
                     </Button>
-                    <Button variant="ghost" size="icon-sm" disabled={locked} onClick={() => handleRemoveField(field.id)} className="hover:text-destructive">
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon-sm"
+                      disabled={locked}
+                      onClick={() => handleRemoveField(field.id)}
+                      className="hover:text-destructive"
+                      aria-label={`Remove ${field.label || "field"}`}
+                    >
                       <Trash2 className="size-4" />
                     </Button>
                   </div>
+
                   {editing && (
                     <InlineFieldEditor
                       field={field}
@@ -114,17 +186,19 @@ export function FormBuilderStep({
 
           <div className="relative">
             <Button variant="outline" className="h-12 w-full border-dashed text-muted-foreground" onClick={() => setShowTypes((v) => !v)}>
-              + Add field
+              <HugeIcon name="add-circle" className="size-4" />
+              Add field
             </Button>
             {showTypes && (
-              <div className="absolute bottom-full z-20 mb-2 grid w-full grid-cols-2 gap-1 rounded-xl border bg-popover p-2 shadow-lg sm:grid-cols-3">
+              <div className="absolute bottom-full z-20 mb-2 grid w-full grid-cols-2 gap-1 rounded-lg border bg-popover p-2 shadow-lg sm:grid-cols-3">
                 {fieldTypes.map((type) => (
                   <button
                     key={type.value}
                     type="button"
                     onClick={() => {
-                      setSelectedFieldType(type.value as FieldType)
-                      setTimeout(addSelectedField, 0)
+                      const fieldType = type.value as FieldType
+                      setSelectedFieldType(fieldType)
+                      addSelectedField(fieldType)
                     }}
                     className={`rounded-lg px-3 py-2 text-left text-sm hover:bg-accent ${selectedFieldType === type.value ? "text-primary" : ""}`}
                   >
@@ -137,7 +211,7 @@ export function FormBuilderStep({
         </section>
 
         <aside className={previewTab === "builder" ? "hidden lg:block" : ""}>
-          <div className="sticky top-20 max-h-[calc(100vh-7rem)] overflow-y-auto rounded-xl border bg-card p-4">
+          <div className="sticky top-20 max-h-[calc(100vh-7rem)] overflow-y-auto rounded-lg border bg-card p-4 shadow-xs">
             <p className="mb-3 text-[11px] uppercase tracking-widest text-muted-foreground">Preview only</p>
             <FormPreview
               title={details.formTitle || "Untitled job form"}
@@ -205,9 +279,9 @@ function InlineFieldEditor({
           </div>
           <div className="flex flex-wrap gap-2">
             {field.options?.map((item, index) => (
-              <span key={item} className="rounded-full bg-accent px-2.5 py-1 text-xs text-accent-foreground">
+              <span key={`${item}-${index}`} className="rounded-full bg-accent px-2.5 py-1 text-xs text-accent-foreground">
                 {item}
-                <button className="ml-2" onClick={() => onRemoveOption(index)}>x</button>
+                <button type="button" className="ml-2" onClick={() => onRemoveOption(index)}>x</button>
               </span>
             ))}
           </div>
@@ -227,4 +301,8 @@ function MiniField({ label, children }: { label: string; children: React.ReactNo
       {children}
     </div>
   )
+}
+
+function labelize(value: string) {
+  return value.replaceAll("_", " ").toLowerCase().replace(/\b\w/g, (c) => c.toUpperCase())
 }

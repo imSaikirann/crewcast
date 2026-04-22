@@ -1,9 +1,18 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { Search, SlidersHorizontal, X } from "lucide-react";
 
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import JobCard from "./JobCard";
 import type { Job } from "../types/job";
 
@@ -70,111 +79,126 @@ export default function JobsClient({ jobs }: { jobs: Job[] }) {
       return true;
     });
   }, [jobs, filters]);
+  const activeFilters = hasFilters(filters);
 
   return (
     <section className="space-y-6">
-      <div className="rounded-lg border bg-background p-4 shadow-sm">
-        <div className="grid gap-3 lg:grid-cols-[1fr_180px_180px_180px_180px]">
-          <Input
-            value={filters.query}
-            onChange={(event) =>
-              setFilters((current) => ({
-                ...current,
-                query: event.target.value,
-              }))
-            }
-            placeholder="Search title, company, location, or tech"
-            className="h-11"
-          />
+      <div className="rounded-lg border bg-card/80 p-3 shadow-xs">
+        <div className="flex flex-col gap-3 xl:flex-row xl:items-end">
+          <div className="min-w-0 flex-1">
+            <span className="mb-1 block text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">
+              Search
+            </span>
+            <div className="relative">
+              <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+            <Input
+              value={filters.query}
+              onChange={(event) =>
+                setFilters((current) => ({
+                  ...current,
+                  query: event.target.value,
+                }))
+              }
+              placeholder="Search title, company, location, or tech"
+              className="h-10 rounded-md bg-background pl-9"
+            />
+            </div>
+          </div>
 
-          <FilterSelect
-            label="Work mode"
-            value={filters.workMode}
-            onChange={(value) =>
-              setFilters((current) => ({
-                ...current,
-                workMode: value as Filters["workMode"],
-              }))
-            }
-            options={[
-              ["ALL", "All modes"],
-              ["REMOTE", "Remote"],
-              ["HYBRID", "Hybrid"],
-              ["ONSITE", "On-site"],
-            ]}
-          />
+          <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4 xl:w-[720px]">
+            <FilterSelect
+              label="Mode"
+              value={filters.workMode}
+              onChange={(value) =>
+                setFilters((current) => ({
+                  ...current,
+                  workMode: value as Filters["workMode"],
+                }))
+              }
+              options={[
+                ["ALL", "All modes"],
+                ["REMOTE", "Remote"],
+                ["HYBRID", "Hybrid"],
+                ["ONSITE", "On-site"],
+              ]}
+            />
 
-          <FilterSelect
-            label="Experience"
-            value={filters.experience}
-            onChange={(value) =>
-              setFilters((current) => ({
-                ...current,
-                experience: value as Filters["experience"],
-              }))
-            }
-            options={[
-              ["ALL", "All levels"],
-              ["JUNIOR", "Junior"],
-              ["MID", "Mid"],
-              ["SENIOR", "Senior"],
-              ["LEAD", "Lead"],
-            ]}
-          />
+            <FilterSelect
+              label="Level"
+              value={filters.experience}
+              onChange={(value) =>
+                setFilters((current) => ({
+                  ...current,
+                  experience: value as Filters["experience"],
+                }))
+              }
+              options={[
+                ["ALL", "All levels"],
+                ["JUNIOR", "Junior"],
+                ["MID", "Mid"],
+                ["SENIOR", "Senior"],
+                ["LEAD", "Lead"],
+              ]}
+            />
 
-          <FilterSelect
-            label="Role"
-            value={filters.roleType}
-            onChange={(value) =>
-              setFilters((current) => ({
-                ...current,
-                roleType: value as Filters["roleType"],
-              }))
-            }
-            options={[
-              ["ALL", "All roles"],
-              ["FULL_TIME", "Full time"],
-              ["PART_TIME", "Part time"],
-              ["CONTRACT", "Contract"],
-              ["INTERNSHIP", "Internship"],
-            ]}
-          />
+            <FilterSelect
+              label="Role"
+              value={filters.roleType}
+              onChange={(value) =>
+                setFilters((current) => ({
+                  ...current,
+                  roleType: value as Filters["roleType"],
+                }))
+              }
+              options={[
+                ["ALL", "All roles"],
+                ["FULL_TIME", "Full time"],
+                ["PART_TIME", "Part time"],
+                ["CONTRACT", "Contract"],
+                ["INTERNSHIP", "Internship"],
+              ]}
+            />
 
-          <FilterSelect
-            label="Tech"
-            value={filters.tech}
-            onChange={(value) =>
-              setFilters((current) => ({ ...current, tech: value }))
-            }
-            options={[
-              ["ALL", "All tech"],
-              ...techOptions.map((tech) => [tech, tech] as [string, string]),
-            ]}
-          />
+            <FilterSelect
+              label="Tech"
+              value={filters.tech}
+              onChange={(value) =>
+                setFilters((current) => ({ ...current, tech: value }))
+              }
+              options={[
+                ["ALL", "All tech"],
+                ...techOptions.map((tech) => [tech, tech] as [string, string]),
+              ]}
+            />
+          </div>
         </div>
-      </div>
 
-      <div className="flex items-center justify-between gap-4">
-        <p className="text-sm text-muted-foreground">
-          Showing {filteredJobs.length} of {jobs.length} open roles
-        </p>
-        {hasFilters(filters) && (
-          <button
-            type="button"
-            onClick={() =>
-              setFilters({
-                query: "",
-                workMode: "ALL",
-                experience: "ALL",
-                roleType: "ALL",
-                tech: "ALL",
-              })
-            }
-            className="text-sm font-medium text-foreground underline-offset-4 hover:underline"
-          >
-            Clear filters
-          </button>
-        )}
+        <div className="mt-3 flex flex-col gap-2 border-t pt-3 text-sm text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
+          <span className="inline-flex items-center gap-2">
+            <SlidersHorizontal className="size-4" />
+            Showing {filteredJobs.length} of {jobs.length} open roles
+          </span>
+          {activeFilters && (
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              onClick={() =>
+                setFilters({
+                  query: "",
+                  workMode: "ALL",
+                  experience: "ALL",
+                  roleType: "ALL",
+                  tech: "ALL",
+                })
+              }
+              className="w-fit text-foreground"
+            >
+              <X className="size-4" />
+              Clear filters
+            </Button>
+          )}
+        </div>
       </div>
 
       {jobs.length === 0 ? (
@@ -214,19 +238,25 @@ function FilterSelect({
   options: [string, string][];
 }) {
   return (
-    <label className="space-y-1 text-xs font-medium text-muted-foreground">
-      <span>{label}</span>
-      <select
+    <label className="space-y-1">
+      <span className="text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">
+        {label}
+      </span>
+      <Select
         value={value}
-        onChange={(event) => onChange(event.target.value)}
-        className="h-11 w-full rounded-md border bg-background px-3 text-sm text-foreground outline-none transition focus:border-ring focus:ring-ring/50 focus:ring-[3px]"
+        onValueChange={onChange}
       >
-        {options.map(([optionValue, optionLabel]) => (
-          <option key={optionValue} value={optionValue}>
-            {optionLabel}
-          </option>
-        ))}
-      </select>
+        <SelectTrigger className="h-10 w-full bg-background font-medium">
+          <SelectValue />
+        </SelectTrigger>
+        <SelectContent align="start" position="popper" className="min-w-[var(--radix-select-trigger-width)]">
+          {options.map(([optionValue, optionLabel]) => (
+            <SelectItem key={optionValue} value={optionValue}>
+              {optionLabel}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
     </label>
   );
 }

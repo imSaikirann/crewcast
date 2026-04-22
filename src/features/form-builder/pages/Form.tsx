@@ -16,10 +16,13 @@ export default function Page() {
       addField={fb.addField}
       updateField={fb.updateField}
       removeField={fb.removeField}
+      reorderField={fb.reorderField}
       addOption={fb.addOption}
       removeOption={fb.removeOption}
       onSave={fb.save}
       isSaving={fb.isSaving}
+      hasLocalDraft={fb.hasLocalDraft}
+      resetDraft={fb.resetDraft}
     />
   )
 }

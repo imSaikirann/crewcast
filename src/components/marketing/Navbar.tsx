@@ -50,9 +50,9 @@ export default function Navbar() {
   if (hideNavbar) return null;
 
   const navLinks = [
-    { label: "How it works", href: "/#how-it-works" },
-    { label: "Features",     href: "/#features" },
-    { label: "Browse jobs",  href: "/jobs" },
+    { label: "How Crewcast works", href: "/#how-it-works" },
+    { label: "Product", href: "/#features" },
+    { label: "Open roles", href: "/jobs" },
   ];
 
   return (
@@ -60,7 +60,6 @@ export default function Navbar() {
       className="fixed inset-x-0 top-0 z-50 transition-transform duration-300"
       style={{
         transform: hidden ? "translateY(-100%)" : "translateY(0)",
-        fontFamily: "var(--lc-mono)",
       }}
     >
       {/* Bar */}
@@ -73,23 +72,23 @@ export default function Navbar() {
           transition: "border-color 0.2s, background 0.2s",
         }}
       >
-        <div className="mx-auto flex h-14 max-w-[1100px] items-center justify-between px-6">
+        <div className="mx-auto flex h-16 max-w-[1180px] items-center justify-between px-6">
 
           {/* ── Logo ── */}
-          <Link href="/" className="flex items-center gap-2 no-underline">
-            <CrewcastMark className="h-7 w-7 rounded-md bg-transparent p-0" />
-            <span className="text-[13px] font-medium tracking-tight" style={{ color: "var(--lc-text)" }}>
+          <Link href="/" className="flex items-center gap-3 no-underline">
+            <CrewcastMark className="h-9 w-9 rounded-lg bg-transparent p-0" />
+            <span className="font-display text-[17px] font-semibold tracking-tight" style={{ color: "var(--lc-text)" }}>
               Crewcast
             </span>
           </Link>
 
           {/* ── Desktop links ── */}
-          <div className="hidden md:flex items-center gap-0.5">
+          <div className="hidden md:flex items-center gap-1">
             {navLinks.map((l) => (
               <Link
                 key={l.label}
                 href={l.href}
-                className="px-3 py-2 rounded-lg text-[12px] transition-colors no-underline"
+                className="rounded-lg px-3.5 py-2 text-[14px] font-medium transition-colors no-underline"
                 style={{ color: "var(--lc-text-2)" }}
                 onMouseEnter={(e) => (e.currentTarget.style.color = "var(--lc-text)")}
                 onMouseLeave={(e) => (e.currentTarget.style.color = "var(--lc-text-2)")}
@@ -101,7 +100,7 @@ export default function Navbar() {
             {user?.role === "admin" && (
               <Link
                 href="/admin"
-                className="px-3 py-2 rounded-lg text-[12px] transition-colors no-underline"
+                className="rounded-lg px-3.5 py-2 text-[14px] font-medium transition-colors no-underline"
                 style={{ color: "var(--lc-text-2)" }}
                 onMouseEnter={(e) => (e.currentTarget.style.color = "var(--lc-text)")}
                 onMouseLeave={(e) => (e.currentTarget.style.color = "var(--lc-text-2)")}
@@ -116,31 +115,31 @@ export default function Navbar() {
             {!user ? (
               <button
                 onClick={() => signIn("google")}
-                className="flex items-center gap-1.5 text-[12px] font-medium px-4 py-[7px] rounded-lg transition-opacity hover:opacity-90"
+                className="flex items-center gap-2 rounded-lg px-4 py-2 text-[14px] font-semibold transition-opacity hover:opacity-90"
                 style={{ background: "var(--lc-accent)", color: "var(--lc-accent-text)" }}
               >
-                Get started <ArrowRight size={12} />
+                Start hiring <ArrowRight size={14} />
               </button>
             ) : (
               <div className="relative" data-profile-menu>
                 <button
                   onClick={() => setProfileOpen((v) => !v)}
-                  className="flex items-center gap-2 px-3 py-1.5 rounded-lg border transition-colors"
+                  className="flex items-center gap-2 rounded-lg border px-3 py-2 transition-colors"
                   style={{ border: "1px solid var(--lc-border)", background: "var(--lc-bg-1)" }}
                   onMouseEnter={(e) => (e.currentTarget.style.borderColor = "var(--lc-border-hover)")}
                   onMouseLeave={(e) => (e.currentTarget.style.borderColor = "var(--lc-border)")}
                 >
                   {user.image ? (
-                    <Image src={user.image} alt="profile" width={20} height={20} className="rounded" />
+                    <Image src={user.image} alt="profile" width={24} height={24} className="rounded-md" />
                   ) : (
                     <div
-                      className="w-5 h-5 rounded flex items-center justify-center text-[10px] font-medium"
+                      className="flex size-6 items-center justify-center rounded-md text-[11px] font-medium"
                       style={{ background: "var(--lc-accent-dim)", color: "var(--lc-accent)" }}
                     >
                       {user.name?.[0]?.toUpperCase() ?? "U"}
                     </div>
                   )}
-                  <span className="text-[12px]" style={{ color: "var(--lc-text-2)" }}>
+                  <span className="text-[13px] font-medium" style={{ color: "var(--lc-text-2)" }}>
                     {user.name?.split(" ")[0]?.toLowerCase()}
                   </span>
                   <ChevronDown
@@ -216,7 +215,7 @@ export default function Navbar() {
             borderColor: "var(--lc-border)",
           }}
         >
-          <div className="max-w-[1100px] mx-auto px-6 py-4 space-y-0.5">
+          <div className="mx-auto max-w-[1180px] space-y-1 px-6 py-4">
             {navLinks.map((l) => (
               <Link
                 key={l.label}
@@ -249,7 +248,7 @@ export default function Navbar() {
                   className="flex items-center justify-center gap-2 w-full py-3 rounded-lg text-[13px] font-medium transition-opacity hover:opacity-90"
                   style={{ background: "var(--lc-accent)", color: "var(--lc-accent-text)" }}
                 >
-                  Get started <ArrowRight size={14} />
+                  Start hiring <ArrowRight size={14} />
                 </button>
               ) : (
                 <div className="space-y-0.5">

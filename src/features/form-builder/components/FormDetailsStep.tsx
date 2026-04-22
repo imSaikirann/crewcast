@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { FormProvider, useForm } from "react-hook-form"
 
 import { Input } from "@/components/ui/input"
@@ -15,9 +15,11 @@ const experiences = ["JUNIOR", "MID", "SENIOR", "LEAD"]
 
 export function FormDetailsStep({
   values,
+  onChange,
   onNext,
 }: {
   values: JobFormDetails
+  onChange?: (v: JobFormDetails) => void
   onNext: (v: JobFormDetails) => void
 }) {
   const [tags, setTags] = useState<string[]>(values.techStack || [])
@@ -26,11 +28,25 @@ export function FormDetailsStep({
   const currentWorkMode = form.watch("workMode") || "REMOTE"
   const currentRoleType = form.watch("roleType") || "FULL_TIME"
 
+  useEffect(() => {
+    form.reset(values)
+    setTags(values.techStack || [])
+  }, [form, values])
+
+  const syncForm = (nextTags = tags) => {
+    onChange?.({
+      ...form.getValues(),
+      techStack: nextTags,
+    })
+  }
+
   const addTag = () => {
     const next = tagInput.trim()
     if (!next || tags.includes(next)) return
-    setTags((current) => [...current, next])
+    const nextTags = [...tags, next]
+    setTags(nextTags)
     setTagInput("")
+    syncForm(nextTags)
   }
 
   return (
@@ -38,11 +54,11 @@ export function FormDetailsStep({
       <form
         id="step1-form"
         onSubmit={form.handleSubmit((data) => onNext({ ...data, techStack: tags }))}
-        className="space-y-8"
+        className="space-y-6 rounded-lg border bg-card p-5 shadow-xs"
       >
         <header className="flex flex-wrap items-center justify-between gap-3">
           <div>
-            <h1 className="font-display text-[22px] font-semibold">Job details</h1>
+            <h1 className="font-display text-xl font-semibold">Job details</h1>
             <p className="mt-1 text-sm text-muted-foreground">Define the role before building the application.</p>
           </div>
           {values.domainId && (
@@ -54,25 +70,34 @@ export function FormDetailsStep({
 
         <Section title="Role info">
           <Field label="Title">
-            <Input className="cc-input" placeholder="Frontend Engineer" {...form.register("formTitle", { required: true })} />
+            <Input className="cc-input" placeholder="Frontend Engineer" {...form.register("formTitle", { required: true, onChange: () => syncForm() })} />
           </Field>
           <Field label="Description">
-            <Textarea className="min-h-[120px] rounded-[10px] bg-secondary text-sm focus-visible:border-primary" placeholder="Describe the role..." {...form.register("formDescription", { required: true })} />
+            <Textarea className="min-h-[120px] rounded-[10px] bg-secondary text-sm focus-visible:border-primary" placeholder="Describe the role..." {...form.register("formDescription", { required: true, onChange: () => syncForm() })} />
           </Field>
         </Section>
 
         <Section title="Location & Work">
           <Field label="Location">
-            <Input className="cc-input" placeholder="Remote, Bengaluru, Hyderabad..." {...form.register("location", { required: true })} />
+            <Input className="cc-input" placeholder="Remote, Bengaluru, Hyderabad..." {...form.register("location", { required: true, onChange: () => syncForm() })} />
           </Field>
           <Field label="Work mode">
-            <Segmented value={currentWorkMode} options={workModes} onChange={(value) => form.setValue("workMode", value)} />
+            <Segmented value={currentWorkMode} options={workModes} onChange={(value) => {
+              form.setValue("workMode", value)
+              syncForm()
+            }} />
           </Field>
           <Field label="Role type">
-            <Segmented value={currentRoleType} options={roleTypes} onChange={(value) => form.setValue("roleType", value)} />
+            <Segmented value={currentRoleType} options={roleTypes} onChange={(value) => {
+              form.setValue("roleType", value)
+              syncForm()
+            }} />
           </Field>
           <Field label="Experience level">
-            <Select value={form.watch("experience") || "JUNIOR"} onValueChange={(value) => form.setValue("experience", value)}>
+            <Select value={form.watch("experience") || "JUNIOR"} onValueChange={(value) => {
+              form.setValue("experience", value)
+              syncForm()
+            }}>
               <SelectTrigger className="cc-input">
                 <SelectValue />
               </SelectTrigger>
@@ -86,14 +111,17 @@ export function FormDetailsStep({
         <Section title="Compensation">
           <div className="grid gap-3 sm:grid-cols-2">
             <Field label="Min salary">
-              <Input type="number" className="cc-input" {...form.register("salaryMin", { valueAsNumber: true })} />
+              <Input type="number" className="cc-input" {...form.register("salaryMin", { valueAsNumber: true, onChange: () => syncForm() })} />
             </Field>
             <Field label="Max salary">
-              <Input type="number" className="cc-input" {...form.register("salaryMax", { valueAsNumber: true })} />
+              <Input type="number" className="cc-input" {...form.register("salaryMax", { valueAsNumber: true, onChange: () => syncForm() })} />
             </Field>
           </div>
           <Field label="Currency">
-            <Select value={form.watch("currency") || "INR"} onValueChange={(value) => form.setValue("currency", value)}>
+            <Select value={form.watch("currency") || "INR"} onValueChange={(value) => {
+              form.setValue("currency", value)
+              syncForm()
+            }}>
               <SelectTrigger className="cc-input">
                 <SelectValue />
               </SelectTrigger>
@@ -115,6 +143,7 @@ export function FormDetailsStep({
               {...form.register("openings", {
                 valueAsNumber: true,
                 min: 1,
+                onChange: () => syncForm(),
               })}
             />
             <p className="text-xs text-muted-foreground">
@@ -127,7 +156,11 @@ export function FormDetailsStep({
                 {tags.map((tag) => (
                   <span key={tag} className="rounded-full bg-accent px-2.5 py-1 text-xs text-accent-foreground">
                     {tag}
-                    <button type="button" className="ml-2" onClick={() => setTags(tags.filter((item) => item !== tag))}>x</button>
+                    <button type="button" className="ml-2" onClick={() => {
+                      const nextTags = tags.filter((item) => item !== tag)
+                      setTags(nextTags)
+                      syncForm(nextTags)
+                    }}>x</button>
                   </span>
                 ))}
               </div>
@@ -146,7 +179,7 @@ export function FormDetailsStep({
             </div>
           </Field>
           <Field label="Expiry date">
-            <Input type="date" className="cc-input" {...form.register("expiresAt", { required: true })} />
+            <Input type="date" className="cc-input" {...form.register("expiresAt", { required: true, onChange: () => syncForm() })} />
           </Field>
         </Section>
       </form>

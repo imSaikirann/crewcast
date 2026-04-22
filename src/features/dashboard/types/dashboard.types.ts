@@ -6,6 +6,7 @@ export type JobForm = {
   fieldsCount: number;
   isActive: boolean;
   status: string;
+  roleType: string;
   createdAt: string;
   expiresAt: string;
   submissions: number;
@@ -20,4 +21,7 @@ export type DashboardRecruiter = {
   companyName: string;
   companyEmail: string;
   verified: boolean;
+  plan: string;
+  formLimit: number;
+  totalFormsLimit: number;
 };

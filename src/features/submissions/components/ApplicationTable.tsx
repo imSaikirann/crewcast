@@ -1,6 +1,6 @@
 "use client";
 
-import { Fragment, useEffect, useMemo, useState } from "react";
+import { Fragment, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import { Badge } from "@/components/ui/badge";
@@ -13,39 +13,20 @@ export default function ApplicationTable({
   publicId,
   openings,
   hiredCount,
+  compareIds,
+  onToggleCompare,
 }: {
   applications: Application[];
   publicId: string;
   openings: number;
   hiredCount: number;
+  compareIds: string[];
+  onToggleCompare: (applicationId: string) => void;
 }) {
   const router = useRouter();
   const [openId, setOpenId] = useState<string | null>(applications[0]?.id ?? null);
-  const [compareIds, setCompareIds] = useState<string[]>([]);
   const [updatingId, setUpdatingId] = useState<string | null>(null);
   const roleFilled = hiredCount >= openings;
-  const compareApplications = useMemo(
-    () =>
-      compareIds
-        .map((id) => applications.find((application) => application.id === id))
-        .filter((application): application is Application => Boolean(application)),
-    [applications, compareIds]
-  );
-
-  useEffect(() => {
-    const visibleIds = new Set(applications.map((application) => application.id));
-    setCompareIds((current) => current.filter((id) => visibleIds.has(id)));
-  }, [applications]);
-
-  const toggleCompare = (applicationId: string) => {
-    setCompareIds((current) => {
-      if (current.includes(applicationId)) {
-        return current.filter((id) => id !== applicationId);
-      }
-
-      return [...current.slice(-2), applicationId];
-    });
-  };
 
   const updateStatus = async (applicationId: string, status: string) => {
     setUpdatingId(applicationId);
@@ -83,22 +64,12 @@ export default function ApplicationTable({
 
   return (
     <section className="space-y-4">
-      <CompareApplicationsPanel
-        applications={compareApplications}
-        onClear={() => setCompareIds([])}
-      />
-      {roleFilled && (
-        <div className="rounded-xl border border-emerald-500/30 bg-emerald-500/10 p-4 text-sm text-emerald-300">
-          Hiring is complete for this role: {hiredCount}/{openings} openings filled. Other active candidates have been moved to rejected so the pipeline stays clear.
-        </div>
-      )}
-
-      <div className="overflow-hidden rounded-xl border bg-background shadow-sm">
+      <div className="overflow-hidden rounded-lg border bg-background shadow-sm">
         <div className="flex flex-col gap-3 border-b px-5 py-4 md:flex-row md:items-center md:justify-between">
           <div>
-            <h2 className="text-lg font-semibold">Candidate review table</h2>
+            <h2 className="font-display text-base font-semibold">Candidate review</h2>
             <p className="text-sm text-muted-foreground">
-              Select up to three candidates to compare, or click a row to inspect GitHub evidence.
+              Review applications, update status, or open a row for GitHub evidence.
             </p>
           </div>
           <Badge variant={compareIds.length === 3 ? "default" : "secondary"}>
@@ -138,7 +109,7 @@ export default function ApplicationTable({
                           type="button"
                           onClick={(event) => {
                             event.stopPropagation();
-                            toggleCompare(application.id);
+                            onToggleCompare(application.id);
                           }}
                           className={[
                             "grid size-8 place-items-center rounded-md border text-xs font-semibold transition",
@@ -238,7 +209,7 @@ export default function ApplicationTable({
                   variant={selected ? "default" : "outline"}
                   size="sm"
                   className="mt-3 w-full"
-                  onClick={() => toggleCompare(application.id)}
+                  onClick={() => onToggleCompare(application.id)}
                 >
                   {selected ? `Selected ${compareIds.indexOf(application.id) + 1}` : "Compare"}
                 </Button>
@@ -385,262 +356,6 @@ function ApplicationDetails({ application }: { application: Application }) {
       </div>
     </div>
   );
-}
-
-function CompareApplicationsPanel({
-  applications,
-  onClear,
-}: {
-  applications: Application[];
-  onClear: () => void;
-}) {
-  if (applications.length === 0) {
-    return (
-      <div className="rounded-xl border border-dashed bg-muted/20 p-5">
-        <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
-          <div>
-            <p className="text-sm font-semibold">Compare candidates</p>
-            <p className="text-sm text-muted-foreground">
-              Pick up to three applications from the table to compare score, GitHub evidence, tech match, and responses.
-            </p>
-          </div>
-          <Badge variant="secondary">0/3 selected</Badge>
-        </div>
-      </div>
-    );
-  }
-
-  if (applications.length < 3) {
-    return (
-      <div className="rounded-xl border bg-muted/20 p-5">
-        <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-          <div>
-            <p className="text-sm font-semibold">Compare candidates</p>
-            <p className="text-sm text-muted-foreground">
-              {applications.map((application) => application.fullName).join(", ")} selected. Choose {3 - applications.length} more.
-            </p>
-          </div>
-          <div className="flex items-center gap-2">
-            <ScoreBadge score={getScore(applications[0])} />
-            <Button variant="outline" size="sm" onClick={onClear}>
-              Clear
-            </Button>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  const winner = getComparisonWinner(applications);
-  const responseKeys = Array.from(
-    new Set(applications.flatMap((application) => Object.keys(application.responses)))
-  ).slice(0, 8);
-  const names = applications.map((application) => application.fullName).join(" vs ");
-
-  return (
-    <section className="overflow-hidden rounded-xl border bg-card shadow-sm">
-      <div className="border-b bg-muted/30 px-5 py-4">
-        <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
-          <div>
-            <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-              Three-way comparison
-            </p>
-            <h2 className="mt-1 text-xl font-semibold">
-              {names}
-            </h2>
-          </div>
-          <div className="flex flex-wrap items-center gap-2">
-            {winner ? (
-              <Badge className="bg-primary text-primary-foreground">
-                Stronger fit: {winner.fullName}
-              </Badge>
-            ) : (
-              <Badge variant="secondary">Even score</Badge>
-            )}
-            <Button variant="outline" size="sm" onClick={onClear}>
-              Clear
-            </Button>
-          </div>
-        </div>
-      </div>
-
-      <div className="grid gap-0 lg:grid-cols-3">
-        {applications.map((application, index) => (
-          <CandidateCompareCard
-            key={application.id}
-            application={application}
-            side={`Candidate ${String.fromCharCode(65 + index)}`}
-            highlighted={winner?.id === application.id}
-          />
-        ))}
-      </div>
-
-      <div className="border-t p-5">
-        <p className="mb-3 text-xs font-medium uppercase tracking-wide text-muted-foreground">
-          Response comparison
-        </p>
-        <div className="overflow-hidden rounded-lg border">
-          <table className="w-full text-sm">
-            <thead className="bg-muted/50 text-left text-xs uppercase tracking-wide text-muted-foreground">
-              <tr>
-                <th className="w-[180px] px-4 py-3">Field</th>
-                {applications.map((application) => (
-                  <th key={application.id} className="px-4 py-3">{application.fullName}</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {responseKeys.map((key) => (
-                <tr key={key} className="border-t align-top">
-                  <td className="px-4 py-3 text-xs font-medium capitalize text-muted-foreground">
-                    {key.replace(/_/g, " ")}
-                  </td>
-                  {applications.map((application) => (
-                    <td key={application.id} className="px-4 py-3">{formatValue(application.responses[key])}</td>
-                  ))}
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function CandidateCompareCard({
-  application,
-  side,
-  highlighted,
-}: {
-  application: Application;
-  side: string;
-  highlighted: boolean;
-}) {
-  const score = getScore(application);
-  const breakdown = application.scores?.[0]?.breakdown;
-  const skillsMatch = breakdown?.skillsMatch;
-  const signals = breakdown?.signals;
-  const languages = breakdown?.languages
-    ? Object.entries(breakdown.languages)
-        .sort((a: any, b: any) => Number(b[1]) - Number(a[1]))
-        .slice(0, 5)
-    : [];
-
-  return (
-    <div
-      className={[
-        "space-y-4 p-5 lg:border-r lg:last:border-r-0",
-        highlighted ? "bg-primary/5" : "",
-      ].join(" ")}
-    >
-      <div className="flex items-start justify-between gap-4">
-        <div className="flex min-w-0 items-center gap-3">
-          <Avatar name={application.fullName} />
-          <div className="min-w-0">
-            <p className="text-xs text-muted-foreground">{side}</p>
-            <p className="truncate text-lg font-semibold">{application.fullName}</p>
-            <p className="truncate text-xs text-muted-foreground">{application.email}</p>
-          </div>
-        </div>
-        <ScoreBadge score={score} />
-      </div>
-
-      <div className="grid grid-cols-2 gap-2">
-        <CompareMetric label="Tech match" value={skillsMatch ? `${skillsMatch.percentage}%` : "-"} />
-        <CompareMetric label="GitHub" value={breakdown?.github ? `${breakdown.github}/100` : "-"} />
-        <CompareMetric label="Repos" value={signals?.originalRepos ?? "-"} />
-        <CompareMetric label="Recent" value={signals?.recentRepos ?? "-"} />
-        <CompareMetric label="Stars" value={signals?.stars ?? "-"} />
-        <CompareMetric label="Forks" value={signals?.forks ?? "-"} />
-      </div>
-
-      {skillsMatch && (
-        <div className="rounded-lg border bg-background p-3">
-          <div className="mb-3 flex items-center justify-between">
-            <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-              Required tech
-            </p>
-            <Badge variant="secondary">{skillsMatch.score} pts</Badge>
-          </div>
-          <SkillRow label="Matched" items={skillsMatch.matched} tone="good" />
-          <SkillRow label="Missing" items={skillsMatch.missing} />
-        </div>
-      )}
-
-      {languages.length > 0 && (
-        <div>
-          <p className="mb-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">
-            GitHub languages
-          </p>
-          <div className="flex flex-wrap gap-2">
-            {languages.map(([language, count]) => (
-              <Badge key={language} variant="outline">
-                {language} {String(count)}
-              </Badge>
-            ))}
-          </div>
-        </div>
-      )}
-    </div>
-  );
-}
-
-function CompareMetric({
-  label,
-  value,
-}: {
-  label: string;
-  value: string | number;
-}) {
-  return (
-    <div className="rounded-lg border bg-background px-3 py-2">
-      <p className="text-lg font-semibold">{String(value)}</p>
-      <p className="text-xs text-muted-foreground">{label}</p>
-    </div>
-  );
-}
-
-function SkillRow({
-  label,
-  items,
-  tone,
-}: {
-  label: string;
-  items?: string[];
-  tone?: "good";
-}) {
-  return (
-    <div className="mb-2 last:mb-0">
-      <p className="mb-1 text-xs text-muted-foreground">{label}</p>
-      <div className="flex flex-wrap gap-1.5">
-        {items?.length ? (
-          items.map((item) => (
-            <Badge
-              key={item}
-              className={tone === "good" ? "bg-emerald-600 text-white" : ""}
-              variant={tone === "good" ? "default" : "outline"}
-            >
-              {item}
-            </Badge>
-          ))
-        ) : (
-          <span className="text-xs text-muted-foreground">None</span>
-        )}
-      </div>
-    </div>
-  );
-}
-
-function getComparisonWinner(applications: Application[]) {
-  const sorted = [...applications].sort(
-    (left, right) => (getScore(right) ?? -1) - (getScore(left) ?? -1)
-  );
-  const topScore = getScore(sorted[0]) ?? -1;
-  const secondScore = getScore(sorted[1]) ?? -1;
-
-  if (topScore === secondScore) return null;
-  return sorted[0];
 }
 
 function Detail({ label, value }: { label: string; value: string }) {

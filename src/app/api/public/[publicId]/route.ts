@@ -30,6 +30,7 @@ export async function GET(
         roleType:true,
         workMode:true,
         experience:true,
+        status: true,
         domainId: true,
         expiresAt:true,
       },
@@ -38,6 +39,13 @@ export async function GET(
     if (!form) {
       return NextResponse.json(
         { message: "Form not found" },
+        { status: 404 }
+      );
+    }
+
+    if (form.status !== "PUBLISHED" || form.expiresAt < new Date()) {
+      return NextResponse.json(
+        { message: "This form is not accepting applications right now" },
         { status: 404 }
       );
     }

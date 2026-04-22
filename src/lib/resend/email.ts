@@ -1,64 +1,37 @@
-type UnosendEmailPayload = {
-  from: string
-  to: string[]
-  subject: string
-  html: string
-  text?: string
-}
+import { Resend } from "resend"
 
-const UNOSEND_EMAIL_ENDPOINT = "https://api.unosend.co/v1/emails"
-
-function getUnosendConfig() {
-  const apiKey = process.env.UNOSEND_API_KEY
-  const from = process.env.UNOSEND_FROM_EMAIL || process.env.EMAIL_FROM
+function getResendConfig() {
+  const apiKey = process.env.RESEND_API_KEY
+  const from = process.env.RESEND_FROM_EMAIL || process.env.EMAIL_FROM
 
   if (!apiKey) {
-    throw new Error("UNOSEND_API_KEY is not set")
+    throw new Error("RESEND_API_KEY is not set")
   }
 
   if (!from) {
-    throw new Error("UNOSEND_FROM_EMAIL is not set")
+    throw new Error("RESEND_FROM_EMAIL or EMAIL_FROM is not set")
   }
 
   return { apiKey, from }
-}
-
-async function sendUnosendEmail(payload: UnosendEmailPayload) {
-  const { apiKey } = getUnosendConfig()
-
-  const response = await fetch(UNOSEND_EMAIL_ENDPOINT, {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${apiKey}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(payload),
-  })
-
-  if (!response.ok) {
-    const details = await response.text().catch(() => "")
-    throw new Error(`Unosend email failed: ${response.status} ${details}`)
-  }
-
-  return response.json().catch(() => null)
 }
 
 export async function sendRecruiterVerificationEmail(
   email: string,
   token: string
 ) {
-  const { from } = getUnosendConfig()
+  const { apiKey, from } = getResendConfig()
   const baseUrl = process.env.NEXTAUTH_URL
 
   if (!baseUrl) {
     throw new Error("NEXTAUTH_URL is not set")
   }
 
+  const resend = new Resend(apiKey)
   const link = `${baseUrl}/api/recruiters/new-account/verify?token=${token}`
 
-  return sendUnosendEmail({
+  const { data, error } = await resend.emails.send({
     from,
-    to: [email],
+    to: email,
     subject: "Verify your company email on Crewcast",
     html: `
       <div style="font-family: Arial, sans-serif; max-width: 560px; margin: 0 auto; color: #111827;">
@@ -75,4 +48,10 @@ export async function sendRecruiterVerificationEmail(
     `,
     text: `Verify your company email on Crewcast: ${link}`,
   })
+
+  if (error) {
+    throw new Error(`Resend email failed: ${error.message}`)
+  }
+
+  return data
 }

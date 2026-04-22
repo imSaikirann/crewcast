@@ -41,7 +41,7 @@ export function PublicFormShell({ form }: { form: any }) {
       <main className="min-h-screen bg-background px-4 py-8">
         <div className="mx-auto max-w-[600px] space-y-6">
           <header className="flex items-center justify-between text-xs text-muted-foreground">
-            <CrewcastWordmark markClassName="h-10 w-36 rounded-md" />
+            <CrewcastWordmark markClassName="size-10 rounded-md" />
             <span>Powered by Crewcast</span>
           </header>
 

@@ -1,16 +1,14 @@
 "use client";
 
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-import { Badge } from "@/components/ui/badge";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 import { HugeIcon } from "@/utils/hugeicons";
 
-import { StatCard } from "../components/StatCard";
 import { JobFormsCard } from "../components/JobFormsCard";
+import { StatCard } from "../components/StatCard";
 import type { DashboardRecruiter, JobForm } from "../types/dashboard.types";
 
 export default function DashboardScreen({
@@ -24,113 +22,144 @@ export default function DashboardScreen({
   const [creating, setCreating] = useState(false);
 
   const totalForms = forms.length;
-  const totalSubmissions = forms.reduce((acc, f) => acc + f.submissions, 0);
-  const newSubmissions = forms.reduce((acc, f) => acc + f.newSubmissions, 0);
-  const activeForms = forms.filter((f) => f.isActive).length;
-  const totalViews = forms.reduce((acc, f) => acc + f.views, 0);
+  const monthlyForms = forms.filter((form) => isThisMonth(form.createdAt)).length;
+  const totalSubmissions = forms.reduce((acc, form) => acc + form.submissions, 0);
+  const activeForms = forms.filter((form) => form.isActive).length;
+  const totalViews = forms.reduce((acc, form) => acc + form.views, 0);
   const conversionRate =
     totalViews > 0 ? Math.round((totalSubmissions / totalViews) * 100) : 0;
+  const hasInternshipRole = forms.some((form) => form.roleType === "INTERNSHIP");
+  const hasApplications = totalSubmissions > 0;
 
   return (
-    <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
-        <section className="space-y-6">
-          <header>
-            <h1 className="font-display text-[22px] font-semibold tracking-tight">
-              Good morning, {firstName(recruiter.companyName)}
-            </h1>
-            <p className="mt-1 text-sm text-muted-foreground">
-              {recruiter.companyName} workspace
-            </p>
-          </header>
+    <div className="space-y-6">
+      <div className="flex flex-col gap-4 border-b pb-5 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
+            Dashboard
+          </p>
+          <h1 className="mt-2 font-display text-2xl font-semibold tracking-tight">
+            Good morning, {firstName(recruiter.companyName)}
+          </h1>
+          <p className="mt-1 text-sm text-muted-foreground">
+            {recruiter.companyName} hiring workspace
+          </p>
+        </div>
+        <Button
+          className="h-10 w-full sm:w-auto"
+          disabled={creating}
+          onClick={() => {
+            setCreating(true);
+            router.push("/dashboard/domains");
+          }}
+        >
+          <HugeIcon name={creating ? "loading" : "add-circle"} className="size-4" />
+          Create form
+        </Button>
+      </div>
 
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
-            <StatCard
-              title="Active Forms"
-              value={`${activeForms}/${totalForms}`}
-              delta="+8.4%"
-              intent="primary"
-              icon="briefcase"
-            />
-            <StatCard
-              title="Total Applications"
-              value={totalSubmissions}
-              delta="+12.1%"
-              icon="user-add"
-            />
-            <StatCard
-              title="Total Views"
-              value={totalViews}
-              delta="+4.2%"
-              icon="views"
-            />
-            <StatCard
-              title="Avg Conversion"
-              value={`${conversionRate}%`}
-              delta={conversionRate > 0 ? "+2.0%" : "0%"}
-              icon="target-03"
-            />
-          </div>
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
+        <StatCard
+          title="Active forms"
+          value={`${activeForms}/${totalForms}`}
+          intent="primary"
+          icon="briefcase"
+        />
+        <StatCard title="Applications" value={totalSubmissions} icon="user-add" />
+        <StatCard title="Form views" value={totalViews} icon="views" />
+        <StatCard title="Conversion" value={`${conversionRate}%`} icon="target-03" />
+      </div>
 
-          <JobFormsCard forms={forms} />
-        </section>
+      <div className="grid gap-3 lg:grid-cols-[1fr_auto]">
+        <div className="grid gap-3 sm:grid-cols-2">
+          <LimitCard
+            title="Active published forms"
+            value={activeForms}
+            limit={recruiter.formLimit}
+            helper="Forms currently live and accepting applications."
+          />
+          <LimitCard
+            title="Monthly form creation"
+            value={monthlyForms}
+            limit={recruiter.totalFormsLimit}
+            helper="Forms created on your current plan."
+          />
+        </div>
+        <Button disabled variant="outline" className="h-full min-h-24 justify-center">
+          <HugeIcon name="credit-card" className="size-4" />
+          Upgrade plan
+        </Button>
+      </div>
 
-        <aside className="space-y-4 lg:sticky lg:top-20 lg:h-fit">
-          <Card className="border-muted-foreground/15 shadow-xs">
-            <CardContent className="space-y-3 p-4">
-              <p className="text-[13px] font-semibold uppercase tracking-widest text-muted-foreground">
-                Quick Actions
-              </p>
-              <Button
-                className="h-11 w-full justify-start bg-primary text-primary-foreground hover:bg-primary/90"
-                disabled={creating}
-                onClick={() => {
-                  setCreating(true);
-                  router.push("/dashboard/domains");
-                }}
-              >
-                <HugeIcon name={creating ? "loading" : "add-circle"} className="size-4" />
-                Create a Form
-              </Button>
-              <Button asChild variant="outline" className="h-11 w-full justify-start">
-                <Link href="/dashboard/recruiter/profile">
-                  <HugeIcon name="user" className="size-4" />
-                  Edit Profile
-                </Link>
-              </Button>
-            </CardContent>
-          </Card>
+      <section className="space-y-4">
+        {!recruiter.verified && (
+          <Alert variant="warning" className="rounded-lg">
+            <AlertTitle>Verify your company email</AlertTitle>
+            <AlertDescription>
+              Publish access stays locked until {recruiter.companyEmail} is verified.
+            </AlertDescription>
+          </Alert>
+        )}
 
-          <Card className="border-muted-foreground/15 shadow-xs">
-            <CardContent className="space-y-3 p-4">
-              <p className="text-[13px] font-semibold uppercase tracking-widest text-muted-foreground">
-                Verification Status
-              </p>
-              {recruiter.verified ? (
-                <div className="flex items-center gap-3 text-sm text-[#4CAF82]">
-                  <HugeIcon name="verified-checkmark" className="size-5" />
-                  <span>{recruiter.companyEmail} is verified</span>
-                </div>
-              ) : (
-                <div className="rounded-xl border border-primary/30 bg-accent p-3 text-sm text-accent-foreground">
-                  Your company email is not verified. Forms cannot be published until verification is complete.
-                </div>
-              )}
-            </CardContent>
-          </Card>
+        {totalForms > 0 && !hasInternshipRole && (
+          <Alert className="rounded-lg">
+            <AlertTitle>No internship role detected</AlertTitle>
+            <AlertDescription>
+              Create an internship form when you are hiring interns so candidates see the right role type and expectations.
+            </AlertDescription>
+          </Alert>
+        )}
 
-          <Card className="border-muted-foreground/15 shadow-xs">
-            <CardContent className="space-y-2 p-4">
-              <Badge variant="secondary" className="rounded-md">What's new</Badge>
-              <p className="text-sm leading-6 text-muted-foreground">
-                Domain templates now keep GitHub scoring fields locked, so every software role stays ready for automated evaluation.
-              </p>
-            </CardContent>
-          </Card>
-        </aside>
+        {totalForms > 0 && !hasApplications && (
+          <Alert className="rounded-lg">
+            <AlertTitle>No candidates yet</AlertTitle>
+            <AlertDescription>
+              Share a public job link from any form. New applications will appear here once candidates apply.
+            </AlertDescription>
+          </Alert>
+        )}
+
+        <JobFormsCard forms={forms} />
+      </section>
+    </div>
+  );
+}
+
+function LimitCard({
+  title,
+  value,
+  limit,
+  helper,
+}: {
+  title: string;
+  value: number;
+  limit: number;
+  helper: string;
+}) {
+  const percent = limit > 0 ? Math.min(100, Math.round((value / limit) * 100)) : 0;
+
+  return (
+    <div className="rounded-lg border bg-card p-4 shadow-xs">
+      <div className="flex items-center justify-between gap-3">
+        <p className="text-sm font-medium text-foreground">{title}</p>
+        <span className="rounded-md bg-muted px-2 py-1 text-xs font-medium text-muted-foreground">
+          {value}/{limit}
+        </span>
+      </div>
+      <div className="mt-3 h-2 rounded-full bg-muted">
+        <div className="h-2 rounded-full bg-primary" style={{ width: `${percent}%` }} />
+      </div>
+      <p className="mt-2 text-xs text-muted-foreground">{helper}</p>
     </div>
   );
 }
 
 function firstName(value: string) {
   return value?.split(" ")?.[0] || "there";
+}
+
+function isThisMonth(value: string) {
+  const date = new Date(value);
+  const now = new Date();
+  return date.getFullYear() === now.getFullYear() && date.getMonth() === now.getMonth();
 }

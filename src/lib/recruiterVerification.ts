@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/prisma"
+import { sendRecruiterVerificationEmail } from "@/lib/resend/email"
 import { generateToken, hashToken } from "@/lib/tokens"
-import { sendRecruiterVerificationEmail } from "@/lib/unosend/email"
 
 const VERIFICATION_TTL_MS = 1000 * 60 * 60 * 24
 

@@ -51,6 +51,8 @@ export async function submitApplication({
     select: {
       id: true,
       isFlagged: true,
+      status: true,
+      expiresAt: true,
       fields: true,
       techStack: true,
       openings: true,
@@ -63,6 +65,10 @@ export async function submitApplication({
 
   if (form.isFlagged) {
     return failure("This job has been flagged", 403);
+  }
+
+  if (form.status !== "PUBLISHED" || form.expiresAt < new Date()) {
+    return failure("This form is not accepting applications right now", 403);
   }
 
   const openings = form.openings ?? 1;

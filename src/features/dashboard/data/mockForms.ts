@@ -10,6 +10,7 @@ export const forms: JobForm[] = [
     fieldsCount: 2,
     isActive: true,
     status: "PUBLISHED",
+    roleType: "FULL_TIME",
     createdAt: "2025-01-26",
     expiresAt: "2026-01-11",
     submissions: 6,

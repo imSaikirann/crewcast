@@ -74,23 +74,22 @@ export default async function JobsPage() {
   }));
 
   return (
-    <main className="min-h-screen bg-background px-4 py-24 text-foreground transition-colors sm:px-6">
-      <div className="mx-auto max-w-7xl space-y-8">
-        <section className="grid gap-6 lg:grid-cols-[1fr_360px] lg:items-end">
-          <div className="space-y-3">
-            <p className="text-sm font-medium text-muted-foreground">
+    <main className="min-h-screen bg-background px-4 py-20 text-foreground transition-colors sm:px-10">
+      <div className="mx-auto max-w-6xl space-y-7">
+        <section className="grid gap-6 border-b pb-7 lg:grid-cols-[minmax(0,1fr)_360px] lg:items-end">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
               Public job board
             </p>
-            <h1 className="max-w-3xl text-4xl font-bold tracking-tight sm:text-5xl">
+            <h1 className="mt-3 max-w-3xl font-display text-4xl font-semibold tracking-tight sm:text-5xl">
               Open roles hiring through Crewcast
             </h1>
-            <p className="max-w-2xl text-base text-muted-foreground">
-              Browse live hiring forms, review the role details, and apply with
-              your GitHub profile for software jobs.
+            <p className="mt-3 max-w-2xl text-base leading-7 text-muted-foreground">
+              Browse live hiring forms, review role details, and apply with your GitHub profile for software jobs.
             </p>
           </div>
 
-          <div className="grid grid-cols-3 gap-3 rounded-lg border bg-background p-4 shadow-sm">
+          <div className="grid grid-cols-3 gap-3 rounded-lg border bg-card p-4 shadow-xs">
             <BoardStat label="Open jobs" value={jobData.length} />
             <BoardStat
               label="Remote"
@@ -114,8 +113,8 @@ export default async function JobsPage() {
 
 function BoardStat({ label, value }: { label: string; value: number }) {
   return (
-    <div>
-      <p className="text-2xl font-bold">{value}</p>
+    <div className="rounded-md bg-secondary/50 px-3 py-2">
+      <p className="font-display text-2xl font-semibold">{value}</p>
       <p className="text-xs text-muted-foreground">{label}</p>
     </div>
   );

@@ -1,74 +1,145 @@
 import Link from "next/link";
 import { CrewcastWordmark } from "@/components/brand/CrewcastLogo";
 
-const GitHubMark = ({ className = "h-4 w-4" }: { className?: string }) => (
-  <svg viewBox="0 0 16 16" className={`fill-current ${className}`} aria-hidden="true">
-    <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z" />
-  </svg>
-);
+const links = [
+  { label: "Dashboard", href: "/dashboard" },
+  { label: "Open roles", href: "/jobs" },
+  { label: "How it works", href: "/#how-it-works" },
+  { label: "Features", href: "/#features" },
+];
 
-const links = {
-  Product: [
-    { label: "Dashboard", href: "/dashboard" },
-    { label: "Browse jobs", href: "/jobs" },
-    { label: "How it works", href: "/#how-it-works" },
-  ],
-  Platform: [
-    { label: "Admin panel", href: "/admin" },
-    { label: "Domain setup", href: "/admin/domains" },
-    { label: "Analytics", href: "/admin/analytics" },
-  ],
-  Company: [
-    { label: "About", href: "/about" },
-    { label: "Privacy", href: "/privacy" },
-    { label: "Terms", href: "/terms" },
-  ],
-};
+const socials = [
+  {
+    label: "GitHub",
+    href: "https://github.com",
+    icon: (
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.745 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" />
+      </svg>
+    ),
+  },
+  {
+    label: "Twitter",
+    href: "https://twitter.com",
+    icon: (
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+      </svg>
+    ),
+  },
+];
 
 export default function Footer() {
   return (
-    <footer className="border-t border-[var(--landing-border)] bg-[var(--landing-bg)] px-5 py-16 sm:px-6">
-      <div className="mx-auto max-w-7xl">
-        <div className="grid gap-12 lg:grid-cols-[1.5fr_repeat(3,1fr)]">
+    <footer className="relative overflow-hidden border-t border-[var(--landing-border)] bg-[var(--landing-bg)]">
+      {/* Subtle dot grid texture */}
+      <div
+        className="pointer-events-none absolute inset-0 opacity-[0.03]"
+        style={{
+          backgroundImage:
+            "radial-gradient(circle, var(--landing-text) 1px, transparent 1px)",
+          backgroundSize: "28px 28px",
+        }}
+      />
+
+      {/* Accent glow top-left */}
+      <div
+        className="pointer-events-none absolute -left-32 -top-32 h-64 w-64 rounded-full opacity-10 blur-3xl"
+        style={{ background: "var(--landing-accent)" }}
+      />
+
+      <div className="relative mx-auto max-w-7xl px-5 sm:px-6">
+        {/* Big display headline */}
+        <div className="overflow-hidden border-b border-[var(--landing-border)] py-12 sm:py-16">
+          <p
+            className="font-display font-semibold leading-none tracking-tight text-[var(--landing-accent)]"
+            style={{ fontSize: "clamp(3.2rem,12vw,8.5rem)" }}
+          >
+            Hire your crew.
+          </p>
+          <p
+            className="mt-1 font-display font-semibold leading-none tracking-tight opacity-20"
+            style={{
+              fontSize: "clamp(3.2rem,12vw,8.5rem)",
+              color: "var(--landing-text)",
+              WebkitTextStroke: "1px var(--landing-text)",
+              WebkitTextFillColor: "transparent",
+            }}
+          >
+            Ship faster.
+          </p>
+        </div>
+
+        {/* Middle row: brand + nav + socials */}
+        <div className="grid grid-cols-1 gap-10 py-10 sm:grid-cols-3 sm:gap-6">
           {/* Brand */}
-          <div className="space-y-4">
+          <div className="flex flex-col gap-3">
             <CrewcastWordmark />
-            <p className="font-body max-w-xs text-sm leading-6 text-[var(--landing-subtle)]">
-              GitHub-first hiring forms for software teams. Score real engineering work, not just resumes.
-            </p>
-            <p className="font-mono-hero text-xs text-[var(--landing-border)]">
-              // built for technical hiring
+            <p className="max-w-[18ch] font-body text-sm leading-relaxed text-[var(--landing-subtle)]">
+              GitHub-first hiring forms for engineering teams.
             </p>
           </div>
 
-          {/* Link groups */}
-          {Object.entries(links).map(([group, items]) => (
-            <div key={group} className="space-y-4">
-              <p className="font-mono-hero text-[10px] uppercase tracking-widest text-[var(--landing-subtle)]">{group}</p>
-              <ul className="space-y-2.5">
-                {items.map((item) => (
-                  <li key={item.label}>
-                    <Link
-                      href={item.href}
-                      className="font-body text-sm text-[var(--landing-muted)] transition-colors hover:text-[var(--landing-text)]"
-                    >
-                      {item.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
+          {/* Nav links */}
+          <div className="flex flex-col gap-1">
+            <p className="mb-2 font-body text-[10px] font-semibold uppercase tracking-[0.15em] text-[var(--landing-muted)]">
+              Navigation
+            </p>
+            {links.map((item) => (
+              <Link
+                key={item.label}
+                href={item.href}
+                className="group flex w-fit items-center gap-1.5 font-body text-sm text-[var(--landing-muted)] transition-colors duration-150 hover:text-[var(--landing-text)]"
+              >
+                <span
+                  className="inline-block h-px w-0 bg-[var(--landing-accent)] transition-all duration-200 group-hover:w-3"
+                />
+                {item.label}
+              </Link>
+            ))}
+          </div>
+
+          {/* Social + CTA */}
+          <div className="flex flex-col gap-4">
+            <p className="font-body text-[10px] font-semibold uppercase tracking-[0.15em] text-[var(--landing-muted)]">
+              Connect
+            </p>
+            <div className="flex gap-3">
+              {socials.map((s) => (
+                <a
+                  key={s.label}
+                  href={s.href}
+                  aria-label={s.label}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex h-8 w-8 items-center justify-center rounded-md border border-[var(--landing-border)] text-[var(--landing-muted)] transition-all duration-150 hover:border-[var(--landing-accent)] hover:text-[var(--landing-accent)]"
+                >
+                  {s.icon}
+                </a>
+              ))}
             </div>
-          ))}
+
+            <a
+              href="/jobs"
+              className="mt-auto inline-flex w-fit items-center gap-2 rounded-md border border-[var(--landing-accent)] px-4 py-2 font-body text-sm font-medium text-[var(--landing-accent)] transition-all duration-150 hover:bg-[var(--landing-accent)] hover:text-[var(--landing-bg)]"
+            >
+              Browse open roles
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M5 12h14M12 5l7 7-7 7" />
+              </svg>
+            </a>
+          </div>
         </div>
 
         {/* Bottom bar */}
-        <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-[var(--landing-border)] pt-8 sm:flex-row">
-          <p className="font-body text-xs text-[var(--landing-subtle)]">
-            © {new Date().getFullYear()} Crewcast. All rights reserved.
-          </p>
-          <p className="font-mono-hero text-xs text-[var(--landing-border)]">
-            GitHub data used is public only.
-          </p>
+        <div className="flex flex-col gap-2 border-t border-[var(--landing-border)] py-5 font-body text-xs text-[var(--landing-subtle)] sm:flex-row sm:items-center sm:justify-between">
+          <p>&copy; {new Date().getFullYear()} Crewcast. All rights reserved.</p>
+          <div className="flex items-center gap-4">
+            <p>Public GitHub data only.</p>
+            <span className="hidden h-3 w-px bg-[var(--landing-border)] sm:block" />
+            <Link href="/privacy" className="hover:text-[var(--landing-text)] transition-colors">Privacy</Link>
+            <Link href="/terms" className="hover:text-[var(--landing-text)] transition-colors">Terms</Link>
+          </div>
         </div>
       </div>
     </footer>

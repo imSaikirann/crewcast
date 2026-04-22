@@ -5,9 +5,9 @@ import Link from "next/link";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import ApplicationFilters from "@/features/submissions/components/ApplicationFilters";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import ApplicationTable from "@/features/submissions/components/ApplicationTable";
-import ApplicationsStats from "@/features/submissions/components/ApplicationsStats";
+import { HugeIcon } from "@/utils/hugeicons";
 
 export type Application = {
   id: string;
@@ -42,142 +42,77 @@ export default function ApplicationsView({
   data: Application[];
   form: FormSummary;
 }) {
-  const [search, setSearch] = useState("");
-  const [status, setStatus] = useState("");
-  const [scoreBand, setScoreBand] = useState("");
-  const [sort, setSort] = useState("score_desc");
+  const [compareIds, setCompareIds] = useState<string[]>([]);
 
-  const scores = data
-    .map((application) => getScore(application))
-    .filter((score): score is number => typeof score === "number");
-  const averageScore = scores.length
-    ? Math.round(scores.reduce((sum, score) => sum + score, 0) / scores.length)
-    : 0;
-  const topScore = scores.length ? Math.max(...scores) : 0;
-  const roleFilled = form.hiredCount >= form.openings;
+  const applications = useMemo(
+    () =>
+      [...data].sort(
+        (left, right) =>
+          new Date(right.createdAt).getTime() - new Date(left.createdAt).getTime()
+      ),
+    [data]
+  );
+  const compareApplications = useMemo(
+    () =>
+      compareIds
+        .map((id) => applications.find((application) => application.id === id))
+        .filter((application): application is Application => Boolean(application)),
+    [compareIds, applications]
+  );
 
-  const filtered = useMemo(() => {
-    const q = search.trim().toLowerCase();
+  const toggleCompare = (applicationId: string) => {
+    setCompareIds((current) => {
+      if (current.includes(applicationId)) {
+        return current.filter((id) => id !== applicationId);
+      }
 
-    const next = data.filter((application) => {
-      const score = getScore(application);
-      const matchesSearch =
-        !q ||
-        [
-          application.fullName,
-          application.email,
-          JSON.stringify(application.responses),
-          JSON.stringify(application.scores?.[0]?.breakdown ?? {}),
-        ]
-          .filter(Boolean)
-          .some((value) => String(value).toLowerCase().includes(q));
-
-      const matchesStatus = status ? application.status === status : true;
-      const matchesScore =
-        !scoreBand ||
-        (scoreBand === "strong" && typeof score === "number" && score >= 80) ||
-        (scoreBand === "good" &&
-          typeof score === "number" &&
-          score >= 60 &&
-          score < 80) ||
-        (scoreBand === "low" && typeof score === "number" && score < 60) ||
-        (scoreBand === "missing" && typeof score !== "number");
-
-      return matchesSearch && matchesStatus && matchesScore;
+      return [...current.slice(-2), applicationId];
     });
-
-    return next.sort((a, b) => {
-      if (sort === "newest") {
-        return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
-      }
-      if (sort === "oldest") {
-        return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
-      }
-      if (sort === "name") {
-        return a.fullName.localeCompare(b.fullName);
-      }
-
-      return (getScore(b) ?? -1) - (getScore(a) ?? -1);
-    });
-  }, [data, search, scoreBand, sort, status]);
+  };
 
   return (
     <div className="space-y-6">
-      <section className="rounded-xl border bg-background p-5 shadow-sm">
-        <div className="grid gap-5 lg:grid-cols-[1fr_auto]">
-          <div className="min-w-0 space-y-3">
-            <div className="flex flex-wrap items-center gap-2">
-              <Badge variant="secondary">{form.status.toLowerCase()}</Badge>
-              <Badge className={roleFilled ? "bg-emerald-600 text-white" : ""} variant={roleFilled ? "default" : "outline"}>
-                {form.hiredCount}/{form.openings} hired
-              </Badge>
-              <Badge variant="outline">{formatLabel(form.workMode)}</Badge>
-              <Badge variant="outline">{formatLabel(form.experience)}</Badge>
-              <Badge variant="outline">{formatLabel(form.roleType)}</Badge>
-            </div>
-            {roleFilled && (
-              <div className="rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-300">
-                This role is fully staffed. Remaining candidates are marked rejected with a clear closure message.
-              </div>
-            )}
-            <div>
-              <h1 className="text-3xl font-bold tracking-tight">{form.title}</h1>
-              <p className="mt-2 max-w-3xl text-sm leading-6 text-muted-foreground">
-                {form.description}
-              </p>
-            </div>
-            <div className="flex flex-wrap gap-2">
-              {form.location && (
-                <span className="rounded-md border bg-muted/40 px-2.5 py-1 text-xs">
-                  {form.location}
-                </span>
-              )}
-              {form.techStack.map((tech) => (
-                <span
-                  key={tech}
-                  className="rounded-md border bg-muted/40 px-2.5 py-1 text-xs"
-                >
-                  {tech}
-                </span>
-              ))}
-            </div>
+      <section className="border-b pb-5">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
+              Submissions
+            </p>
+            <h1 className="mt-2 font-display text-2xl font-semibold tracking-tight">
+              Candidate review
+            </h1>
+            <p className="mt-1 text-sm text-muted-foreground">
+              {form.title} / {applications.length} submissions
+            </p>
           </div>
-
-          <div className="flex flex-col gap-2 sm:flex-row lg:flex-col">
-            <Button asChild>
-              <Link href={`/form/${form.publicId}`}>Open public form</Link>
-            </Button>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => navigator.clipboard.writeText(`${window.location.origin}/form/${form.publicId}`)}
-            >
-              Copy link
+          <div className="flex flex-wrap items-center gap-2">
+            <Badge variant="secondary" className="rounded-md">
+              {form.hiredCount}/{form.openings} hired
+            </Badge>
+            <Button asChild variant="outline">
+              <Link href={`/dashboard/submissions/${form.publicId}/analytics`}>
+                <HugeIcon name="analytics-up" className="size-4" />
+                Form analytics
+              </Link>
             </Button>
           </div>
         </div>
       </section>
 
-      <ApplicationsStats
-        totalApplications={data.length}
-        filteredApplications={filtered.length}
-        views={form.viewCount}
-        averageScore={averageScore}
-        topScore={topScore}
+      <ComparisonPanel
+        applications={compareApplications}
+        selectedCount={compareIds.length}
+        onClear={() => setCompareIds([])}
       />
 
-      <ApplicationFilters
-        search={search}
-        setSearch={setSearch}
-        status={status}
-        setStatus={setStatus}
-        scoreBand={scoreBand}
-        setScoreBand={setScoreBand}
-        sort={sort}
-        setSort={setSort}
+      <ApplicationTable
+        applications={applications}
+        publicId={form.publicId}
+        openings={form.openings}
+        hiredCount={form.hiredCount}
+        compareIds={compareIds}
+        onToggleCompare={toggleCompare}
       />
-
-      <ApplicationTable applications={filtered} publicId={form.publicId} openings={form.openings} hiredCount={form.hiredCount} />
     </div>
   );
 }
@@ -186,9 +121,130 @@ function getScore(application: Application) {
   return application.scores?.[0]?.totalScore;
 }
 
-function formatLabel(value: string) {
-  return value
-    .split("_")
-    .map((part) => part.charAt(0) + part.slice(1).toLowerCase())
-    .join(" ");
+function ComparisonPanel({
+  applications,
+  selectedCount,
+  onClear,
+}: {
+  applications: Application[];
+  selectedCount: number;
+  onClear: () => void;
+}) {
+  const winner = getComparisonWinner(applications);
+
+  return (
+    <Card className="rounded-lg border-muted-foreground/15 py-5 shadow-xs">
+      <CardHeader className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <CardTitle className="font-display text-base font-semibold">
+            Compare candidates
+          </CardTitle>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Select up to three candidates from the table.
+          </p>
+        </div>
+        <div className="flex items-center gap-2">
+          <Badge variant={selectedCount > 0 ? "default" : "secondary"}>
+            {selectedCount}/3 selected
+          </Badge>
+          {selectedCount > 0 && (
+            <Button variant="outline" size="sm" onClick={onClear}>
+              Clear
+            </Button>
+          )}
+        </div>
+      </CardHeader>
+      <CardContent>
+        {applications.length === 0 ? (
+          <div className="rounded-lg border border-dashed bg-secondary/30 p-5 text-sm text-muted-foreground">
+            Pick candidates with the compare button to see score, GitHub signal, and tech match side by side.
+          </div>
+        ) : (
+          <div className="space-y-4">
+            {winner && (
+              <div className="rounded-lg border bg-secondary/40 px-4 py-3 text-sm">
+                Stronger fit by score: <span className="font-semibold">{winner.fullName}</span>
+              </div>
+            )}
+            <div className="grid gap-3 lg:grid-cols-3">
+              {applications.map((application) => (
+                <CompareCard
+                  key={application.id}
+                  application={application}
+                  highlighted={winner?.id === application.id}
+                />
+              ))}
+            </div>
+          </div>
+        )}
+      </CardContent>
+    </Card>
+  );
+}
+
+function CompareCard({
+  application,
+  highlighted,
+}: {
+  application: Application;
+  highlighted: boolean;
+}) {
+  const score = getScore(application);
+  const breakdown = application.scores?.[0]?.breakdown;
+  const skillsMatch = breakdown?.skillsMatch;
+
+  return (
+    <div className={`rounded-lg border p-4 ${highlighted ? "bg-primary/5" : "bg-card"}`}>
+      <div className="flex items-start justify-between gap-3">
+        <div className="min-w-0">
+          <p className="truncate font-semibold">{application.fullName}</p>
+          <p className="truncate text-xs text-muted-foreground">{application.email}</p>
+        </div>
+        <ScoreBadge score={score} />
+      </div>
+      <div className="mt-4 grid grid-cols-2 gap-2">
+        <CompareMetric label="Tech match" value={skillsMatch ? `${skillsMatch.percentage}%` : "-"} />
+        <CompareMetric label="GitHub" value={breakdown?.github ? `${breakdown.github}/100` : "-"} />
+        <CompareMetric label="Repos" value={breakdown?.signals?.originalRepos ?? "-"} />
+        <CompareMetric label="Recent" value={breakdown?.signals?.recentRepos ?? "-"} />
+      </div>
+    </div>
+  );
+}
+
+function CompareMetric({ label, value }: { label: string; value: string | number }) {
+  return (
+    <div className="rounded-md bg-secondary px-3 py-2">
+      <p className="font-semibold">{String(value)}</p>
+      <p className="text-xs text-muted-foreground">{label}</p>
+    </div>
+  );
+}
+
+function ScoreBadge({ score }: { score?: number }) {
+  if (typeof score !== "number") {
+    return <Badge variant="secondary">No score</Badge>;
+  }
+
+  const tone =
+    score >= 80
+      ? "bg-emerald-600 text-white"
+      : score >= 60
+        ? "bg-amber-500 text-white"
+        : "bg-rose-600 text-white";
+
+  return <Badge className={tone}>{score}/100</Badge>;
+}
+
+function getComparisonWinner(applications: Application[]) {
+  if (applications.length < 2) return null;
+
+  const sorted = [...applications].sort(
+    (left, right) => (getScore(right) ?? -1) - (getScore(left) ?? -1)
+  );
+  const topScore = getScore(sorted[0]) ?? -1;
+  const secondScore = getScore(sorted[1]) ?? -1;
+
+  if (topScore === secondScore) return null;
+  return sorted[0];
 }

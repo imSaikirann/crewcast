@@ -86,9 +86,33 @@ export async function POST(req: NextRequest) {
     }
 
  
-    if (recruiter.totalFormsCount >= recruiter.totalFormsLimit) {
+    const monthStart = startOfMonth();
+    const [monthlyFormsCount, activeFormsCount] = await Promise.all([
+      prisma.recruiterForm.count({
+        where: {
+          recruiterId: recruiter.id,
+          createdAt: { gte: monthStart },
+        },
+      }),
+      prisma.recruiterForm.count({
+        where: {
+          recruiterId: recruiter.id,
+          status: "PUBLISHED",
+          expiresAt: { gte: new Date() },
+        },
+      }),
+    ]);
+
+    if (monthlyFormsCount >= recruiter.totalFormsLimit) {
       return NextResponse.json(
         { message: "Form creation limit reached. Upgrade required." },
+        { status: 403 }
+      );
+    }
+
+    if (activeFormsCount >= recruiter.formLimit) {
+      return NextResponse.json(
+        { message: "Active form limit reached. Archive an active form before publishing another one." },
         { status: 403 }
       );
     }
@@ -148,7 +172,8 @@ export async function POST(req: NextRequest) {
         salaryMax,
         currency,
         contractDurationMonths,
-        status: "DRAFT",
+        status: "PUBLISHED",
+        publishedAt: new Date(),
         version: 1,
       },
       select: {
@@ -160,7 +185,8 @@ export async function POST(req: NextRequest) {
     await prisma.recruiter.update({
         where: { id: recruiter.id },
         data: {
-          totalFormsCount: { increment: 1 },
+          totalFormsCount: monthlyFormsCount + 1,
+          activeFormCount: activeFormsCount + 1,
         },
     });
 
@@ -189,6 +215,11 @@ function normalizeTechStack(value: unknown) {
   }
 
   return [];
+}
+
+function startOfMonth() {
+  const now = new Date();
+  return new Date(now.getFullYear(), now.getMonth(), 1);
 }
 
 

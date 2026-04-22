@@ -15,7 +15,7 @@ export async function GET() {
     const jobs = await prisma.recruiterForm.findMany({
       where: {
         isFlagged: false,
-        status: { not: "ARCHIVED" },
+        status: "PUBLISHED",
         expiresAt: { gte: today },
       },
       select: {

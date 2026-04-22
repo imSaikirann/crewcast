@@ -1,35 +1,50 @@
+import Link from "next/link";
+
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { HugeIcon } from "@/utils/hugeicons";
+
 import type { JobForm } from "../types/dashboard.types";
 import { JobFormRow } from "./JobFormRow";
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
 
 export function JobFormsCard({ forms }: { forms: JobForm[] }) {
   return (
-    <Card className="rounded-xl border-muted-foreground/15 shadow-xs">
-      <CardHeader className="flex flex-row items-center justify-between gap-4">
+    <Card className="rounded-lg border-muted-foreground/15 py-5 shadow-xs">
+      <CardHeader className="flex flex-row items-center justify-between gap-4 pb-2">
         <div>
-          <CardTitle className="font-display text-[15px] font-medium">Your Forms</CardTitle>
+          <CardTitle className="font-display text-base font-semibold">
+            Job forms
+          </CardTitle>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Track active roles, candidates, views, and hiring progress.
+          </p>
         </div>
-        <Button asChild variant="outline" size="sm" className="border-primary/50 text-primary hover:bg-accent">
-          <Link href="/dashboard/domains">+ New Form</Link>
+        <Button asChild variant="outline" size="sm" className="shrink-0">
+          <Link href="/dashboard/domains">
+            <HugeIcon name="add-circle" className="size-4" />
+            New form
+          </Link>
         </Button>
       </CardHeader>
 
       <CardContent className="space-y-2">
         {forms.length === 0 ? (
-          <div className="rounded-xl border border-dashed bg-secondary/30 p-10 text-center">
-            <svg className="mx-auto mb-4 h-14 w-14 text-primary/50" viewBox="0 0 64 64" fill="none">
-              <path d="M21 12h18l8 8v32H21V12Z" stroke="currentColor" strokeWidth="1.5" />
-              <path d="M38 12v9h9M27 31h14M27 39h10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-            </svg>
-            <p className="font-display text-base font-medium text-foreground">No forms yet</p>
-            <p className="mt-1 text-sm text-muted-foreground">
-              Create a structured form for your next role.
+          <div className="rounded-lg border border-dashed bg-secondary/30 p-8 text-center">
+            <div className="mx-auto grid size-12 place-items-center rounded-lg bg-background text-primary shadow-xs">
+              <HugeIcon name="briefcase" className="size-6" />
+            </div>
+            <p className="mt-4 font-display text-base font-semibold text-foreground">
+              No job forms yet
             </p>
-            <Link href="/dashboard/domains" className="mt-4 inline-block text-sm font-medium text-primary">
-              + Create your first form
-            </Link>
+            <p className="mx-auto mt-1 max-w-sm text-sm text-muted-foreground">
+              Start with a domain template, then publish a focused form for your next role.
+            </p>
+            <Button asChild className="mt-5">
+              <Link href="/dashboard/domains">
+                <HugeIcon name="add-circle" className="size-4" />
+                Create first form
+              </Link>
+            </Button>
           </div>
         ) : (
           forms.map((form) => <JobFormRow key={form.id} form={form} />)

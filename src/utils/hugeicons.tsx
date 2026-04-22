@@ -40,10 +40,11 @@ export const hugeIcons = {
   loading: HugeIcons.Loading01Icon,
   edit: HugeIcons.Edit01Icon,
   "add-circle": HugeIcons.Add01Icon,
-  delete: HugeIcons.Cancel01Icon,
+  delete: HugeIcons.Delete02Icon,
   upload: HugeIcons.Link01Icon,
   "arrow-right": HugeIcons.ArrowRight01Icon,
   "arrow-up-right": HugeIcons.ArrowUpRight01Icon,
+  settings: HugeIcons.Settings02Icon,
 
   // analytics
   "time-quarter-pass": HugeIcons.TimeQuarterIcon,

@@ -1,10 +1,8 @@
 // ─── StatsBar.tsx ───────────────────────────────────────────────────────────
 "use client";
 
-import Link from "next/link";
 import { useRef, useState } from "react";
 import { motion, useInView } from "framer-motion";
-import { CrewcastMark } from "@/components/brand/CrewcastLogo";
 import {
   BarChart2,
   FileText,
@@ -432,71 +430,5 @@ export function Comparison() {
         </motion.div>
       </div>
     </section>
-  );
-}
-
-
-
-
-
-// ─── Footer.tsx ──────────────────────────────────────────────────────────────
-const footerLinks = {
-  Product: [
-    { label: "Dashboard", href: "/dashboard" },
-    { label: "Browse jobs", href: "/jobs" },
-    { label: "How it works", href: "/#how-it-works" },
-  ],
-  Platform: [
-    { label: "Admin panel", href: "/admin" },
-    { label: "Domain setup", href: "/admin/domains" },
-    { label: "Analytics", href: "/admin/analytics" },
-  ],
-  Company: [
-    { label: "About", href: "/about" },
-    { label: "Privacy", href: "/privacy" },
-    { label: "Terms", href: "/terms" },
-  ],
-};
-
-export function Footer() {
-  return (
-    <footer className="border-t border-[var(--lc-border)] px-6 py-16" style={{ background: "var(--lc-bg)" }}>
-      <div className="max-w-[1100px] mx-auto">
-        <div className="grid grid-cols-1 lg:grid-cols-[1.5fr_repeat(3,1fr)] gap-12 mb-12">
-          <div>
-            <div className="flex items-center gap-2 mb-4">
-              <CrewcastMark className="h-7 w-7 rounded-md bg-transparent p-0" />
-              <span className="font-mono text-[13px] font-medium text-[var(--lc-text)]">crewcast</span>
-            </div>
-            <p className="text-[13px] text-[var(--lc-text-3)] leading-[1.7] max-w-[240px]">
-              GitHub-first hiring forms for engineering teams. Score real work, not just resumes.
-            </p>
-          </div>
-          {Object.entries(footerLinks).map(([group, items]) => (
-            <div key={group}>
-              <p className="font-mono text-[10px] uppercase tracking-[0.1em] text-[var(--lc-text-3)] mb-4">{group}</p>
-              <ul className="space-y-2.5">
-                {items.map((item) => (
-                  <li key={item.label}>
-                    <Link href={item.href}
-                          className="text-[13px] text-[var(--lc-text-2)] hover:text-[var(--lc-text)] transition-colors no-underline">
-                      {item.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
-        </div>
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-6 border-t border-[var(--lc-border)]">
-          <p className="font-mono text-[11px] text-[var(--lc-text-3)]">
-            © {new Date().getFullYear()} Crewcast. All rights reserved.
-          </p>
-          <p className="font-mono text-[11px] text-[var(--lc-text-3)]">
-            GitHub data used is public only.
-          </p>
-        </div>
-      </div>
-    </footer>
   );
 }

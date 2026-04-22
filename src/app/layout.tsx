@@ -4,12 +4,60 @@ import { Providers } from "./providers"
 import Navbar from "@/components/marketing/Navbar"
 
 export const metadata: Metadata = {
-  title: "Crewcast",
-  description: "Hiring assistant platform for quickly finding top talent.",
+  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"),
+  applicationName: "Crewcast",
+  title: {
+    default: "Crewcast | GitHub-first hiring forms",
+    template: "%s | Crewcast",
+  },
+  description:
+    "Crewcast helps teams publish role-specific hiring forms, collect structured applications, and review candidates with public GitHub signal scoring.",
+  keywords: [
+    "Crewcast",
+    "hiring forms",
+    "technical recruiting",
+    "GitHub candidate screening",
+    "developer hiring",
+    "candidate submissions",
+    "recruiter dashboard",
+  ],
+  authors: [{ name: "Crewcast" }],
+  creator: "Crewcast",
+  publisher: "Crewcast",
+  robots: {
+    index: true,
+    follow: true,
+  },
   icons: {
-    icon: "/crewcast-logo.svg",
-    shortcut: "/crewcast-logo.svg",
-    apple: "/crewcast-logo.svg",
+    icon: [
+      { url: "/logo.png", type: "image/png" },
+    ],
+    shortcut: "/logo.png",
+    apple: "/logo.png",
+  },
+  openGraph: {
+    title: "Crewcast | GitHub-first hiring forms",
+    description:
+      "Publish software hiring forms, collect applications, and shortlist candidates with public GitHub-backed signals.",
+    url: "/",
+    siteName: "Crewcast",
+    images: [
+      {
+        url: "/logo.png",
+        width: 1200,
+        height: 1200,
+        alt: "Crewcast logo",
+      },
+    ],
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Crewcast | GitHub-first hiring forms",
+    description:
+      "Create structured hiring forms and review developer candidates with public GitHub signal scoring.",
+    images: ["/logo.png"],
   },
 }
 

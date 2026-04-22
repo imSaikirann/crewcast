@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { api } from "@/lib/api"
+import { toast } from "@/lib/toast"
 import { CreateRecruiterSchema } from "@/lib/validators/recruiter"
 import type { Recruiter } from "../types/recruiter"
 
@@ -49,6 +50,9 @@ export default function ProfileSetupForm({ existingProfile, onSuccess, onCancel 
     mutationFn: async (data: FormData) => (await api.post("/api/recruiters/new-account", data)).data,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["recruiter-profile"] })
+      toast.success("Profile created", {
+        description: "We sent a verification link to your company email.",
+      })
       onSuccess?.()
     },
   })
@@ -77,10 +81,17 @@ export default function ProfileSetupForm({ existingProfile, onSuccess, onCancel 
     <div className="mx-auto max-w-[560px]">
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 rounded-xl border bg-card p-5">
         <div>
-          <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">Company profile</p>
+          <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
+            {existingProfile ? "Company profile" : "Recruiter onboarding"}
+          </p>
           <h1 className="mt-2 font-display text-xl font-semibold">
-            {existingProfile ? "Edit profile" : "Create profile"}
+            {existingProfile ? "Edit profile" : "Create your recruiter profile"}
           </h1>
+          {!existingProfile && (
+            <p className="mt-2 text-sm text-muted-foreground">
+              Use a company email that matches your website. Personal inboxes like Gmail are not supported.
+            </p>
+          )}
         </div>
 
         <ProfileField label="Company name" error={errors.companyName?.message}>
@@ -110,7 +121,7 @@ export default function ProfileSetupForm({ existingProfile, onSuccess, onCancel 
             </Button>
           )}
           <Button type="submit" disabled={pending} className="ml-auto bg-primary text-primary-foreground hover:bg-primary/90">
-            {pending ? "Saving..." : "Save changes"}
+            {pending ? "Saving..." : existingProfile ? "Save changes" : "Create profile"}
           </Button>
         </div>
       </form>

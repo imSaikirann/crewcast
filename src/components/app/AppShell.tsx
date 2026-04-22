@@ -39,10 +39,10 @@ const navItems: {
   { href: "/jobs", label: "Jobs", icon: "briefcase" },
   { href: "/dashboard/submissions", label: "Candidates", icon: "user-add" },
   { href: "/dashboard/domains", label: "Domains", icon: "target-03" },
-  { href: "/dashboard/recruiter/profile", label: "Profile", icon: "user" },
-  { href: "/dashboard/settings", label: "Settings", icon: "more-vertical" },
-  { href: "/admin", label: "Admin analytics", icon: "target-03", adminOnly: true },
-  { href: "/admin/domains", label: "Domains", icon: "briefcase", adminOnly: true },
+  { href: "/dashboard/recruiter/profile", label: "Profile", icon: "office-building" },
+  { href: "/dashboard/settings", label: "Settings", icon: "settings" },
+  { href: "/admin", label: "Admin analytics", icon: "analytics-up", adminOnly: true },
+  { href: "/admin/domains", label: "Domains", icon: "target-03", adminOnly: true },
 ];
 
 const primaryNavCount = 3;

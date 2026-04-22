@@ -38,12 +38,37 @@ export async function GET(
       return NextResponse.json({ error: "Profile not found" }, { status: 404 });
     }
 
+    const monthStart = startOfMonth();
+    const [activeFormCount, totalFormsCount] = await Promise.all([
+      prisma.recruiterForm.count({
+        where: {
+          recruiterId: profile.id,
+          status: "PUBLISHED",
+          expiresAt: { gte: new Date() },
+        },
+      }),
+      prisma.recruiterForm.count({
+        where: {
+          recruiterId: profile.id,
+          createdAt: { gte: monthStart },
+        },
+      }),
+    ]);
 
-    return NextResponse.json(profile);
+    return NextResponse.json({
+      ...profile,
+      activeFormCount,
+      totalFormsCount,
+    });
   } catch (e) {
     console.error(e);
     return NextResponse.json({ error: "Server error" }, { status: 500 });
   }
+}
+
+function startOfMonth() {
+  const now = new Date();
+  return new Date(now.getFullYear(), now.getMonth(), 1);
 }
 
 export async function PUT(
@@ -111,6 +136,70 @@ export async function PUT(
     }
 
     return NextResponse.json(updatedProfile);
+  } catch (e) {
+    console.error(e);
+    return NextResponse.json({ error: "Server error" }, { status: 500 });
+  }
+}
+
+export async function DELETE() {
+  try {
+    const session = await getServerSession(authOptions);
+    if (!session?.user?.id) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const recruiter = await prisma.recruiter.findUnique({
+      where: { userId: session.user.id },
+      select: {
+        id: true,
+        recruiterForms: {
+          select: {
+            id: true,
+            publicId: true,
+            applications: {
+              select: { id: true },
+            },
+          },
+        },
+      },
+    });
+
+    if (!recruiter) {
+      return NextResponse.json({ error: "Profile not found" }, { status: 404 });
+    }
+
+    const formIds = recruiter.recruiterForms.map((form) => form.id);
+    const publicIds = recruiter.recruiterForms.map((form) => form.publicId);
+    const applicationIds = recruiter.recruiterForms.flatMap((form) =>
+      form.applications.map((application) => application.id)
+    );
+
+    await prisma.$transaction([
+      prisma.applicationScore.deleteMany({
+        where: { applicationId: { in: applicationIds } },
+      }),
+      prisma.application.deleteMany({
+        where: { jobId: { in: formIds } },
+      }),
+      prisma.formView.deleteMany({
+        where: { formId: { in: formIds } },
+      }),
+      prisma.jobReport.deleteMany({
+        where: { formId: { in: publicIds } },
+      }),
+      prisma.recruiterForm.deleteMany({
+        where: { recruiterId: recruiter.id },
+      }),
+      prisma.emailVerification.deleteMany({
+        where: { userId: session.user.id },
+      }),
+      prisma.recruiter.delete({
+        where: { userId: session.user.id },
+      }),
+    ]);
+
+    return NextResponse.json({ message: "Recruiter profile deleted" });
   } catch (e) {
     console.error(e);
     return NextResponse.json({ error: "Server error" }, { status: 500 });
