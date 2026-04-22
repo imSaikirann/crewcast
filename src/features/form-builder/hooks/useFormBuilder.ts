@@ -5,11 +5,53 @@ import { nanoid } from "nanoid"
 import { useDomainDefaultForm } from "./useDominDefaults"
 import { useCreateForm } from "./useCreateForm"
 import { toast } from "@/lib/toast"
-import { withRequiredGitHubField } from "@/lib/formFields"
+import { isGitHubField, withRequiredGitHubField } from "@/lib/formFields"
 
 type FormBuilderDraft = {
   details: JobFormDetails
   fields: FormField[]
+}
+
+const hasValue = (value: unknown) => {
+  if (Array.isArray(value)) return value.length > 0
+  if (typeof value === "number") return value > 0
+  return Boolean(String(value ?? "").trim())
+}
+
+const hasMeaningfulDraft = (draft: Partial<FormBuilderDraft>) => {
+  const details = draft.details
+  const fields = Array.isArray(draft.fields) ? draft.fields : []
+  const hasCustomFields = fields.some((field) => !isGitHubField(field))
+
+  if (hasCustomFields) return true
+  if (!details) return false
+
+  return Boolean(
+    hasValue(details.formTitle) ||
+      hasValue(details.formDescription) ||
+      hasValue(details.expiresAt) ||
+      hasValue(details.location) ||
+      hasValue(details.specialization) ||
+      hasValue(details.techStack)
+  )
+}
+
+const normalizeFields = (fields: unknown): FormField[] => {
+  if (!Array.isArray(fields)) return withRequiredGitHubField<FormField>([])
+
+  return withRequiredGitHubField<FormField>(
+    fields
+      .filter((field): field is Partial<FormField> => Boolean(field && typeof field === "object"))
+      .map((field) => ({
+        id: String(field.id || `field-${nanoid(10)}`),
+        type: (field.type || "text") as FieldType,
+        label: String(field.label || ""),
+        placeholder: field.placeholder ? String(field.placeholder) : "",
+        required: Boolean(field.required),
+        locked: Boolean(field.locked),
+        ...(field.type === "select" ? { options: Array.isArray(field.options) ? field.options : [] } : {}),
+      }))
+  )
 }
 
 /* ---------------------------------------------
@@ -23,6 +65,7 @@ export function useFormBuilder() {
   const draftKey = domainId ? `crewcast-form-draft:${domainId}` : null
   const [hydratedDraft, setHydratedDraft] = useState(false)
   const [hasLocalDraft, setHasLocalDraft] = useState(false)
+  const [hasLocalCustomFields, setHasLocalCustomFields] = useState(false)
   const skipNextPersist = useRef(false)
 
   /* -------------------------
@@ -85,10 +128,15 @@ export function useFormBuilder() {
           domainId: domainId ?? draft.details.domainId ?? "",
         })
       }
+      const draftHasCustomFields = Array.isArray(draft.fields)
+        ? draft.fields.some((field) => !isGitHubField(field))
+        : false
+
       if (Array.isArray(draft.fields)) {
-        setFields(withRequiredGitHubField<FormField>(draft.fields))
+        setFields(normalizeFields(draft.fields))
       }
-      setHasLocalDraft(true)
+      setHasLocalDraft(hasMeaningfulDraft(draft))
+      setHasLocalCustomFields(draftHasCustomFields)
     } catch {
       window.localStorage.removeItem(draftKey)
     } finally {
@@ -112,6 +160,7 @@ export function useFormBuilder() {
         } satisfies FormBuilderDraft)
       )
       setHasLocalDraft(true)
+      setHasLocalCustomFields(fields.some((field) => !isGitHubField(field)))
     }, 250)
 
     return () => window.clearTimeout(timeout)
@@ -120,6 +169,7 @@ export function useFormBuilder() {
   const clearDraft = () => {
     if (draftKey) window.localStorage.removeItem(draftKey)
     setHasLocalDraft(false)
+    setHasLocalCustomFields(false)
   }
 
   const resetDraft = () => {
@@ -133,21 +183,23 @@ export function useFormBuilder() {
      Load defaults
   -------------------------- */
   useEffect(() => {
-    if (!defaults || !hydratedDraft || hasLocalDraft) return
+    if (!defaults || !hydratedDraft) return
 
-    setDetails(p => ({
-      ...p,
-      formTitle: defaults.formTitle || "",
-      formDescription: defaults.formDescription || "",
-      expiresAt: defaults.expiresAt
-        ? new Date(defaults.expiresAt).toISOString().split("T")[0]
-        : "",
-    }))
-
-    if (defaults.fields) {
-      setFields(withRequiredGitHubField<FormField>(defaults.fields))
+    if (!hasLocalDraft) {
+      setDetails(p => ({
+        ...p,
+        formTitle: defaults.formTitle || "",
+        formDescription: defaults.formDescription || "",
+        expiresAt: defaults.expiresAt
+          ? new Date(defaults.expiresAt).toISOString().split("T")[0]
+          : "",
+      }))
     }
-  }, [defaults, hasLocalDraft, hydratedDraft])
+
+    if (defaults.fields && !hasLocalCustomFields) {
+      setFields(normalizeFields(defaults.fields))
+    }
+  }, [defaults, hasLocalCustomFields, hasLocalDraft, hydratedDraft])
 
   /* -------------------------
      Field operations
