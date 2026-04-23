@@ -2,7 +2,7 @@ import { useFormContext } from "react-hook-form"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
-import { Upload } from "lucide-react"
+import { ResumeUploadField } from "@/features/public-form/components/ResumeUploadField"
 
 export function FieldRenderer({ field }: any) {
   const {
@@ -39,17 +39,7 @@ export function FieldRenderer({ field }: any) {
 
       {/* FILE */}
       {field.type === "file" && (
-        <label className="flex min-h-28 cursor-pointer flex-col items-center justify-center rounded-xl border border-dashed bg-secondary p-4 text-center text-sm text-muted-foreground transition hover:border-primary/50">
-          <Upload className="mb-2 size-5" />
-          Drag & drop or click to browse
-          <Input
-            type="file"
-            accept={field.accept}
-            disabled={field.disabled}
-            {...register(field.id, { required: field.required })}
-            className="sr-only"
-          />
-        </label>
+        <ResumeUploadField field={field} />
       )}
 
       {/* TEXTAREA */}

@@ -1,4 +1,6 @@
 import { prisma } from "@/lib/prisma";
+import { cacheGet, cacheSet } from "@/lib/redis";
+import { hashKey } from "@/lib/rateLimit";
 import { headers } from "next/headers";
 
 export async function trackFormView(formId: string) {
@@ -10,6 +12,9 @@ export async function trackFormView(formId: string) {
     "unknown";
 
   const userAgent = (await h).get("user-agent") || "unknown";
+  const cacheKey = `crewcast:form-view:${formId}:${hashKey(`${ip}:${userAgent}`)}`;
+
+  if (await cacheGet(cacheKey)) return;
 
   const last24h = new Date(Date.now() - 24 * 60 * 60 * 1000);
 
@@ -23,7 +28,10 @@ export async function trackFormView(formId: string) {
     },
   });
 
-  if (existing) return; 
+  if (existing) {
+    await cacheSet(cacheKey, "1", 24 * 60 * 60);
+    return;
+  }
 
 
   await prisma.$transaction([
@@ -35,4 +43,6 @@ export async function trackFormView(formId: string) {
       data: { viewCount: { increment: 1 } },
     }),
   ]);
+
+  await cacheSet(cacheKey, "1", 24 * 60 * 60);
 }

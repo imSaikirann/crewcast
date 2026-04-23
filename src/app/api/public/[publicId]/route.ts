@@ -1,5 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import {
+  getClientFingerprint,
+  publicFormRateLimits,
+  rateLimit,
+  rateLimitResponse,
+} from "@/lib/rateLimit";
 
 
 export async function GET(
@@ -8,6 +14,15 @@ export async function GET(
 ) {
   try {
     const { publicId } = await context.params;
+    const fingerprint = getClientFingerprint(req);
+    const fetchLimit = await rateLimit({
+      key: `crewcast:rl:public-form:fetch:${publicId}:${fingerprint.hash}`,
+      ...publicFormRateLimits.fetch,
+    });
+
+    if (!fetchLimit.allowed) {
+      return rateLimitResponse(fetchLimit);
+    }
 
     if (!publicId) {
       return NextResponse.json(
@@ -18,7 +33,7 @@ export async function GET(
 
 
 
-    // 1️⃣ Load form without relations first
+
     const form = await prisma.recruiterForm.findUnique({
       where: { publicId },
       select: {
@@ -50,7 +65,7 @@ export async function GET(
       );
     }
 
-    // 2️⃣ Load recruiter safely
+
     const recruiter = await prisma.recruiter.findUnique({
       where: { id: form.recruiterId },
       select: {
@@ -70,13 +85,13 @@ export async function GET(
       );
     }
 
-    // 3️⃣ Load domain safely
+
     const domain = await prisma.domains.findUnique({
       where: { id: form.domainId },
       select: { title: true },
     });
 
-    // 4️⃣ Return merged safe response
+
     return NextResponse.json({
       title: form.title,
       description: form.description,

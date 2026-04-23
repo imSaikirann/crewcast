@@ -6,13 +6,14 @@ import { useRouter } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { formatDateTime } from "@/utils/date";
-import type { Application } from "./ApplicationsView";
+import type { Application, ApplicationField } from "./ApplicationsView";
 
 export default function ApplicationTable({
   applications,
   publicId,
   openings,
   hiredCount,
+  fields,
   compareIds,
   onToggleCompare,
 }: {
@@ -20,6 +21,7 @@ export default function ApplicationTable({
   publicId: string;
   openings: number;
   hiredCount: number;
+  fields: ApplicationField[];
   compareIds: string[];
   onToggleCompare: (applicationId: string) => void;
 }) {
@@ -27,6 +29,7 @@ export default function ApplicationTable({
   const [openId, setOpenId] = useState<string | null>(applications[0]?.id ?? null);
   const [updatingId, setUpdatingId] = useState<string | null>(null);
   const roleFilled = hiredCount >= openings;
+  const responseColumns = getTableResponseColumns(fields);
 
   const updateStatus = async (applicationId: string, status: string) => {
     setUpdatingId(applicationId);
@@ -83,6 +86,11 @@ export default function ApplicationTable({
               <tr>
                 <th className="px-5 py-3 text-left">Compare</th>
                 <th className="px-5 py-3 text-left">Candidate</th>
+                {responseColumns.map((field) => (
+                  <th key={field.id} className="px-5 py-3 text-left">
+                    {field.label}
+                  </th>
+                ))}
                 <th className="px-5 py-3 text-left">GitHub score</th>
                 <th className="px-5 py-3 text-left">GitHub</th>
                 <th className="px-5 py-3 text-left">Applied</th>
@@ -135,6 +143,13 @@ export default function ApplicationTable({
                           </div>
                         </div>
                       </td>
+                      {responseColumns.map((field) => (
+                        <td key={field.id} className="max-w-56 px-5 py-4 text-muted-foreground">
+                          <span className="line-clamp-2 break-words">
+                            {formatResponsePreview(application.responses[field.id])}
+                          </span>
+                        </td>
+                      ))}
                       <td className="px-5 py-4">
                         <ScoreBadge score={score} />
                       </td>
@@ -161,8 +176,8 @@ export default function ApplicationTable({
 
                     {isOpen && (
                       <tr className="border-t bg-muted/20">
-                        <td colSpan={7} className="px-5 py-5">
-                          <ApplicationDetails application={application} />
+                        <td colSpan={7 + responseColumns.length} className="px-5 py-5">
+                          <ApplicationDetails application={application} fields={fields} />
                         </td>
                       </tr>
                     )}
@@ -224,7 +239,7 @@ export default function ApplicationTable({
 
                 {isOpen && (
                   <div className="mt-4 border-t pt-4">
-                    <ApplicationDetails application={application} />
+                    <ApplicationDetails application={application} fields={fields} />
                   </div>
                 )}
               </div>
@@ -236,7 +251,13 @@ export default function ApplicationTable({
   );
 }
 
-function ApplicationDetails({ application }: { application: Application }) {
+function ApplicationDetails({
+  application,
+  fields,
+}: {
+  application: Application;
+  fields: ApplicationField[];
+}) {
   const latestScore = application.scores?.[0];
   const breakdown = latestScore?.breakdown;
   const github = getGitHubUsername(application);
@@ -345,11 +366,11 @@ function ApplicationDetails({ application }: { application: Application }) {
           Candidate responses
         </p>
         <div className="mt-3 grid gap-3 md:grid-cols-2">
-          {Object.entries(application.responses).map(([key, value]) => (
+          {getResponseRows(application.responses, fields).map(({ key, label, value }) => (
             <Detail
               key={key}
-              label={key.replace(/_/g, " ")}
-              value={formatValue(value)}
+              label={label}
+              value={value}
             />
           ))}
         </div>
@@ -358,11 +379,13 @@ function ApplicationDetails({ application }: { application: Application }) {
   );
 }
 
-function Detail({ label, value }: { label: string; value: string }) {
+function Detail({ label, value }: { label: string; value: unknown }) {
   return (
     <div className="rounded-md border bg-muted/25 px-3 py-2">
       <p className="text-xs capitalize text-muted-foreground">{label}</p>
-      <p className="mt-1 break-words text-sm font-medium">{value}</p>
+      <div className="mt-1 break-words text-sm font-medium">
+        {formatValue(value)}
+      </div>
     </div>
   );
 }
@@ -477,9 +500,80 @@ function findGitHubResponse(responses: Record<string, unknown>) {
   return (match?.[1] ?? value.replace(/^@/, "")) || null;
 }
 
-function formatValue(value: unknown) {
+function getTableResponseColumns(fields: ApplicationField[]) {
+  const hiddenIds = new Set(["full_name", "fullName", "name", "email"]);
+
+  return fields
+    .filter((field) => field.id && !hiddenIds.has(field.id))
+    .slice(0, 4);
+}
+
+function getResponseRows(
+  responses: Record<string, unknown>,
+  fields: ApplicationField[]
+) {
+  const seen = new Set<string>();
+  const rows = fields
+    .filter((field) => field.id in responses)
+    .map((field) => {
+      seen.add(field.id);
+      return {
+        key: field.id,
+        label: field.label || labelizeKey(field.id),
+        value: responses[field.id],
+      };
+    });
+
+  Object.entries(responses).forEach(([key, value]) => {
+    if (seen.has(key)) return;
+    rows.push({ key, label: labelizeKey(key), value });
+  });
+
+  return rows;
+}
+
+function formatResponsePreview(value: unknown) {
+  if (isUploadedFile(value)) return value.name;
   if (Array.isArray(value)) return value.join(", ");
   if (value === undefined || value === null || value === "") return "-";
-  if (typeof value === "object") return JSON.stringify(value);
+  if (typeof value === "object") return "Submitted";
   return String(value);
+}
+
+function formatValue(value: unknown): React.ReactNode {
+  if (isUploadedFile(value)) {
+    return (
+      <a
+        href={value.url}
+        target="_blank"
+        rel="noreferrer"
+        className="text-primary underline-offset-4 hover:underline"
+      >
+        {value.name}
+      </a>
+    );
+  }
+
+  if (Array.isArray(value)) return value.join(", ");
+  if (value === undefined || value === null || value === "") return "-";
+  if (typeof value === "object") return "Submitted";
+  return String(value);
+}
+
+function isUploadedFile(value: unknown): value is { url: string; name: string } {
+  return (
+    !!value &&
+    typeof value === "object" &&
+    "url" in value &&
+    typeof value.url === "string" &&
+    "name" in value &&
+    typeof value.name === "string"
+  );
+}
+
+function labelizeKey(key: string) {
+  return key
+    .replace(/_/g, " ")
+    .replace(/([a-z])([A-Z])/g, "$1 $2")
+    .replace(/\b\w/g, (char) => char.toUpperCase());
 }

@@ -1,6 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 
 import { submitApplication } from "@/features/public-form/services/applicationSubmission";
+import {
+  getClientFingerprint,
+  publicFormRateLimits,
+  rateLimit,
+  rateLimitResponse,
+} from "@/lib/rateLimit";
 
 export async function POST(
   req: NextRequest,
@@ -8,6 +14,19 @@ export async function POST(
 ) {
   try {
     const { id } = await context.params;
+    const fingerprint = getClientFingerprint(req);
+    const submissionLimit = await rateLimit({
+      key: `crewcast:rl:public-form:submit:${id}:${fingerprint.hash}`,
+      ...publicFormRateLimits.submit,
+    });
+
+    if (!submissionLimit.allowed) {
+      return rateLimitResponse(
+        submissionLimit,
+        "Too many applications from this device. Please try again later."
+      );
+    }
+
     const body = await req.json();
     const responses =
       typeof body === "object" && body !== null

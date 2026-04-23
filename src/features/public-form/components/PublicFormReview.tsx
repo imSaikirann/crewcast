@@ -41,7 +41,17 @@ export function PublicFormReview({
 }
 
 function formatAnswer(value: unknown) {
+  if (isResumeUpload(value)) return value.name;
   if (Array.isArray(value)) return value.join(", ");
   if (value === undefined || value === null || value === "") return "-";
   return String(value);
+}
+
+function isResumeUpload(value: unknown): value is { name: string } {
+  return (
+    !!value &&
+    typeof value === "object" &&
+    "name" in value &&
+    typeof value.name === "string"
+  );
 }

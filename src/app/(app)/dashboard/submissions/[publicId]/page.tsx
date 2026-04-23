@@ -42,6 +42,7 @@ export default async function Page({
       experience: true,
       roleType: true,
       location: true,
+      fields: true,
       applications: {
         select: {
           id: true,
@@ -105,8 +106,40 @@ export default async function Page({
           experience: form.experience,
           roleType: form.roleType,
           location: form.location,
+          fields: normalizeFields(form.fields),
         }}
       />
     </AppPage>
   );
+}
+
+function normalizeFields(fields: unknown): {
+  id: string;
+  label: string;
+  type?: string;
+}[] {
+  if (!Array.isArray(fields)) return [];
+
+  return fields
+    .map((field) => {
+      if (!field || typeof field !== "object") return null;
+      const item = field as Record<string, unknown>;
+      if (typeof item.id !== "string") return null;
+
+      const normalized: {
+        id: string;
+        label: string;
+        type?: string;
+      } = {
+        id: item.id,
+        label: typeof item.label === "string" ? item.label : item.id,
+      };
+
+      if (typeof item.type === "string") normalized.type = item.type;
+      return normalized;
+    })
+    .filter(
+      (field): field is { id: string; label: string; type?: string } =>
+        field !== null
+    );
 }

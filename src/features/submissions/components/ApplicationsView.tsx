@@ -19,6 +19,12 @@ export type Application = {
   responses: Record<string, any>;
 };
 
+export type ApplicationField = {
+  id: string;
+  label: string;
+  type?: string;
+};
+
 type FormSummary = {
   title: string;
   description: string;
@@ -33,6 +39,7 @@ type FormSummary = {
   experience: string;
   roleType: string;
   location: string | null;
+  fields: ApplicationField[];
 };
 
 export default function ApplicationsView({
@@ -110,6 +117,7 @@ export default function ApplicationsView({
         publicId={form.publicId}
         openings={form.openings}
         hiredCount={form.hiredCount}
+        fields={form.fields}
         compareIds={compareIds}
         onToggleCompare={toggleCompare}
       />

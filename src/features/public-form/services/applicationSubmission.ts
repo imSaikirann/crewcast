@@ -37,6 +37,15 @@ type FormFieldLike = {
   required?: boolean;
 };
 
+type ResumeUpload = {
+  url: string;
+  name: string;
+  size: number;
+  type: string;
+};
+
+const MAX_RESUME_SIZE = 5 * 1024 * 1024;
+
 export async function submitApplication({
   publicFormId,
   origin,
@@ -226,9 +235,51 @@ function validateRequiredResponses(
         return `${field.label || "URL"} must be a valid URL.`;
       }
     }
+
+    if (field.type === "file") {
+      const resumeError = validateResumeResponse(value, field.label);
+      if (resumeError) return resumeError;
+    }
   }
 
   return null;
+}
+
+function validateResumeResponse(value: unknown, label?: string) {
+  if (value === undefined || value === null || value === "") return null;
+
+  if (!isResumeUpload(value)) {
+    return `${label || "Resume"} must be uploaded before submitting.`;
+  }
+
+  if (value.type !== "application/pdf") {
+    return `${label || "Resume"} must be a PDF file.`;
+  }
+
+  if (value.size > MAX_RESUME_SIZE) {
+    return `${label || "Resume"} must be 5MB or smaller.`;
+  }
+
+  try {
+    new URL(value.url);
+  } catch {
+    return `${label || "Resume"} upload URL is invalid.`;
+  }
+
+  return null;
+}
+
+function isResumeUpload(value: unknown): value is ResumeUpload {
+  if (!value || typeof value !== "object") return false;
+
+  const maybeResume = value as Partial<ResumeUpload>;
+
+  return (
+    typeof maybeResume.url === "string" &&
+    typeof maybeResume.name === "string" &&
+    typeof maybeResume.size === "number" &&
+    typeof maybeResume.type === "string"
+  );
 }
 
 function getStringValue(value: unknown) {

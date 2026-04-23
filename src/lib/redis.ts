@@ -5,6 +5,8 @@ type CacheClient = {
   get(key: string): Promise<string | null>;
   set(key: string, value: string, ex?: number): Promise<void>;
   del(...keys: string[]): Promise<void>;
+  incr(key: string): Promise<number>;
+  expire(key: string, seconds: number): Promise<void>;
 };
 
 const globalForRedis = globalThis as unknown as {
@@ -54,6 +56,12 @@ function createUpstashClient(): CacheClient {
         await upstash.del(...keys);
       }
     },
+    async incr(key) {
+      return upstash.incr(key);
+    },
+    async expire(key, seconds) {
+      await upstash.expire(key, seconds);
+    },
   };
 }
 
@@ -64,6 +72,10 @@ function createNoopClient(): CacheClient {
     },
     async set() {},
     async del() {},
+    async incr() {
+      throw new Error("Cache client is disabled");
+    },
+    async expire() {},
   };
 }
 
@@ -97,6 +109,12 @@ function createLocalRedisClient(): CacheClient {
         await redis.del(...keys);
       }
     },
+    async incr(key) {
+      return redis.incr(key);
+    },
+    async expire(key, seconds) {
+      await redis.expire(key, seconds);
+    },
   };
 }
 
@@ -129,5 +147,22 @@ export async function cacheDel(...keys: string[]) {
     await cacheClient.del(...keys);
   } catch (error) {
     console.warn("Cache DEL failed:", error);
+  }
+}
+
+export async function cacheIncr(key: string) {
+  try {
+    return await cacheClient.incr(key);
+  } catch (error) {
+    console.warn(`Cache INCR failed for ${key}:`, error);
+    return null;
+  }
+}
+
+export async function cacheExpire(key: string, seconds: number) {
+  try {
+    await cacheClient.expire(key, seconds);
+  } catch (error) {
+    console.warn(`Cache EXPIRE failed for ${key}:`, error);
   }
 }

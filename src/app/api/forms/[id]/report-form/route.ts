@@ -1,6 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { headers } from "next/headers";
+import {
+  getClientFingerprint,
+  publicFormRateLimits,
+  rateLimit,
+  rateLimitResponse,
+} from "@/lib/rateLimit";
 
     // IF FORMS gets 10 reports then automtically it should be flagged
     // ELSE  CrewCast admin should veridy based on report infromation
@@ -11,6 +16,18 @@ export async function POST(
 ) {
   try {
     const { id } = await context.params;   
+    const fingerprint = getClientFingerprint(req);
+    const reportLimit = await rateLimit({
+      key: `crewcast:rl:public-form:report:${id}:${fingerprint.hash}`,
+      ...publicFormRateLimits.report,
+    });
+
+    if (!reportLimit.allowed) {
+      return rateLimitResponse(
+        reportLimit,
+        "Too many reports from this device. Please try again later."
+      );
+    }
  
     
     const { reason, message } = await req.json();
@@ -38,14 +55,7 @@ export async function POST(
       return NextResponse.json({ message: "Form not found" }, { status: 404 });
     }
 
-
-    const h = headers();
-    const ip =
-      (await h).get("x-forwarded-for")?.split(",")[0] ||
-      (await h).get("x-real-ip") ||
-      "unknown";
-
-    const userAgent = (await h).get("user-agent") || "unknown";
+    const { ip, userAgent } = fingerprint;
 
 
     const last24h = new Date(Date.now() - 24 * 60 * 60 * 1000);
