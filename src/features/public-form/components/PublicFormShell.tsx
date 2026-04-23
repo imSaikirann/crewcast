@@ -5,8 +5,8 @@ import { FormProvider, useForm } from "react-hook-form";
 import { usePublicForm } from "@/features/hooks/usePublicForm";
 import { getPublicFormStorageKey } from "../lib/storage";
 
-import { CrewcastWordmark } from "@/components/brand/CrewcastLogo";
 import { PublicFormFields } from "./PublicFormFields";
+import { PublicFormFooter } from "./PublicFormFooter";
 import { PublicFormMeta } from "./PublicFormMeta";
 import { PublicFormReview } from "./PublicFormReview";
 import { PublicFormSuccess } from "./PublicFormSuccess";
@@ -38,34 +38,35 @@ export function PublicFormShell({ form }: { form: any }) {
 
   return (
     <FormProvider {...methods}>
-      <main className="min-h-screen bg-background px-4 py-8">
-        <div className="mx-auto max-w-[600px] space-y-6">
-          <header className="flex items-center justify-between text-xs text-muted-foreground">
-            <CrewcastWordmark markClassName="size-10 rounded-md" />
-            <span>Powered by Crewcast</span>
-          </header>
+      <main className="min-h-screen bg-background text-foreground">
+        <div className="mx-auto flex min-h-screen w-full max-w-[880px] flex-col px-4 py-6 sm:px-6 lg:px-0">
+          <div className="flex-1 py-8 sm:py-12">
+            <PublicFormMeta form={form} />
 
-          <PublicFormMeta form={form} />
+            <div className="mt-8 sm:mt-10">
+              {step === "form" && (
+                <PublicFormFields
+                  form={form}
+                  onNext={methods.handleSubmit(() => setStep("review"))}
+                />
+              )}
 
-          {step === "form" && (
-            <PublicFormFields
-              form={form}
-              onNext={methods.handleSubmit(() => setStep("review"))}
-            />
-          )}
+              {step === "review" && (
+                <PublicFormReview
+                  form={form}
+                  answers={methods.getValues()}
+                  onBack={() => setStep("form")}
+                  onSubmit={() => submit(form.publicId, methods.getValues())}
+                  loading={loading}
+                  error={error}
+                />
+              )}
 
-          {step === "review" && (
-            <PublicFormReview
-              form={form}
-              answers={methods.getValues()}
-              onBack={() => setStep("form")}
-              onSubmit={() => submit(form.publicId, methods.getValues())}
-              loading={loading}
-              error={error}
-            />
-          )}
+              {step === "done" && <PublicFormSuccess trackingUrl={result?.trackingUrl} />}
+            </div>
+          </div>
 
-          {step === "done" && <PublicFormSuccess trackingUrl={result?.trackingUrl} />}
+          <PublicFormFooter formPublicId={form.publicId} />
         </div>
       </main>
     </FormProvider>

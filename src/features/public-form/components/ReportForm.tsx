@@ -55,7 +55,7 @@ export default function ReportForm({ formPublicId, onClose }: Props) {
     return (
       <div className="space-y-3 bg-card p-6 text-center text-card-foreground">
         <p className="text-lg font-semibold text-primary">
-          Report submitted ✔
+          Report submitted
         </p>
         <p className="text-sm text-muted-foreground">
           Our moderation system will review this form.

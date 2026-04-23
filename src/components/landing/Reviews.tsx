@@ -22,7 +22,7 @@ export default function Reviews() {
             <h2 className="text-3xl font-bold text-[var(--landing-text)] sm:text-4xl">
               Full platform control for admins.
             </h2>
-            <p className="font-body text-lg leading-8 text-[var(--landing-muted)]">
+            <p className="text-lg leading-8 text-[var(--landing-muted)]">
               Platform admins manage every dimension of the hiring operation — domains, recruiter access, form quality, and aggregate reporting across all roles.
             </p>
           </div>
@@ -36,7 +36,7 @@ export default function Reviews() {
                   className="flex items-center gap-3 rounded-sm border border-[var(--landing-border)] bg-[var(--landing-bg)] px-3 py-2.5 transition-colors hover:border-[var(--landing-muted)]"
                 >
                   <span className="text-base" role="img" aria-hidden="true">{cap.emoji}</span>
-                  <span className="font-body text-xs text-[var(--landing-muted)]">{cap.label}</span>
+                  <span className="text-xs text-[var(--landing-muted)]">{cap.label}</span>
                 </div>
               ))}
             </div>
@@ -94,13 +94,13 @@ export default function Reviews() {
               <p className="text-lg font-semibold text-[var(--landing-text)]">
                 Designed to save recruiter review time, not replace recruiter judgment.
               </p>
-              <p className="font-body mt-2 text-sm text-[var(--landing-subtle)]">
+              <p className="mt-2 text-sm text-[var(--landing-subtle)]">
                 The score starts the conversation. You still review answers, check role fit, and decide who moves forward.
               </p>
             </div>
             <div className="text-right">
               <p className="text-2xl font-bold text-[var(--landing-accent)]">5 min</p>
-              <p className="font-body text-xs text-[var(--landing-subtle)]">avg review time</p>
+              <p className="text-xs text-[var(--landing-subtle)]">avg review time</p>
             </div>
           </div>
         </div>

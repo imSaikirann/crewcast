@@ -3,6 +3,8 @@
 import { revalidatePath } from "next/cache";
 
 import { Prisma } from "@prisma/client";
+import { cacheDel } from "@/lib/redis";
+import { cacheKeys } from "@/lib/cacheKeys";
 import { withRequiredGitHubField } from "@/lib/formFields";
 import { prisma } from "@/lib/prisma";
 
@@ -105,6 +107,14 @@ export async function createDomainAction(
     revalidatePath("/admin");
     revalidatePath("/admin/domains");
     revalidatePath("/dashboard/domains");
+    revalidatePath("/domains");
+
+    await cacheDel(
+      cacheKeys.domains,
+      cacheKeys.publicDomains,
+      cacheKeys.domainDefault(domain.id),
+      cacheKeys.adminOverview
+    );
 
     return {
       status: "success",

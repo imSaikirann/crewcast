@@ -1,12 +1,12 @@
 export default function BackgroundGrid() {
   return (
     <div
-      className="pointer-events-none fixed inset-0 z-0 opacity-[0.025]"
+      className="pointer-events-none fixed inset-0 z-0"
       aria-hidden="true"
       style={{
         backgroundImage: `
-          linear-gradient(rgba(0,255,136,1) 1px, transparent 1px),
-          linear-gradient(90deg, rgba(0,255,136,1) 1px, transparent 1px)
+          linear-gradient(var(--lc-grid) 1px, transparent 1px),
+          linear-gradient(90deg, var(--lc-grid) 1px, transparent 1px)
         `,
         backgroundSize: "64px 64px",
       }}

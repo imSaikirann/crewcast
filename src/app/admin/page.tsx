@@ -64,6 +64,7 @@ export default async function AdminPage() {
     viewCount,
     upgradeRequestCount,
     recentForms,
+    githubRateLimit,
   ] = await Promise.all([
     prisma.user.count(),
     prisma.recruiter.count(),
@@ -96,6 +97,7 @@ export default async function AdminPage() {
       orderBy: { createdAt: "desc" },
       take: 6,
     }),
+    getGitHubRateLimit(),
   ]);
 
   const averageScore = Math.round(scoreAggregate._avg.totalScore ?? 0);
@@ -167,6 +169,8 @@ export default async function AdminPage() {
             />
           </div>
 
+          <GitHubRateLimitCard rateLimit={githubRateLimit} />
+
           <Card className="border-muted-foreground/15">
             <CardHeader className="flex flex-row items-start justify-between gap-4">
               <div>
@@ -226,6 +230,179 @@ export default async function AdminPage() {
       </main>
     </AppShell>
   );
+}
+
+type GitHubRateResource = {
+  limit: number;
+  used: number;
+  remaining: number;
+  reset: number;
+};
+
+type GitHubRateLimit =
+  | {
+      ok: true;
+      resources: {
+        core?: GitHubRateResource;
+        graphql?: GitHubRateResource;
+        search?: GitHubRateResource;
+      };
+    }
+  | {
+      ok: false;
+      error: string;
+    };
+
+function GitHubRateLimitCard({ rateLimit }: { rateLimit: GitHubRateLimit }) {
+  return (
+    <Card className="border-muted-foreground/15">
+      <CardHeader>
+        <CardTitle>GitHub token usage</CardTitle>
+        <CardDescription>
+          Live API quota for the GitHub token used by candidate scoring.
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        {!rateLimit.ok ? (
+          <div className="rounded-lg border border-dashed p-4 text-sm text-muted-foreground">
+            {rateLimit.error}
+          </div>
+        ) : (
+          <div className="grid gap-3 md:grid-cols-3">
+            <GitHubRateMetric
+              title="GraphQL"
+              helper="Primary scoring pipeline"
+              resource={rateLimit.resources.graphql}
+            />
+            <GitHubRateMetric
+              title="REST core"
+              helper="Profile, repos, languages"
+              resource={rateLimit.resources.core}
+            />
+            <GitHubRateMetric
+              title="REST search"
+              helper="Pull request lookup"
+              resource={rateLimit.resources.search}
+            />
+          </div>
+        )}
+      </CardContent>
+    </Card>
+  );
+}
+
+function GitHubRateMetric({
+  title,
+  helper,
+  resource,
+}: {
+  title: string;
+  helper: string;
+  resource?: GitHubRateResource;
+}) {
+  if (!resource) {
+    return (
+      <div className="rounded-lg border bg-card p-4">
+        <p className="text-sm font-medium">{title}</p>
+        <p className="mt-2 text-sm text-muted-foreground">No quota data returned.</p>
+      </div>
+    );
+  }
+
+  const percentUsed =
+    resource.limit > 0 ? Math.round((resource.used / resource.limit) * 100) : 0;
+
+  return (
+    <div className="rounded-lg border bg-card p-4">
+      <div className="flex items-start justify-between gap-3">
+        <div>
+          <p className="text-sm font-medium">{title}</p>
+          <p className="mt-1 text-xs text-muted-foreground">{helper}</p>
+        </div>
+        <Badge variant={resource.remaining > 0 ? "secondary" : "destructive"}>
+          {resource.remaining} left
+        </Badge>
+      </div>
+      <p className="mt-4 text-2xl font-bold">
+        {resource.used.toLocaleString()}
+        <span className="text-sm font-medium text-muted-foreground">
+          {" "}
+          / {resource.limit.toLocaleString()}
+        </span>
+      </p>
+      <div className="mt-3 h-2 rounded-full bg-muted">
+        <div
+          className="h-2 rounded-full bg-primary"
+          style={{ width: `${Math.min(percentUsed, 100)}%` }}
+        />
+      </div>
+      <p className="mt-2 text-xs text-muted-foreground">
+        Resets {formatGitHubReset(resource.reset)}
+      </p>
+    </div>
+  );
+}
+
+async function getGitHubRateLimit(): Promise<GitHubRateLimit> {
+  const token = process.env.GITHUB_TOKEN;
+  if (!token) {
+    return {
+      ok: false,
+      error: "GITHUB_TOKEN is not configured, so GitHub quota cannot be shown.",
+    };
+  }
+
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 8_000);
+
+  try {
+    const response = await fetch("https://api.github.com/rate_limit", {
+      cache: "no-store",
+      signal: controller.signal,
+      headers: {
+        Accept: "application/vnd.github+json",
+        Authorization: `Bearer ${token}`,
+        "X-GitHub-Api-Version": "2022-11-28",
+      },
+    });
+
+    if (!response.ok) {
+      return {
+        ok: false,
+        error: `GitHub quota request failed with status ${response.status}.`,
+      };
+    }
+
+    const payload = (await response.json()) as {
+      resources?: GitHubRateLimit extends { ok: true; resources: infer R }
+        ? R
+        : never;
+    };
+
+    return {
+      ok: true,
+      resources: payload.resources ?? {},
+    };
+  } catch (error) {
+    return {
+      ok: false,
+      error:
+        error instanceof Error
+          ? `GitHub quota unavailable: ${error.message}`
+          : "GitHub quota unavailable.",
+    };
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
+function formatGitHubReset(reset: number) {
+  if (!reset) return "unknown";
+
+  return new Intl.DateTimeFormat("en-US", {
+    hour: "numeric",
+    minute: "2-digit",
+  }).format(new Date(reset * 1000));
 }
 
 function AdminMetric({

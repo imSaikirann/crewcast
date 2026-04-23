@@ -68,6 +68,24 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              try {
+                var theme = localStorage.getItem("crewcast-theme") || "system";
+                var resolved = theme === "system"
+                  ? (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light")
+                  : theme;
+                document.documentElement.classList.remove("light", "dark");
+                document.documentElement.classList.add(resolved);
+                document.documentElement.dataset.theme = theme;
+                document.documentElement.style.colorScheme = resolved;
+              } catch (_) {}
+            `,
+          }}
+        />
+      </head>
       <body
         className="bg-background font-sans antialiased transition-colors"
       >

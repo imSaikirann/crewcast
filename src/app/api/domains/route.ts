@@ -1,18 +1,21 @@
-import { NextResponse, NextRequest } from "next/server";
+import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { getServerSession } from "next-auth";
 
-import { authOptions } from "./../auth/[...nextauth]/route";
 import { requireRole } from "@/lib/auth";
+import { cachedJson } from "@/lib/cache";
+import { cacheKeys, cacheTtl } from "@/lib/cacheKeys";
 import { ROLES } from "@/lib/constants/roles";
 
 
 
 export async function GET() {
   try {
-    const session = await requireRole(ROLES.USER);
+    await requireRole(ROLES.USER);
 
-    const domains = await prisma.domains.findMany();
+    const domains = await cachedJson(
+      { key: cacheKeys.domains, ttl: cacheTtl.domains },
+      () => prisma.domains.findMany()
+    );
 
     return NextResponse.json(domains);
   } catch (err) {

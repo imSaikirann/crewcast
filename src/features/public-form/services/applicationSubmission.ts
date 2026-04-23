@@ -182,7 +182,11 @@ async function persistGitHubScore({
       },
     });
 
-    await cacheDel(cacheKeys.jobApplications(publicFormId));
+    await cacheDel(
+      cacheKeys.jobApplications(publicFormId),
+      cacheKeys.jobs,
+      cacheKeys.adminOverview
+    );
   } catch (error) {
     console.error("Background GitHub scoring failed:", {
       applicationId,
@@ -194,7 +198,11 @@ async function persistGitHubScore({
 
 async function invalidateApplicationsCache(publicFormId: string) {
   try {
-    await cacheDel(cacheKeys.jobApplications(publicFormId));
+    await cacheDel(
+      cacheKeys.jobApplications(publicFormId),
+      cacheKeys.jobs,
+      cacheKeys.adminOverview
+    );
   } catch (error) {
     console.error("Background application cache invalidation failed:", {
       publicFormId,

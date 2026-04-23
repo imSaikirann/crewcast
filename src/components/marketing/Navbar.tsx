@@ -6,10 +6,13 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Menu, X, ChevronDown, LayoutDashboard, LogOut, ArrowRight } from "lucide-react";
+import { CrewcastMark } from "@/components/brand/CrewcastLogo";
+import { ThemeToggle } from "@/components/theme/ThemeToggle";
 
 const navLinks = [
   { label: "How it works", href: "/#how-it-works" },
   { label: "Product",      href: "/#features"     },
+  { label: "Domains",      href: "/domains"        },
   { label: "Open roles",   href: "/jobs"           },
 ];
 
@@ -62,7 +65,7 @@ export default function Navbar() {
       <div
         style={{
           borderBottom:      scrolled ? "0.5px solid var(--lc-border)" : "0.5px solid transparent",
-          background:        scrolled ? "rgba(8,8,8,0.92)"             : "transparent",
+          background:        scrolled ? "color-mix(in srgb, var(--lc-bg) 92%, transparent)" : "transparent",
           backdropFilter:    scrolled ? "blur(12px)"                   : "none",
           WebkitBackdropFilter: scrolled ? "blur(12px)"                : "none",
           transition: "border-color 0.2s, background 0.2s",
@@ -72,15 +75,7 @@ export default function Navbar() {
 
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2.5 no-underline">
-            <div
-              className="w-7 h-7 rounded-[5px] flex items-center justify-center shrink-0"
-              style={{ background: "var(--lc-accent)" }}
-            >
-              <svg width="13" height="13" viewBox="0 0 16 16" fill="none">
-                <path d="M3 12L8 4L13 12" stroke="var(--lc-accent-text)" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"/>
-                <path d="M5.5 9.5H10.5" stroke="var(--lc-accent-text)" strokeWidth="2" strokeLinecap="round"/>
-              </svg>
-            </div>
+            <CrewcastMark className="size-7 rounded-[5px] bg-transparent p-0" />
             <span
               className="text-[16px] font-bold"
               style={{ fontFamily: "var(--lc-sans)", color: "var(--lc-text)" }}
@@ -95,9 +90,10 @@ export default function Navbar() {
               <Link
                 key={l.label}
                 href={l.href}
-                className="px-3.5 py-2 text-white hover:text-white/70 rounded-[6px] text-[13px] font-medium no-underline transition-colors duration-150"
-                style={{  fontFamily: "var(--lc-sans)" }}
-
+                className="px-3.5 py-2 rounded-[6px] text-[13px] font-medium no-underline transition-colors duration-150"
+                style={{ fontFamily: "var(--lc-sans)", color: "var(--lc-text-2)" }}
+                onMouseEnter={(e) => (e.currentTarget.style.color = "var(--lc-text)")}
+                onMouseLeave={(e) => (e.currentTarget.style.color = "var(--lc-text-2)")}
               >
                 {l.label}
               </Link>
@@ -114,6 +110,8 @@ export default function Navbar() {
                 Admin
               </Link>
             )}
+
+            <ThemeToggle compact />
 
             <div className="mx-3 h-4 w-px" style={{ background: "var(--lc-border)" }} />
 
@@ -155,7 +153,7 @@ export default function Navbar() {
         <div
           className="md:hidden border-b"
           style={{
-            background:           "rgba(8,8,8,0.97)",
+            background:           "color-mix(in srgb, var(--lc-bg) 97%, transparent)",
             backdropFilter:       "blur(12px)",
             WebkitBackdropFilter: "blur(12px)",
             borderColor:          "var(--lc-border)",
@@ -188,6 +186,13 @@ export default function Navbar() {
             )}
 
             <div className="pt-3 mt-1 border-t" style={{ borderColor: "var(--lc-border)" }}>
+              <div className="mb-3 flex items-center justify-between px-3">
+                <span className="text-[12px] font-medium" style={{ color: "var(--lc-text-2)" }}>
+                  Theme
+                </span>
+                <ThemeToggle compact />
+              </div>
+
               {!user ? (
                 <button
                   onClick={() => signIn("google")}

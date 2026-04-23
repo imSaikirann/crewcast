@@ -1,81 +1,25 @@
 import JobsClient from "@/features/jobs/components/JobFilters";
 import type { Job } from "@/features/jobs/types/job";
+import { CrewcastWordmark } from "@/components/brand/CrewcastLogo";
+import { cachedJson } from "@/lib/cache";
+import { cacheKeys, cacheTtl } from "@/lib/cacheKeys";
 import { prisma } from "@/lib/prisma";
 
 export const dynamic = "force-dynamic";
 
 export default async function JobsPage() {
-  const today = startOfToday();
-
-  const jobs = await prisma.recruiterForm.findMany({
-    where: {
-      isFlagged: false,
-      status: { not: "ARCHIVED" },
-      expiresAt: { gte: today },
-    },
-    select: {
-      id: true,
-      publicId: true,
-      title: true,
-      description: true,
-      techStack: true,
-      salaryMax: true,
-      salaryMin: true,
-      currency: true,
-      experience: true,
-      location: true,
-      roleType: true,
-      workMode: true,
-      specialization: true,
-      expiresAt: true,
-      createdAt: true,
-      viewCount: true,
-      recruiter: {
-        select: {
-          companyName: true,
-          verified: true,
-        },
-      },
-      domain: {
-        select: {
-          title: true,
-        },
-      },
-      _count: {
-        select: {
-          applications: true,
-        },
-      },
-    },
-    orderBy: [{ createdAt: "desc" }],
-  });
-
-  const jobData: Job[] = jobs.map((job) => ({
-    id: job.id,
-    publicId: job.publicId,
-    title: job.title,
-    description: job.description,
-    techStack: job.techStack,
-    salaryMin: job.salaryMin,
-    salaryMax: job.salaryMax,
-    currency: job.currency,
-    experience: job.experience,
-    location: job.location,
-    roleType: job.roleType,
-    workMode: job.workMode,
-    specialization: job.specialization,
-    expiresAt: job.expiresAt.toISOString(),
-    createdAt: job.createdAt.toISOString(),
-    companyName: job.recruiter.companyName,
-    companyVerified: job.recruiter.verified,
-    domainTitle: job.domain.title,
-    applicationsCount: job._count.applications,
-    viewCount: job.viewCount,
-  }));
+  const jobData = await cachedJson<Job[]>(
+    { key: cacheKeys.jobs, ttl: cacheTtl.jobs },
+    getPublicJobs
+  );
 
   return (
     <main className="min-h-screen bg-background px-4 py-20 text-foreground transition-colors sm:px-10">
       <div className="mx-auto max-w-6xl space-y-7">
+        <header className="flex items-center justify-between">
+          <CrewcastWordmark markClassName="size-8 rounded-md" />
+        </header>
+
         <section className="grid gap-6 border-b pb-7 lg:grid-cols-[minmax(0,1fr)_360px] lg:items-end">
           <div>
             <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
@@ -123,4 +67,74 @@ function BoardStat({ label, value }: { label: string; value: number }) {
 function startOfToday() {
   const now = new Date();
   return new Date(now.getFullYear(), now.getMonth(), now.getDate());
+}
+
+async function getPublicJobs(): Promise<Job[]> {
+  const today = startOfToday();
+
+  const jobs = await prisma.recruiterForm.findMany({
+    where: {
+      isFlagged: false,
+      status: "PUBLISHED",
+      expiresAt: { gte: today },
+    },
+    select: {
+      id: true,
+      publicId: true,
+      title: true,
+      description: true,
+      techStack: true,
+      salaryMax: true,
+      salaryMin: true,
+      currency: true,
+      experience: true,
+      location: true,
+      roleType: true,
+      workMode: true,
+      specialization: true,
+      expiresAt: true,
+      createdAt: true,
+      viewCount: true,
+      recruiter: {
+        select: {
+          companyName: true,
+          verified: true,
+        },
+      },
+      domain: {
+        select: {
+          title: true,
+        },
+      },
+      _count: {
+        select: {
+          applications: true,
+        },
+      },
+    },
+    orderBy: [{ createdAt: "desc" }],
+  });
+
+  return jobs.map((job) => ({
+    id: job.id,
+    publicId: job.publicId,
+    title: job.title,
+    description: job.description,
+    techStack: job.techStack,
+    salaryMin: job.salaryMin,
+    salaryMax: job.salaryMax,
+    currency: job.currency,
+    experience: job.experience,
+    location: job.location,
+    roleType: job.roleType,
+    workMode: job.workMode,
+    specialization: job.specialization,
+    expiresAt: job.expiresAt.toISOString(),
+    createdAt: job.createdAt.toISOString(),
+    companyName: job.recruiter.companyName,
+    companyVerified: job.recruiter.verified,
+    domainTitle: job.domain.title,
+    applicationsCount: job._count.applications,
+    viewCount: job.viewCount,
+  }));
 }

@@ -27,6 +27,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { CrewcastMark } from "@/components/brand/CrewcastLogo";
+import { ThemeToggle } from "@/components/theme/ThemeToggle";
 import { cn } from "@/lib/utils";
 import { HugeIcon, type HugeIconName } from "@/utils/hugeicons";
 
@@ -104,10 +105,11 @@ export default function AppShell({ children }: { children: ReactNode }) {
 
       <header
         className={cn(
-          "sticky top-0 z-30 hidden h-14 items-center justify-end border-b bg-background/95 px-6 backdrop-blur transition-[margin] duration-200 md:flex",
+          "sticky top-0 z-30 hidden h-14 items-center justify-end gap-2 border-b bg-background/95 px-6 backdrop-blur transition-[margin] duration-200 md:flex",
           collapsed ? "ml-14" : "ml-[220px]"
         )}
       >
+        <ThemeToggle compact />
         <UserMenu session={session} />
       </header>
 
@@ -141,7 +143,10 @@ export default function AppShell({ children }: { children: ReactNode }) {
             <span className="truncate">Crewcast</span>
           </Link>
 
-          <UserMenu session={session} compact />
+          <div className="flex items-center gap-2">
+            <ThemeToggle compact />
+            <UserMenu session={session} compact />
+          </div>
         </div>
       </header>
 

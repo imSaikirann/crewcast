@@ -46,7 +46,7 @@ export default function Hero() {
         className="pointer-events-none absolute inset-0"
         style={{
           backgroundImage:
-            "linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px)",
+            "linear-gradient(var(--lc-grid) 1px, transparent 1px), linear-gradient(90deg, var(--lc-grid) 1px, transparent 1px)",
           backgroundSize: "56px 56px",
           maskImage: "radial-gradient(ellipse 80% 60% at 50% 0%, black 30%, transparent 100%)",
         }}
@@ -129,7 +129,7 @@ export default function Hero() {
             className="rounded-lg border border-[var(--lc-border)] overflow-hidden"
             style={{
               background: "var(--lc-bg-1)",
-              boxShadow: "0 0 0 1px rgba(255,255,255,0.03), 0 40px 80px rgba(0,0,0,0.8)",
+              boxShadow: "0 0 0 1px var(--lc-grid), var(--lc-hero-display-shadow)",
             }}
           >
             {/* Titlebar */}

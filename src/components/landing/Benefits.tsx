@@ -44,7 +44,7 @@ export default function Benefits() {
             <h2 className="text-3xl font-bold text-[var(--landing-text)] sm:text-4xl">
               Hiring software engineers should include their software.
             </h2>
-            <p className="font-body text-lg leading-8 text-[var(--landing-muted)]">
+            <p className="text-lg leading-8 text-[var(--landing-muted)]">
               Normal hiring funnels make recruiters read the same resume patterns again and again. Crewcast keeps the form simple for candidates but gives your team a technical signal layer from day one.
             </p>
 
@@ -59,7 +59,7 @@ export default function Benefits() {
               ].map((row) => (
                 <div key={row.label} className="space-y-1">
                   <div className="flex justify-between">
-                    <span className="font-body text-xs text-[var(--landing-muted)]">{row.label}</span>
+                    <span className="text-xs text-[var(--landing-muted)]">{row.label}</span>
                     <span className="text-xs font-semibold text-[var(--landing-accent)]">{row.pct}</span>
                   </div>
                   <div className="h-1 w-full rounded-full bg-[var(--landing-border)]">
@@ -82,7 +82,7 @@ export default function Benefits() {
               >
                 <span className="text-2xl" role="img" aria-hidden="true">{b.emoji}</span>
                 <h3 className="mt-4 text-sm font-semibold text-[var(--landing-text)]">{b.title}</h3>
-                <p className="font-body mt-2 text-sm leading-6 text-[var(--landing-muted)]">{b.description}</p>
+                <p className="mt-2 text-sm leading-6 text-[var(--landing-muted)]">{b.description}</p>
               </article>
             ))}
           </div>

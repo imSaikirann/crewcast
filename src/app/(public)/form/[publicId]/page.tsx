@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { cacheGet, cacheSet } from "@/lib/redis";
-import { cacheKeys } from "@/lib/cacheKeys";
+import { cacheKeys, cacheTtl } from "@/lib/cacheKeys";
 import { PublicFormShell } from "@/features/public-form/components/PublicFormShell";
 import { trackFormView } from "@/lib/trackFormView";
 
@@ -101,12 +101,12 @@ if (cached) {
   
   await trackFormView(form.id);
  
-  let ttl = 3600;
+  let ttl: number = cacheTtl.publicJob;
   if (form.expiresAt) {
     const diff = Math.floor(
       (new Date(form.expiresAt).getTime() - Date.now()) / 1000
     );
-    if (diff > 0) ttl = Math.min(diff, 3600);
+    if (diff > 0) ttl = Math.min(diff, cacheTtl.publicJob);
   }
 
   await cacheSet(cacheKey, JSON.stringify(safeForm), ttl);

@@ -40,10 +40,10 @@ export function ResumeUploadField({ field }: ResumeUploadFieldProps) {
   return (
     <div className="space-y-3">
       {resume ? (
-        <div className="rounded-xl border bg-secondary p-4">
+        <div className="rounded-md border bg-background p-4">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex min-w-0 items-center gap-3">
-              <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-background text-primary">
+              <div className="flex size-10 shrink-0 items-center justify-center rounded-md bg-background text-primary">
                 <FileText className="size-5" />
               </div>
               <div className="min-w-0">
@@ -108,7 +108,7 @@ export function ResumeUploadField({ field }: ResumeUploadFieldProps) {
           }}
           appearance={{
             container:
-              "min-h-36 rounded-xl border border-dashed border-border bg-secondary p-4 transition hover:border-primary/50",
+              "min-h-36 rounded-md border border-dashed border-border bg-background p-4 transition hover:border-primary/50 hover:bg-secondary/30",
             uploadIcon: "text-primary",
             label: "text-sm font-medium text-foreground",
             allowedContent: "text-xs text-muted-foreground",

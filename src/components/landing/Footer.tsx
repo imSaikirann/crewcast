@@ -1,8 +1,10 @@
 import Link from "next/link";
+import { CrewcastMark } from "@/components/brand/CrewcastLogo";
 
 const links = [
   { label: "Dashboard",    href: "/dashboard" },
   { label: "Open roles",   href: "/jobs" },
+  { label: "Domains",      href: "/domains" },
   { label: "How it works", href: "/#how-it-works" },
   { label: "Features",     href: "/#features" },
   { label: "Privacy",      href: "/privacy" },
@@ -41,7 +43,7 @@ export default function Footer() {
         className="pointer-events-none absolute inset-0"
         style={{
           backgroundImage:
-            "linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px)",
+            "linear-gradient(var(--lc-grid) 1px, transparent 1px), linear-gradient(90deg, var(--lc-grid) 1px, transparent 1px)",
           backgroundSize: "56px 56px",
         }}
       />
@@ -57,8 +59,8 @@ export default function Footer() {
               fontSize: "clamp(3rem, 10vw, 7.5rem)",
             }}
           >
-            Hire by their{" "}
-            <em style={{ fontStyle: "italic", fontWeight: 300 }}>actual work.</em>
+            Hire with{" "}
+            <em style={{ fontStyle: "italic", fontWeight: 300 }}>real signals.</em>
           </p>
           <div className="mt-8 flex justify-center">
             <Link
@@ -91,15 +93,7 @@ export default function Footer() {
 
           {/* Wordmark */}
           <div className="flex items-center gap-2.5">
-            <div
-              className="w-6 h-6 rounded-[4px] flex items-center justify-center"
-              style={{ background: "var(--lc-accent)" }}
-            >
-              <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
-                <path d="M3 12L8 4L13 12" stroke="var(--lc-accent-text)" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"/>
-                <path d="M5.5 9.5H10.5" stroke="var(--lc-accent-text)" strokeWidth="2" strokeLinecap="round"/>
-              </svg>
-            </div>
+            <CrewcastMark className="size-6 rounded-[4px] bg-transparent p-0" />
             <span
               className="text-[15px] font-bold text-[var(--lc-text)]"
               style={{ fontFamily: "var(--lc-sans)" }}

@@ -19,7 +19,7 @@ const stats = [
   { val: "0–100", label: "Scored on every submission"      },
   { val: "4",     label: "Signal dimensions measured"      },
   { val: "<5m",   label: "Candidate application time"      },
-  { val: "Public",label: "GitHub data only — no scraping"  },
+  { val: "Public",label: "GitHub data only "  },
 ];
 
 export function StatsBar() {

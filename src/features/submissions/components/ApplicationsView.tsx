@@ -19,6 +19,46 @@ export type Application = {
   responses: Record<string, any>;
 };
 
+export type GitHubInsightReport = {
+  totalScore: number;
+  confidence: "LOW" | "MEDIUM" | "HIGH";
+  summary: string;
+  breakdown: {
+    repoScore: number;
+    techMatchScore: number;
+    activityScore: number;
+    ossScore: number;
+  };
+  techAnalysis: {
+    matched: string[];
+    missing: string[];
+    depth: Record<string, "HIGH" | "MEDIUM" | "LOW">;
+  };
+  oss: {
+    totalPRs: number;
+    mergedPRs: number;
+    topRepos: string[];
+  };
+  projects: Array<{
+    name: string;
+    description: string;
+    tech: string[];
+    lastUpdated: string;
+    commits: number;
+    contributors: number;
+  }>;
+  commits: string[];
+  activity: {
+    lastActive: string;
+    status: "HIGH" | "MEDIUM" | "LOW";
+  };
+  ownership: {
+    ownedRepos: number;
+    contributedRepos: number;
+  };
+  warnings: string[];
+};
+
 export type ApplicationField = {
   id: string;
   label: string;
@@ -129,6 +169,12 @@ function getScore(application: Application) {
   return application.scores?.[0]?.totalScore;
 }
 
+export function getInsightReport(application: Application) {
+  return application.scores?.[0]?.breakdown?.insightReport as
+    | GitHubInsightReport
+    | undefined;
+}
+
 function ComparisonPanel({
   applications,
   selectedCount,
@@ -199,6 +245,7 @@ function CompareCard({
 }) {
   const score = getScore(application);
   const breakdown = application.scores?.[0]?.breakdown;
+  const insight = getInsightReport(application);
   const skillsMatch = breakdown?.skillsMatch;
 
   return (
@@ -211,11 +258,28 @@ function CompareCard({
         <ScoreBadge score={score} />
       </div>
       <div className="mt-4 grid grid-cols-2 gap-2">
-        <CompareMetric label="Tech match" value={skillsMatch ? `${skillsMatch.percentage}%` : "-"} />
-        <CompareMetric label="GitHub" value={breakdown?.github ? `${breakdown.github}/100` : "-"} />
-        <CompareMetric label="Repos" value={breakdown?.signals?.originalRepos ?? "-"} />
-        <CompareMetric label="Recent" value={breakdown?.signals?.recentRepos ?? "-"} />
+        <CompareMetric
+          label="Tech match"
+          value={
+            insight
+              ? `${insight.breakdown.techMatchScore}/100`
+              : skillsMatch
+                ? `${skillsMatch.percentage}%`
+                : "-"
+          }
+        />
+        <CompareMetric label="Activity" value={insight?.activity.status ?? "-"} />
+        <CompareMetric label="Confidence" value={insight?.confidence ?? "-"} />
+        <CompareMetric
+          label="OSS PRs"
+          value={insight?.oss.totalPRs ?? breakdown?.signals?.originalRepos ?? "-"}
+        />
       </div>
+      {insight?.summary && (
+        <p className="mt-3 line-clamp-3 text-xs leading-5 text-muted-foreground">
+          {insight.summary}
+        </p>
+      )}
     </div>
   );
 }

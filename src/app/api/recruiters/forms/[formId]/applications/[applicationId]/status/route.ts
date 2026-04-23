@@ -105,7 +105,11 @@ export async function PATCH(
       hiredCount = openings;
     }
 
-    await cacheDel(cacheKeys.jobApplications(publicId));
+    await cacheDel(
+      cacheKeys.jobApplications(publicId),
+      cacheKeys.jobs,
+      cacheKeys.adminOverview
+    );
 
     return NextResponse.json({
       ok: true,

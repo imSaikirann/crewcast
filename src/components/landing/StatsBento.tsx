@@ -61,7 +61,7 @@ export default function StatsBento() {
             {capabilities.map((c) => (
               <span
                 key={c.label}
-                className="inline-flex items-center gap-2 rounded-sm border border-[var(--landing-border)] bg-[var(--landing-panel)] px-3 py-2 font-body text-sm text-[var(--landing-muted)]"
+                className="inline-flex items-center gap-2 rounded-sm border border-[var(--landing-border)] bg-[var(--landing-panel)] px-3 py-2 text-sm text-[var(--landing-muted)]"
               >
                 <span>{c.emoji}</span>
                 {c.label}
@@ -97,7 +97,7 @@ export default function StatsBento() {
                 </div>
 
                 <h3 className="text-sm font-semibold text-[var(--landing-text)]">{step.title}</h3>
-                <p className="font-body mt-3 text-sm leading-6 text-[var(--landing-muted)]">{step.description}</p>
+                <p className="mt-3 text-sm leading-6 text-[var(--landing-muted)]">{step.description}</p>
               </article>
             );
           })}
@@ -113,7 +113,7 @@ export default function StatsBento() {
           ].map((m) => (
             <div key={m.label} className="rounded-sm border border-[var(--landing-border)] bg-[var(--landing-panel)] p-5">
               <p className="text-2xl font-bold text-[var(--landing-text)]">{m.value}</p>
-              <p className="font-body mt-1.5 text-xs text-[var(--landing-subtle)]">{m.label}</p>
+              <p className="mt-1.5 text-xs text-[var(--landing-subtle)]">{m.label}</p>
             </div>
           ))}
         </div>

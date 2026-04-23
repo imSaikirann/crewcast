@@ -190,7 +190,13 @@ export async function POST(req: NextRequest) {
         },
     });
 
-    await cacheDel(cacheKeys.recruiterJobs(recruiter.id), cacheKeys.jobs);
+    await cacheDel(
+      cacheKeys.recruiterJobs(recruiter.id),
+      cacheKeys.domainForms(domainId),
+      cacheKeys.jobs,
+      cacheKeys.domains,
+      cacheKeys.publicDomains
+    );
 
     return NextResponse.json({ ok: true, form: createdForm }, { status: 201 });
   } catch (err) {

@@ -1,4 +1,5 @@
 import { scoreGitHubProfile as scoreGitHubProfileWithGraphQL } from "@/services/githubScore";
+import type { GitHubInsightReport } from "@/features/github-intelligence/types";
 
 export type GitHubScore = {
   totalScore: number;
@@ -26,6 +27,7 @@ export type GitHubScore = {
       forks: number;
     };
     notes: string[];
+    insightReport: GitHubInsightReport;
   };
 };
 
@@ -80,16 +82,14 @@ export async function scoreGitHubProfile(
   }
 
   try {
-    const graphQLScore = await scoreGitHubProfileWithGraphQL(username);
+    const graphQLScore = await scoreGitHubProfileWithGraphQL(username, {
+      requiredTechStack: options.requiredTechStack,
+    });
     const skillsMatch = calculateSkillsMatch(
       options.requiredTechStack,
       graphQLScore.languages
     );
-    const githubScore = Math.round(graphQLScore.totalScore * 0.45);
-    const totalScore = Math.min(
-      100,
-      Math.round(skillsMatch.score + githubScore)
-    );
+    const totalScore = graphQLScore.totalScore;
     const notes = [...graphQLScore.notes];
 
     if (skillsMatch.required.length > 0) {
@@ -114,10 +114,15 @@ export async function scoreGitHubProfile(
         languages: graphQLScore.languages,
         signals: graphQLScore.signals,
         notes,
+        insightReport: graphQLScore.insightReport,
       },
     };
-  } catch {
-    return emptyScore("GitHub scoring is temporarily unavailable.");
+  } catch (error) {
+    console.error("GitHub scoring failed:", {
+      username,
+      error,
+    });
+    throw error;
   }
 }
 
@@ -248,6 +253,38 @@ function emptyScore(note: string): GitHubScore {
         forks: 0,
       },
       notes: [note],
+      insightReport: {
+        totalScore: 0,
+        confidence: "LOW",
+        summary: note,
+        breakdown: {
+          repoScore: 0,
+          techMatchScore: 0,
+          activityScore: 0,
+          ossScore: 0,
+        },
+        techAnalysis: {
+          matched: [],
+          missing: [],
+          depth: {},
+        },
+        oss: {
+          totalPRs: 0,
+          mergedPRs: 0,
+          topRepos: [],
+        },
+        projects: [],
+        commits: [],
+        activity: {
+          lastActive: "",
+          status: "LOW",
+        },
+        ownership: {
+          ownedRepos: 0,
+          contributedRepos: 0,
+        },
+        warnings: [note],
+      },
     },
   };
 }

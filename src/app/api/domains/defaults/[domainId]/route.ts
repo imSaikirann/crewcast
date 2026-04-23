@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 
 import { requireRole } from "@/lib/auth";
+import { cachedJson } from "@/lib/cache";
+import { cacheKeys, cacheTtl } from "@/lib/cacheKeys";
 import { ROLES } from "@/lib/constants/roles";
 import { prisma } from "@/lib/prisma";
 
@@ -20,10 +22,14 @@ export async function GET(
       );
     }
 
-    const defaultForm = await prisma.defaultFormSchema.findUnique({
-      where: { domainId },
-      select: { fields: true },
-    });
+    const defaultForm = await cachedJson(
+      { key: cacheKeys.domainDefault(domainId), ttl: cacheTtl.domainDefault },
+      () =>
+        prisma.defaultFormSchema.findUnique({
+          where: { domainId },
+          select: { fields: true },
+        })
+    );
 
     return NextResponse.json(defaultForm);
   } catch (err) {

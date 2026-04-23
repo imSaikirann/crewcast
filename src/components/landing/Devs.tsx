@@ -47,7 +47,7 @@ export default function Devs() {
             <h2 className="text-3xl font-bold text-[var(--landing-text)] sm:text-4xl">
               Clean forms for candidates. Scored signals for you.
             </h2>
-            <p className="font-body text-lg leading-8 text-[var(--landing-muted)]">
+            <p className="text-lg leading-8 text-[var(--landing-muted)]">
               Candidates see a simple public job page and a clean application form. For software roles, they add their GitHub profile. Crewcast handles the scoring — they don't need to do anything extra.
             </p>
 
@@ -79,7 +79,7 @@ export default function Devs() {
                   <span className="text-sm text-[var(--landing-muted)]">your-username</span>
                   <span className="ml-auto h-4 w-0.5 bg-[var(--landing-accent)] opacity-80" />
                 </div>
-                <p className="font-body text-xs text-[var(--landing-subtle)]">Used to score public engineering signals for this role.</p>
+                <p className="text-xs text-[var(--landing-subtle)]">Used to score public engineering signals for this role.</p>
               </div>
             </div>
           </div>
@@ -105,12 +105,12 @@ export default function Devs() {
                     <GitHubMark className="h-4 w-4 text-[var(--landing-text)]" />
                   </div>
                   <div>
-                    <p className="font-body text-sm font-semibold text-[var(--landing-text)]">{c.name}</p>
-                    <p className="font-body text-xs text-[var(--landing-subtle)]">{c.role}</p>
+                    <p className="text-sm font-semibold text-[var(--landing-text)]">{c.name}</p>
+                    <p className="text-xs text-[var(--landing-subtle)]">{c.role}</p>
                   </div>
                 </div>
                 <p className={`text-xl font-bold ${scoreColor(c.score)}`}>{c.score}</p>
-                <p className="font-body text-xs text-[var(--landing-muted)]">{c.langs}</p>
+                <p className="text-xs text-[var(--landing-muted)]">{c.langs}</p>
               </div>
             ))}
 

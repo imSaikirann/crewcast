@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { CrewcastWordmark } from "@/components/brand/CrewcastLogo";
 import { Badge } from "@/components/ui/badge";
 import { prisma } from "@/lib/prisma";
 import { formatDateTime } from "@/utils/date";
@@ -41,7 +42,8 @@ export default async function ApplicationStatusPage({
   if (!application) {
     return (
       <main className="min-h-screen bg-background px-4 py-16 text-foreground">
-        <section className="mx-auto max-w-xl rounded-xl border bg-card p-8 text-center">
+        <section className="mx-auto max-w-xl rounded-lg border bg-card p-8 text-center shadow-sm">
+          <CrewcastWordmark className="mb-6 justify-center" markClassName="size-8 rounded-md" />
           <h1 className="text-2xl font-semibold">Status link not found</h1>
           <p className="mt-3 text-sm leading-6 text-muted-foreground">
             This tracking link may be incorrect or no longer available. Check the
@@ -68,7 +70,11 @@ export default async function ApplicationStatusPage({
   return (
     <main className="min-h-screen bg-background px-4 py-12 text-foreground">
       <section className="mx-auto max-w-3xl space-y-5">
-        <div className="rounded-xl border bg-card p-6 shadow-sm">
+        <header className="flex items-center justify-between">
+          <CrewcastWordmark markClassName="size-8 rounded-md" />
+        </header>
+
+        <div className="rounded-lg border bg-card p-6 shadow-sm">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
             <div>
               <p className="text-sm text-muted-foreground">
@@ -91,7 +97,7 @@ export default async function ApplicationStatusPage({
           </div>
         </div>
 
-        <div className={`rounded-xl border p-6 ${copy.className}`}>
+        <div className={`rounded-lg border p-6 ${copy.className}`}>
           <p className="text-xs font-semibold uppercase tracking-wide opacity-80">
             Current status
           </p>
@@ -101,7 +107,7 @@ export default async function ApplicationStatusPage({
           </p>
         </div>
 
-        <div className="rounded-xl border bg-card p-6">
+        <div className="rounded-lg border bg-card p-6">
           <p className="text-sm font-semibold">What happens next?</p>
           <div className="mt-4 grid gap-3">
             {STATUS_STEPS.map((step) => (

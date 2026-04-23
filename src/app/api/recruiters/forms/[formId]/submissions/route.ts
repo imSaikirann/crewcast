@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { prisma } from "@/lib/prisma";
 import { cacheGet, cacheSet } from "@/lib/redis"
-import { cacheKeys } from "@/lib/cacheKeys";
+import { cacheKeys, cacheTtl } from "@/lib/cacheKeys";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
 export async function GET(
@@ -72,7 +72,7 @@ export async function GET(
     });
 
 
-    await cacheSet(cacheKey, JSON.stringify(submissions), 30); 
+    await cacheSet(cacheKey, JSON.stringify(submissions), cacheTtl.jobApplications); 
 
     return NextResponse.json(submissions);
   } catch (e) {

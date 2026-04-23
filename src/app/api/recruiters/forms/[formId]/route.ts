@@ -110,7 +110,9 @@ export async function PATCH(
       cacheKeys.jobApplications(form.publicId),
       cacheKeys.recruiterJobs(form.recruiter.id),
       cacheKeys.domainForms(form.domainId),
-      cacheKeys.jobs
+      cacheKeys.jobs,
+      cacheKeys.domains,
+      cacheKeys.publicDomains
     );
 
     return NextResponse.json({ message: "Form status updated", form: updatedForm });
@@ -209,7 +211,9 @@ export async function DELETE(
       cacheKeys.jobApplications(form.publicId),
       cacheKeys.recruiterJobs(form.recruiter.id),
       cacheKeys.domainForms(form.domainId),
-      cacheKeys.jobs
+      cacheKeys.jobs,
+      cacheKeys.domains,
+      cacheKeys.publicDomains
     );
 
     return NextResponse.json({ message: "Form deleted" });

@@ -7,19 +7,20 @@ export default function AppPage({
   breadcrumbs,
   children,
   className,
-  width = "wide",
+  width = "full",
 }: {
   breadcrumbs?: BreadcrumbItemType[]
   children: ReactNode
   className?: string
-  width?: "wide" | "form"
+  width?: "full" | "wide" | "form"
 }) {
   return (
     <div className="min-h-screen">
       <div
         className={cn(
-          "mx-auto w-full px-4 pb-8 pt-5 sm:px-6 lg:px-8",
-          width === "wide" ? "max-w-7xl" : "max-w-6xl",
+          "w-full px-4 pb-8 pt-5 sm:px-6 lg:px-8",
+          width === "wide" && "mx-auto max-w-7xl",
+          width === "form" && "mx-auto max-w-6xl",
           className
         )}
       >

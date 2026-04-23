@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
@@ -38,9 +38,7 @@ export default function DashboardScreen({
           <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
             Dashboard
           </p>
-          <h1 className="mt-2 font-display text-2xl font-semibold tracking-tight">
-            Good morning, {firstName(recruiter.companyName)}
-          </h1>
+          <HiringGreeting companyName={recruiter.companyName} />
           <p className="mt-1 text-sm text-muted-foreground">
             {recruiter.companyName} hiring workspace
           </p>
@@ -123,6 +121,43 @@ export default function DashboardScreen({
       </section>
     </div>
   );
+}
+
+function HiringGreeting({ companyName }: { companyName: string }) {
+  const [message, setMessage] = useState(() => hiringMessage(companyName, null));
+
+  useEffect(() => {
+    setMessage(hiringMessage(companyName, new Date()));
+  }, [companyName]);
+
+  return (
+    <h1 className="mt-2 font-display text-2xl font-semibold tracking-tight">
+      {message}
+    </h1>
+  );
+}
+
+function hiringMessage(companyName: string, date: Date | null) {
+  const name = firstName(companyName);
+  const hour = date?.getHours();
+
+  if (hour === undefined) {
+    return `Build your next great crew, ${name}`;
+  }
+
+  if (hour >= 5 && hour < 12) {
+    return `Find the next strong hire for ${name}`;
+  }
+
+  if (hour >= 12 && hour < 17) {
+    return `Time to shape today's shortlist, ${name}`;
+  }
+
+  if (hour >= 17 && hour < 22) {
+    return `Add one more great teammate to ${name}`;
+  }
+
+  return `Tomorrow's crew starts with the right candidate, ${name}`;
 }
 
 function LimitCard({
