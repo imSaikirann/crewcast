@@ -16,10 +16,10 @@ export default function Reviews() {
         {/* Admin section */}
         <div className="grid gap-10 lg:grid-cols-2 lg:items-center">
           <div className="space-y-5">
-            <p className="font-mono-hero text-xs uppercase tracking-widest text-[var(--landing-subtle)]">
+            <p className="text-xs font-medium uppercase text-[var(--landing-subtle)]">
               // ADMIN_PLATFORM
             </p>
-            <h2 className="font-mono-hero text-3xl font-bold text-[var(--landing-text)] sm:text-4xl">
+            <h2 className="text-3xl font-bold text-[var(--landing-text)] sm:text-4xl">
               Full platform control for admins.
             </h2>
             <p className="font-body text-lg leading-8 text-[var(--landing-muted)]">
@@ -28,7 +28,7 @@ export default function Reviews() {
           </div>
 
           <div className="rounded-sm border border-[var(--landing-border)] bg-[var(--landing-panel)] p-6">
-            <p className="font-mono-hero mb-4 text-xs uppercase tracking-widest text-[var(--landing-subtle)]">Admin capabilities</p>
+            <p className="mb-4 text-xs font-medium uppercase text-[var(--landing-subtle)]">Admin capabilities</p>
             <div className="grid grid-cols-2 gap-2">
               {adminCaps.map((cap) => (
                 <div
@@ -48,7 +48,7 @@ export default function Reviews() {
           {/* Before */}
           <div className="rounded-sm border border-[color-mix(in_srgb,var(--landing-danger)_30%,transparent)] bg-[var(--landing-panel)] p-6 space-y-4">
             <div className="flex items-center gap-3">
-              <span className="font-mono-hero text-xs font-bold uppercase tracking-widest text-[var(--landing-danger)]">❌ Without Crewcast</span>
+              <span className="text-xs font-bold uppercase text-[var(--landing-danger)]">❌ Without Crewcast</span>
             </div>
             <ul className="space-y-3">
               {[
@@ -68,7 +68,7 @@ export default function Reviews() {
           {/* After */}
           <div className="rounded-sm border border-[var(--landing-border)] bg-[var(--landing-accent-soft)] p-6 space-y-4">
             <div className="flex items-center gap-3">
-              <span className="font-mono-hero text-xs font-bold uppercase tracking-widest text-[var(--landing-accent)]">✓ With Crewcast</span>
+              <span className="text-xs font-bold uppercase text-[var(--landing-accent)]">✓ With Crewcast</span>
             </div>
             <ul className="space-y-3">
               {[
@@ -89,9 +89,9 @@ export default function Reviews() {
         {/* Quote bar */}
         <div className="rounded-sm border border-[var(--landing-border)] bg-[var(--landing-panel)] px-8 py-6">
           <div className="grid gap-6 lg:grid-cols-[auto_1fr_auto] lg:items-center">
-            <span className="font-mono-hero text-4xl text-[var(--landing-border)]">"</span>
+            <span className="text-4xl text-[var(--landing-border)]">"</span>
             <div>
-              <p className="font-mono-hero text-lg font-semibold text-[var(--landing-text)]">
+              <p className="text-lg font-semibold text-[var(--landing-text)]">
                 Designed to save recruiter review time, not replace recruiter judgment.
               </p>
               <p className="font-body mt-2 text-sm text-[var(--landing-subtle)]">
@@ -99,7 +99,7 @@ export default function Reviews() {
               </p>
             </div>
             <div className="text-right">
-              <p className="font-mono-hero text-2xl font-bold text-[var(--landing-accent)]">5 min</p>
+              <p className="text-2xl font-bold text-[var(--landing-accent)]">5 min</p>
               <p className="font-body text-xs text-[var(--landing-subtle)]">avg review time</p>
             </div>
           </div>

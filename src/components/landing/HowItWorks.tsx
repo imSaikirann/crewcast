@@ -46,10 +46,10 @@ export default function HowItWorks() {
         {/* Header */}
         <div className="grid gap-8 lg:grid-cols-2 lg:items-end">
           <div className="space-y-3">
-            <p className="font-mono-hero text-xs uppercase tracking-widest text-[var(--landing-subtle)]">
+            <p className="text-xs font-medium uppercase text-[var(--landing-subtle)]">
               // PLATFORM_FEATURES
             </p>
-            <h2 className="font-mono-hero text-3xl font-bold text-[var(--landing-text)] sm:text-4xl">
+            <h2 className="text-3xl font-bold text-[var(--landing-text)] sm:text-4xl">
               Everything a hiring team needs. Nothing else.
             </h2>
           </div>
@@ -73,13 +73,13 @@ export default function HowItWorks() {
                 {f.isGithub ? (
                   <div className="flex items-center gap-2">
                     <GitHubMark className="h-6 w-6 text-[var(--landing-text)]" />
-                    <span className="font-mono-hero text-[10px] uppercase tracking-widest text-[var(--landing-muted)]">Required</span>
+                    <span className="text-[10px] font-medium uppercase text-[var(--landing-muted)]">Required</span>
                   </div>
                 ) : (
                   <span className="text-2xl" role="img" aria-hidden="true">{f.emoji}</span>
                 )}
               </div>
-              <h3 className="font-mono-hero text-sm font-semibold text-[var(--landing-text)]">
+              <h3 className="text-sm font-semibold text-[var(--landing-text)]">
                 {f.title}
               </h3>
               <p className="font-body mt-2 text-sm leading-6 text-[var(--landing-muted)]">{f.description}</p>

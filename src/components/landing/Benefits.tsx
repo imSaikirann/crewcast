@@ -38,10 +38,10 @@ export default function Benefits() {
         <div className="grid gap-16 lg:grid-cols-[0.85fr_1.15fr] lg:items-start">
           {/* Left */}
           <div className="space-y-6">
-            <p className="font-mono-hero text-xs uppercase tracking-widest text-[var(--landing-subtle)]">
+            <p className="text-xs font-medium uppercase text-[var(--landing-subtle)]">
               // FOR_RECRUITERS
             </p>
-            <h2 className="font-mono-hero text-3xl font-bold text-[var(--landing-text)] sm:text-4xl">
+            <h2 className="text-3xl font-bold text-[var(--landing-text)] sm:text-4xl">
               Hiring software engineers should include their software.
             </h2>
             <p className="font-body text-lg leading-8 text-[var(--landing-muted)]">
@@ -50,7 +50,7 @@ export default function Benefits() {
 
             {/* Score breakdown mini */}
             <div className="rounded-sm border border-[var(--landing-border)] bg-[var(--landing-panel)] p-5 space-y-3">
-              <p className="font-mono-hero text-xs uppercase tracking-widest text-[var(--landing-subtle)]">Score breakdown</p>
+              <p className="text-xs font-medium uppercase text-[var(--landing-subtle)]">Score breakdown</p>
               {[
                 { label: "Repositories", pct: 78 },
                 { label: "Languages", pct: 91 },
@@ -60,7 +60,7 @@ export default function Benefits() {
                 <div key={row.label} className="space-y-1">
                   <div className="flex justify-between">
                     <span className="font-body text-xs text-[var(--landing-muted)]">{row.label}</span>
-                    <span className="font-mono-hero text-xs text-[var(--landing-accent)]">{row.pct}</span>
+                    <span className="text-xs font-semibold text-[var(--landing-accent)]">{row.pct}</span>
                   </div>
                   <div className="h-1 w-full rounded-full bg-[var(--landing-border)]">
                     <div
@@ -81,7 +81,7 @@ export default function Benefits() {
                 className="rounded-sm border border-[var(--landing-border)] bg-[var(--landing-panel)] p-5 transition-all duration-150 hover:border-[var(--landing-muted)] hover:-translate-y-0.5"
               >
                 <span className="text-2xl" role="img" aria-hidden="true">{b.emoji}</span>
-                <h3 className="font-mono-hero mt-4 text-sm font-semibold text-[var(--landing-text)]">{b.title}</h3>
+                <h3 className="mt-4 text-sm font-semibold text-[var(--landing-text)]">{b.title}</h3>
                 <p className="font-body mt-2 text-sm leading-6 text-[var(--landing-muted)]">{b.description}</p>
               </article>
             ))}

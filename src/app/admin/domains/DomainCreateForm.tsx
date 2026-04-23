@@ -94,7 +94,7 @@ export default function DomainCreateForm({
         <Textarea
           id="fieldsJson"
           name="fieldsJson"
-          className="min-h-56 font-mono text-xs"
+          className="min-h-56 text-xs"
           aria-invalid={Boolean(state.fieldErrors?.fieldsJson)}
           defaultValue={JSON.stringify(defaultFields, null, 2)}
         />

@@ -2,7 +2,8 @@
 
 import type { Session } from "next-auth";
 import { signOut, useSession } from "next-auth/react";
-import { ChevronRight, LogOut, Menu } from "lucide-react";
+import { ChevronRight, LogOut, Menu, User } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState, type ReactNode } from "react";
@@ -100,6 +101,15 @@ export default function AppShell({ children }: { children: ReactNode }) {
           onCollapseToggle={toggleCollapsed}
         />
       </aside>
+
+      <header
+        className={cn(
+          "sticky top-0 z-30 hidden h-14 items-center justify-end border-b bg-background/95 px-6 backdrop-blur transition-[margin] duration-200 md:flex",
+          collapsed ? "ml-14" : "ml-[220px]"
+        )}
+      >
+        <UserMenu session={session} />
+      </header>
 
       <header className="sticky top-0 z-40 border-b bg-background/95 px-4 py-3 backdrop-blur md:hidden">
         <div className="flex items-center justify-between gap-3">
@@ -229,45 +239,12 @@ function SidebarContent({
         ))}
       </nav>
 
-      <div className="mt-auto">
-        {collapsed && !mobile ? (
-          <div className="flex justify-center">
-            <UserMenu session={session} compact />
-          </div>
-        ) : (
-          <div className="rounded-lg border bg-card p-2.5 shadow-xs">
-            <div className="flex items-center gap-2">
-              <div className="grid size-8 shrink-0 place-items-center rounded-lg bg-secondary text-sm font-semibold">
-                {(session?.user?.name || session?.user?.email || "R").charAt(0).toUpperCase()}
-              </div>
-              <div className="min-w-0 flex-1">
-                <p className="truncate text-[13px] font-medium">
-                  {session?.user?.name || "Recruiter"}
-                </p>
-                <p className="truncate text-[11px] text-muted-foreground">
-                  {session?.user?.email || "Signed in"}
-                </p>
-              </div>
-              <Button
-                variant="ghost"
-                size="icon-sm"
-                className="text-muted-foreground hover:text-destructive"
-                onClick={() => signOut({ callbackUrl: "/" })}
-                aria-label="Logout"
-              >
-                <LogOut className="size-4" />
-              </Button>
-            </div>
-          </div>
-        )}
-      </div>
-
       {!mobile && (
         <Button
           variant="ghost"
           size="icon-sm"
           onClick={onCollapseToggle}
-          className={cn("mt-3 text-muted-foreground", collapsed ? "mx-auto" : "ml-auto")}
+          className={cn("mt-auto text-muted-foreground", collapsed ? "mx-auto" : "ml-auto")}
           aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
         >
           <ChevronRight className={cn("size-4 transition-transform", !collapsed && "rotate-180")} />
@@ -318,28 +295,36 @@ function UserMenu({
   session: Session | null;
   compact?: boolean;
 }) {
+  const avatar = (
+    <UserAvatar
+      image={session?.user?.image}
+      name={session?.user?.name || session?.user?.email || "Recruiter"}
+    />
+  );
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button
           variant="outline"
           size={compact ? "icon-sm" : "sm"}
-          className={cn(!compact && "w-full justify-start")}
+          className={cn(!compact && "justify-start gap-2")}
           aria-label="Open user menu"
         >
-          <span className="grid size-6 place-items-center rounded-sm bg-muted text-xs font-semibold">
-            {(session?.user?.name || session?.user?.email || "R").charAt(0).toUpperCase()}
-          </span>
+          {avatar}
           {!compact && <span className="truncate">{session?.user?.name || "Recruiter"}</span>}
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-56">
         <DropdownMenuLabel>
           <span className="block truncate">{session?.user?.name || "Recruiter"}</span>
-          <span className="block truncate text-xs font-normal text-muted-foreground">
-            {session?.user?.email || "Signed in"}
-          </span>
         </DropdownMenuLabel>
+        <DropdownMenuItem asChild>
+          <Link href="/dashboard/recruiter/profile">
+            <User className="size-4" />
+            Profile
+          </Link>
+        </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={() => signOut({ callbackUrl: "/" })}>
           <LogOut className="size-4" />
@@ -347,6 +332,32 @@ function UserMenu({
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
+  );
+}
+
+function UserAvatar({
+  image,
+  name,
+}: {
+  image?: string | null;
+  name: string;
+}) {
+  if (image) {
+    return (
+      <Image
+        src={image}
+        alt={name}
+        width={24}
+        height={24}
+        className="size-6 rounded-sm object-cover"
+      />
+    );
+  }
+
+  return (
+    <span className="grid size-6 place-items-center rounded-sm bg-muted text-xs font-semibold">
+      {name.charAt(0).toUpperCase()}
+    </span>
   );
 }
 

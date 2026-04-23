@@ -17,7 +17,6 @@ export default function Home() {
       <HowItWorks />
       <Features />
       <Comparison />
-      <FinalCTA />
       <Footer />
     </main>
   );

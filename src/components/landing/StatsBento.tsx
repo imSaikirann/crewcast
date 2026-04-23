@@ -48,10 +48,10 @@ export default function StatsBento() {
         {/* Section header */}
         <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
           <div className="space-y-3">
-            <p className="font-mono-hero text-xs uppercase tracking-widest text-[var(--landing-subtle)]">
+            <p className="text-xs font-medium uppercase text-[var(--landing-subtle)]">
               // HOW_IT_WORKS
             </p>
-            <h2 className="font-mono-hero max-w-xl text-3xl font-bold text-[var(--landing-text)] sm:text-4xl">
+            <h2 className="max-w-xl text-3xl font-bold text-[var(--landing-text)] sm:text-4xl">
               From form publish to shortlist.
             </h2>
           </div>
@@ -88,7 +88,7 @@ export default function StatsBento() {
 
                 {/* Step number */}
                 <div className="mb-5 flex items-center justify-between">
-                  <span className="font-mono-hero text-2xl font-bold text-[var(--landing-accent)]">{step.num}</span>
+                  <span className="text-2xl font-bold text-[var(--landing-accent)]">{step.num}</span>
                   {step.isGithub ? (
                     <GitHubMark className="h-5 w-5 text-[var(--landing-subtle)]" />
                   ) : Icon ? (
@@ -96,7 +96,7 @@ export default function StatsBento() {
                   ) : null}
                 </div>
 
-                <h3 className="font-mono-hero text-sm font-semibold text-[var(--landing-text)]">{step.title}</h3>
+                <h3 className="text-sm font-semibold text-[var(--landing-text)]">{step.title}</h3>
                 <p className="font-body mt-3 text-sm leading-6 text-[var(--landing-muted)]">{step.description}</p>
               </article>
             );
@@ -112,7 +112,7 @@ export default function StatsBento() {
             { value: "Real-time", label: "score on submission" },
           ].map((m) => (
             <div key={m.label} className="rounded-sm border border-[var(--landing-border)] bg-[var(--landing-panel)] p-5">
-              <p className="font-mono-hero text-2xl font-bold text-[var(--landing-text)]">{m.value}</p>
+              <p className="text-2xl font-bold text-[var(--landing-text)]">{m.value}</p>
               <p className="font-body mt-1.5 text-xs text-[var(--landing-subtle)]">{m.label}</p>
             </div>
           ))}

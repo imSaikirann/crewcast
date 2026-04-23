@@ -41,10 +41,10 @@ export default function Devs() {
         <div className="grid gap-16 lg:grid-cols-2 lg:items-center">
           {/* Left — copy */}
           <div className="space-y-6">
-            <p className="font-mono-hero text-xs uppercase tracking-widest text-[var(--landing-subtle)]">
+            <p className="text-xs font-medium uppercase text-[var(--landing-subtle)]">
               // CANDIDATE_EXPERIENCE
             </p>
-            <h2 className="font-mono-hero text-3xl font-bold text-[var(--landing-text)] sm:text-4xl">
+            <h2 className="text-3xl font-bold text-[var(--landing-text)] sm:text-4xl">
               Clean forms for candidates. Scored signals for you.
             </h2>
             <p className="font-body text-lg leading-8 text-[var(--landing-muted)]">
@@ -59,7 +59,7 @@ export default function Devs() {
                 "GitHub profile is the only extra step for devs",
               ].map((item) => (
                 <div key={item} className="flex items-start gap-3 text-sm text-[var(--landing-muted)]">
-                  <span className="font-mono-hero mt-0.5 text-[var(--landing-accent)]">→</span>
+                  <span className="mt-0.5 text-[var(--landing-accent)]">→</span>
                   {item}
                 </div>
               ))}
@@ -67,16 +67,16 @@ export default function Devs() {
 
             {/* Fake form field preview */}
             <div className="rounded-sm border border-[var(--landing-border)] bg-[var(--landing-panel)] p-5 space-y-3">
-              <p className="font-mono-hero text-xs uppercase tracking-widest text-[var(--landing-subtle)]">Sample form field</p>
+              <p className="text-xs font-medium uppercase text-[var(--landing-subtle)]">Sample form field</p>
               <div className="space-y-1">
-                <label className="font-mono-hero text-xs text-[var(--landing-muted)] flex items-center gap-2">
+                <label className="text-xs text-[var(--landing-muted)] flex items-center gap-2">
                   <GitHubMark className="h-3 w-3 text-[var(--landing-text)]" />
                   GitHub profile URL
                   <span className="text-[var(--landing-danger)]">*required</span>
                 </label>
                 <div className="flex items-center gap-2 rounded-sm border border-[var(--landing-border)] bg-[var(--landing-bg)] px-3 py-2.5">
-                  <span className="font-mono-hero text-sm text-[var(--landing-subtle)]">github.com/</span>
-                  <span className="font-mono-hero text-sm text-[var(--landing-muted)]">your-username</span>
+                  <span className="text-sm text-[var(--landing-subtle)]">github.com/</span>
+                  <span className="text-sm text-[var(--landing-muted)]">your-username</span>
                   <span className="ml-auto h-4 w-0.5 bg-[var(--landing-accent)] opacity-80" />
                 </div>
                 <p className="font-body text-xs text-[var(--landing-subtle)]">Used to score public engineering signals for this role.</p>
@@ -88,9 +88,9 @@ export default function Devs() {
           <div className="rounded-sm border border-[var(--landing-border)] bg-[var(--landing-panel)] overflow-hidden">
             {/* Table header */}
             <div className="grid grid-cols-[1fr_60px_1fr] gap-4 bg-[var(--landing-bg)] px-5 py-3 border-b border-[var(--landing-border)]">
-              <span className="font-mono-hero text-[10px] uppercase tracking-widest text-[var(--landing-subtle)]">Candidate</span>
-              <span className="font-mono-hero text-[10px] uppercase tracking-widest text-[var(--landing-subtle)]">Score</span>
-              <span className="font-mono-hero text-[10px] uppercase tracking-widest text-[var(--landing-subtle)]">Languages</span>
+              <span className="text-[10px] font-medium uppercase text-[var(--landing-subtle)]">Candidate</span>
+              <span className="text-[10px] font-medium uppercase text-[var(--landing-subtle)]">Score</span>
+              <span className="text-[10px] font-medium uppercase text-[var(--landing-subtle)]">Languages</span>
             </div>
 
             {candidates.map((c, i) => (
@@ -109,14 +109,14 @@ export default function Devs() {
                     <p className="font-body text-xs text-[var(--landing-subtle)]">{c.role}</p>
                   </div>
                 </div>
-                <p className={`font-mono-hero text-xl font-bold ${scoreColor(c.score)}`}>{c.score}</p>
+                <p className={`text-xl font-bold ${scoreColor(c.score)}`}>{c.score}</p>
                 <p className="font-body text-xs text-[var(--landing-muted)]">{c.langs}</p>
               </div>
             ))}
 
             <div className="flex items-center justify-between border-t border-[var(--landing-border)] bg-[var(--landing-bg)] px-5 py-3">
-              <span className="font-mono-hero text-xs text-[var(--landing-subtle)]">Sorted by score · 3 of 24 shown</span>
-              <span className="font-mono-hero text-xs text-[var(--landing-accent)]">View all →</span>
+              <span className="text-xs text-[var(--landing-subtle)]">Sorted by score · 3 of 24 shown</span>
+              <span className="text-xs font-medium text-[var(--landing-accent)]">View all →</span>
             </div>
           </div>
         </div>
