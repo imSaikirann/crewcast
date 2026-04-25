@@ -22,6 +22,7 @@ export const RecruiterFormResultSchema = z.object({
     salaryMax: z.number().int().nullable(),
     currency: z.string().nullable(),
     techStack: z.array(z.string()),
+    openings: z.number().int(),
     contractDurationMonths: z.number().int().nullable(),
     showCompanyName: z.boolean(),
     status: JobStatusSchema,

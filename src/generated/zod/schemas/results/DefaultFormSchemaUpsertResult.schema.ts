@@ -6,6 +6,7 @@ export const DefaultFormSchemaUpsertResultSchema = z.object({
   version: z.number().int(),
   fields: z.unknown(),
   isActive: z.boolean(),
+  isForSoftwareRoles: z.boolean(),
   createdAt: z.date(),
   updatedAt: z.date()
 });

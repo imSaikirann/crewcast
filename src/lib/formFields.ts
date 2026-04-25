@@ -36,6 +36,13 @@ export function isGitHubField(field: unknown) {
 }
 
 export function withRequiredGitHubField<T extends FieldLike>(fields: T[]): T[] {
+  return withGitHubField(fields, { ensure: true });
+}
+
+export function withGitHubField<T extends FieldLike>(
+  fields: T[],
+  { ensure }: { ensure: boolean }
+): T[] {
   const normalized = fields.map((field) => {
     if (!isGitHubField(field)) return field;
 
@@ -51,6 +58,8 @@ export function withRequiredGitHubField<T extends FieldLike>(fields: T[]): T[] {
   });
 
   if (normalized.some(isGitHubField)) return normalized;
+
+  if (!ensure) return normalized;
 
   return [REQUIRED_GITHUB_FIELD as unknown as T, ...normalized];
 }

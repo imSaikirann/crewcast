@@ -1,16 +1,6 @@
 import Link from "next/link";
 import { CrewcastMark } from "@/components/brand/CrewcastLogo";
 
-const links = [
-  { label: "Dashboard",    href: "/dashboard" },
-  { label: "Open roles",   href: "/jobs" },
-  { label: "Domains",      href: "/domains" },
-  { label: "How it works", href: "/#how-it-works" },
-  { label: "Features",     href: "/#features" },
-  { label: "Privacy",      href: "/privacy" },
-  { label: "Terms",        href: "/terms" },
-];
-
 const socials = [
   {
     label: "GitHub",
@@ -38,7 +28,7 @@ export default function Footer() {
       className="relative overflow-hidden border-t border-[var(--lc-border)]"
       style={{ background: "var(--lc-bg)" }}
     >
-      {/* Subtle grid — matches hero */}
+      {/* Grid background */}
       <div
         className="pointer-events-none absolute inset-0"
         style={{
@@ -50,7 +40,7 @@ export default function Footer() {
 
       <div className="relative mx-auto max-w-[1100px] px-6">
 
-        {/* Big display headline — centered, italic contrast like hero */}
+        {/* Hero CTA */}
         <div className="border-b border-[var(--lc-border)] py-16 text-center">
           <p
             className="font-extrabold leading-none text-[var(--lc-text)]"
@@ -60,52 +50,60 @@ export default function Footer() {
             }}
           >
             Hire with{" "}
-            <em style={{ fontStyle: "italic", fontWeight: 300 }}>real signals.</em>
+            <em style={{ fontStyle: "italic", fontWeight: 300 }}>
+              real signals.
+            </em>
           </p>
+
           <div className="mt-8 flex justify-center">
             <Link
               href="/dashboard"
               className="lc-btn-primary inline-flex items-center gap-2"
             >
-              Start hiring free
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+              Start hiring 
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.5"
+              >
                 <path d="M5 12h14M12 5l7 7-7 7" />
               </svg>
             </Link>
           </div>
         </div>
 
-        {/* Nav links — centered row */}
-        <div className="flex flex-wrap justify-center gap-x-8 gap-y-3 py-10 border-b border-[var(--lc-border)]">
-          {links.map((item) => (
-            <Link
-              key={item.label}
-              href={item.href}
-              className="text-[12px] font-medium text-[var(--lc-text-3)] transition-colors duration-150 hover:text-[var(--lc-text)]"
-            >
-              {item.label}
-            </Link>
-          ))}
-        </div>
-
-        {/* Bottom bar — logo + socials + copy, all centered */}
+        {/* Bottom Bar */}
         <div className="flex flex-col items-center gap-5 py-8 sm:flex-row sm:justify-between">
 
-          {/* Wordmark */}
+          {/* Logo */}
           <div className="flex items-center gap-2.5">
-            <CrewcastMark className="size-6 rounded-[4px] bg-transparent p-0" />
-            <span
-              className="text-[15px] font-bold text-[var(--lc-text)]"
-              style={{ fontFamily: "var(--lc-sans)" }}
-            >
+            <CrewcastMark className="size-6 rounded-[4px]" />
+            <span className="text-[15px] font-bold text-[var(--lc-text)]">
               Crewcast
             </span>
           </div>
 
-          {/* Copyright */}
-          <p className="text-[11px] text-[var(--lc-text-3)] order-last sm:order-none">
-            &copy; {new Date().getFullYear()} Crewcast. Public GitHub data only.
-          </p>
+          {/* Copyright + Credit */}
+          <div className="text-center sm:text-left order-last sm:order-none space-y-1">
+            {/* <p className="text-[11px] text-[var(--lc-text-3)]">
+              &copy; {new Date().getFullYear()} Crewcast. Public GitHub data only.
+            </p> */}
+
+            <p className="text-sm text-[var(--lc-text-4)]">
+              Built by{" "}
+              <a
+                href="https://imsaikirann.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[var(--lc-text-4)] hover:text-[var(--lc-text)] transition-colors underline-offset-2 hover:underline"
+              >
+                Sai Kiran
+              </a>
+            </p>
+          </div>
 
           {/* Socials */}
           <div className="flex gap-2">
@@ -113,10 +111,9 @@ export default function Footer() {
               <a
                 key={s.label}
                 href={s.href}
-                aria-label={s.label}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex h-7 w-7 items-center justify-center rounded-[4px] border border-[var(--lc-border)] text-[var(--lc-text-3)] transition-all duration-150 hover:border-[var(--lc-border-hover)] hover:text-[var(--lc-text)]"
+                className="flex h-7 w-7 items-center justify-center rounded-[4px] border border-[var(--lc-border)] text-[var(--lc-text-3)] transition-all hover:border-[var(--lc-border-hover)] hover:text-[var(--lc-text)]"
               >
                 {s.icon}
               </a>

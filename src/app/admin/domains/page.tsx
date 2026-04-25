@@ -15,6 +15,8 @@ import { ROLES } from "@/lib/constants/roles";
 import { withRequiredGitHubField } from "@/lib/formFields";
 import { prisma } from "@/lib/prisma";
 import DomainCreateForm from "./DomainCreateForm";
+import DomainDeleteDialog from "./DomainDeleteDialog";
+import DomainEditDialog from "./DomainEditDialog";
 
 const DEFAULT_SOFTWARE_FIELDS = withRequiredGitHubField([
   {
@@ -62,6 +64,14 @@ export default async function AdminDomainsPage() {
       haveDefaultForm: true,
       jobCount: true,
       createdAt: true,
+      defaultFormSchemas: {
+        select: {
+          fields: true,
+          updatedAt: true,
+        },
+        orderBy: { updatedAt: "desc" },
+        take: 1,
+      },
       _count: {
         select: {
           defaultFormSchemas: true,
@@ -141,13 +151,14 @@ export default async function AdminDomainsPage() {
                         <th className="px-4 py-3 text-left">Status</th>
                         <th className="px-4 py-3 text-left">Default</th>
                         <th className="px-4 py-3 text-left">Forms</th>
+                        <th className="px-4 py-3 text-right">Actions</th>
                       </tr>
                     </thead>
                     <tbody>
                       {domains.length === 0 ? (
                         <tr>
                           <td
-                            colSpan={4}
+                            colSpan={5}
                             className="px-4 py-8 text-center text-muted-foreground"
                           >
                             No domains yet.
@@ -179,6 +190,34 @@ export default async function AdminDomainsPage() {
                             </td>
                             <td className="px-4 py-3">
                               {domain._count.recruiterForms}
+                            </td>
+                            <td className="px-4 py-3 text-right">
+                              <div className="inline-flex items-center gap-2">
+                                <DomainEditDialog
+                                  domain={{
+                                    id: domain.id,
+                                    title: domain.title,
+                                    description: domain.description,
+                                    isActive: domain.isActive,
+                                    haveDefaultForm: domain.haveDefaultForm,
+                                    defaultFieldsJson: domain.defaultFormSchemas?.[0]
+                                      ? JSON.stringify(
+                                          domain.defaultFormSchemas[0].fields,
+                                          null,
+                                          2
+                                        )
+                                      : null,
+                                  }}
+                                  fallbackDefaultFields={DEFAULT_SOFTWARE_FIELDS}
+                                />
+                                <DomainDeleteDialog
+                                  domain={{
+                                    id: domain.id,
+                                    title: domain.title,
+                                    recruiterFormCount: domain._count.recruiterForms,
+                                  }}
+                                />
+                              </div>
                             </td>
                           </tr>
                         ))

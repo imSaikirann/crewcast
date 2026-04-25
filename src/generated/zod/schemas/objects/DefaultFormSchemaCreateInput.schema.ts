@@ -9,6 +9,7 @@ const makeSchema = () => z.object({
   version: z.number().int().optional(),
   fields: jsonSchema,
   isActive: z.boolean().optional(),
+  isForSoftwareRoles: z.boolean(),
   createdAt: z.coerce.date().optional(),
   domain: z.lazy(() => DomainsCreateNestedOneWithoutDefaultFormSchemasInputObjectSchema)
 }).strict();

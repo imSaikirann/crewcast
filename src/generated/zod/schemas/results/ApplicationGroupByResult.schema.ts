@@ -1,6 +1,7 @@
 import * as z from 'zod';
 export const ApplicationGroupByResultSchema = z.array(z.object({
   id: z.string(),
+  trackingToken: z.string(),
   jobId: z.string(),
   fullName: z.string(),
   email: z.string(),
@@ -9,6 +10,7 @@ export const ApplicationGroupByResultSchema = z.array(z.object({
   updatedAt: z.date(),
   _count: z.object({
     id: z.number(),
+    trackingToken: z.number(),
     jobId: z.number(),
     job: z.number(),
     fullName: z.number(),
@@ -21,6 +23,7 @@ export const ApplicationGroupByResultSchema = z.array(z.object({
   }).optional(),
   _min: z.object({
     id: z.string().nullable(),
+    trackingToken: z.string().nullable(),
     jobId: z.string().nullable(),
     fullName: z.string().nullable(),
     email: z.string().nullable(),
@@ -29,6 +32,7 @@ export const ApplicationGroupByResultSchema = z.array(z.object({
   }).nullable().optional(),
   _max: z.object({
     id: z.string().nullable(),
+    trackingToken: z.string().nullable(),
     jobId: z.string().nullable(),
     fullName: z.string().nullable(),
     email: z.string().nullable(),

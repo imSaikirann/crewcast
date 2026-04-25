@@ -4,6 +4,7 @@ import { SortOrderSchema } from '../enums/SortOrder.schema'
 
 const makeSchema = () => z.object({
   id: SortOrderSchema.optional(),
+  trackingToken: SortOrderSchema.optional(),
   jobId: SortOrderSchema.optional(),
   fullName: SortOrderSchema.optional(),
   email: SortOrderSchema.optional(),

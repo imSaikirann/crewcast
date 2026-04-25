@@ -6,6 +6,7 @@ import { ApplicationCountOutputTypeArgsObjectSchema as ApplicationCountOutputTyp
 
 const makeSchema = () => z.object({
   id: z.boolean().optional(),
+  trackingToken: z.boolean().optional(),
   jobId: z.boolean().optional(),
   job: z.union([z.boolean(), z.lazy(() => RecruiterFormArgsObjectSchema)]).optional(),
   fullName: z.boolean().optional(),

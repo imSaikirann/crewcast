@@ -7,6 +7,7 @@ import { ApplicationMinOrderByAggregateInputObjectSchema as ApplicationMinOrderB
 
 const makeSchema = () => z.object({
   id: SortOrderSchema.optional(),
+  trackingToken: SortOrderSchema.optional(),
   jobId: SortOrderSchema.optional(),
   fullName: SortOrderSchema.optional(),
   email: SortOrderSchema.optional(),

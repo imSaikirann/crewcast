@@ -6,6 +6,7 @@ import { JsonValueSchema as jsonSchema } from '../../helpers/json-helpers';
 
 const makeSchema = () => z.object({
   id: z.string().optional(),
+  trackingToken: z.string().optional(),
   jobId: z.string(),
   fullName: z.string(),
   email: z.string(),

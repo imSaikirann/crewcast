@@ -1,6 +1,7 @@
 import * as z from 'zod';
 export const ApplicationAggregateResultSchema = z.object({  _count: z.object({
     id: z.number(),
+    trackingToken: z.number(),
     jobId: z.number(),
     job: z.number(),
     fullName: z.number(),
@@ -13,6 +14,7 @@ export const ApplicationAggregateResultSchema = z.object({  _count: z.object({
   }).optional(),
   _min: z.object({
     id: z.string().nullable(),
+    trackingToken: z.string().nullable(),
     jobId: z.string().nullable(),
     fullName: z.string().nullable(),
     email: z.string().nullable(),
@@ -21,6 +23,7 @@ export const ApplicationAggregateResultSchema = z.object({  _count: z.object({
   }).nullable().optional(),
   _max: z.object({
     id: z.string().nullable(),
+    trackingToken: z.string().nullable(),
     jobId: z.string().nullable(),
     fullName: z.string().nullable(),
     email: z.string().nullable(),

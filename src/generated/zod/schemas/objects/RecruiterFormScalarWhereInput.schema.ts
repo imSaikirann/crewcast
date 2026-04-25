@@ -10,10 +10,10 @@ import { WorkModeSchema } from '../enums/WorkMode.schema';
 import { StringNullableFilterObjectSchema as StringNullableFilterObjectSchema } from './StringNullableFilter.schema';
 import { IntNullableFilterObjectSchema as IntNullableFilterObjectSchema } from './IntNullableFilter.schema';
 import { StringNullableListFilterObjectSchema as StringNullableListFilterObjectSchema } from './StringNullableListFilter.schema';
+import { IntFilterObjectSchema as IntFilterObjectSchema } from './IntFilter.schema';
 import { BoolFilterObjectSchema as BoolFilterObjectSchema } from './BoolFilter.schema';
 import { EnumJobStatusFilterObjectSchema as EnumJobStatusFilterObjectSchema } from './EnumJobStatusFilter.schema';
 import { JobStatusSchema } from '../enums/JobStatus.schema';
-import { IntFilterObjectSchema as IntFilterObjectSchema } from './IntFilter.schema';
 import { DateTimeNullableFilterObjectSchema as DateTimeNullableFilterObjectSchema } from './DateTimeNullableFilter.schema';
 import { JsonFilterObjectSchema as JsonFilterObjectSchema } from './JsonFilter.schema';
 import { DateTimeFilterObjectSchema as DateTimeFilterObjectSchema } from './DateTimeFilter.schema'
@@ -37,6 +37,7 @@ const recruiterformscalarwhereinputSchema = z.object({
   salaryMax: z.union([z.lazy(() => IntNullableFilterObjectSchema), z.number().int()]).optional().nullable(),
   currency: z.union([z.lazy(() => StringNullableFilterObjectSchema), z.string()]).optional().nullable(),
   techStack: z.lazy(() => StringNullableListFilterObjectSchema).optional(),
+  openings: z.union([z.lazy(() => IntFilterObjectSchema), z.number().int()]).optional(),
   contractDurationMonths: z.union([z.lazy(() => IntNullableFilterObjectSchema), z.number().int()]).optional().nullable(),
   showCompanyName: z.union([z.lazy(() => BoolFilterObjectSchema), z.boolean()]).optional(),
   status: z.union([z.lazy(() => EnumJobStatusFilterObjectSchema), JobStatusSchema]).optional(),

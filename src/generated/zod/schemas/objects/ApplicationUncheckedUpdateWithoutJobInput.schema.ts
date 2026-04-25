@@ -9,6 +9,7 @@ import { ApplicationScoreUncheckedUpdateManyWithoutApplicationNestedInputObjectS
 import { JsonValueSchema as jsonSchema } from '../../helpers/json-helpers';
 
 const makeSchema = () => z.object({
+  trackingToken: z.union([z.string(), z.lazy(() => StringFieldUpdateOperationsInputObjectSchema)]).optional(),
   fullName: z.union([z.string(), z.lazy(() => StringFieldUpdateOperationsInputObjectSchema)]).optional(),
   email: z.union([z.string(), z.lazy(() => StringFieldUpdateOperationsInputObjectSchema)]).optional(),
   responses: z.union([jsonSchema, jsonSchema]).optional(),

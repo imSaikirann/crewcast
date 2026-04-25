@@ -18,6 +18,7 @@ export const RecruiterFormFindManyResultSchema = z.object({
   salaryMax: z.number().int().optional(),
   currency: z.string().optional(),
   techStack: z.array(z.string()),
+  openings: z.number().int(),
   contractDurationMonths: z.number().int().optional(),
   showCompanyName: z.boolean(),
   status: z.unknown(),

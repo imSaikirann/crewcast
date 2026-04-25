@@ -7,6 +7,7 @@ const makeSchema = () => z.object({
   domainId: z.literal(true).optional(),
   version: z.literal(true).optional(),
   isActive: z.literal(true).optional(),
+  isForSoftwareRoles: z.literal(true).optional(),
   createdAt: z.literal(true).optional(),
   updatedAt: z.literal(true).optional()
 }).strict();

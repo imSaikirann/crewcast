@@ -25,6 +25,7 @@ const makeSchema = () => z.object({
   salaryMax: z.boolean().optional(),
   currency: z.boolean().optional(),
   techStack: z.boolean().optional(),
+  openings: z.boolean().optional(),
   contractDurationMonths: z.boolean().optional(),
   showCompanyName: z.boolean().optional(),
   status: z.boolean().optional(),

@@ -4,6 +4,7 @@ import { ApplicationJobIdEmailCompoundUniqueInputObjectSchema as ApplicationJobI
 
 const makeSchema = () => z.object({
   id: z.string().max(24).optional(),
+  trackingToken: z.string().optional(),
   jobId_email: z.lazy(() => ApplicationJobIdEmailCompoundUniqueInputObjectSchema).optional()
 }).strict();
 export const ApplicationWhereUniqueInputObjectSchema: z.ZodType<Prisma.ApplicationWhereUniqueInput> = makeSchema() as unknown as z.ZodType<Prisma.ApplicationWhereUniqueInput>;

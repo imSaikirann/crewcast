@@ -6,9 +6,9 @@ import { useRef } from "react";
 import { HugeIcon, type HugeIconName } from "@/utils/hugeicons";
 
 const trustPoints: { label: string; icon: HugeIconName }[] = [
-  { label: "Launch a role without setup cost", icon: "briefcase" },
-  { label: "Uses public GitHub signals only", icon: "lock" },
-  { label: "First form ready in minutes", icon: "time-quarter-pass" },
+  { label: "Launch a role in minutes", icon: "briefcase" },
+  { label: "Public GitHub signals only", icon: "lock" },
+  { label: "No integrations required", icon: "time-quarter-pass" },
 ];
 
 export function FinalCTA() {
@@ -31,10 +31,10 @@ export function FinalCTA() {
         <div className="relative z-10">
           <p className="lc-tag mb-5 justify-center">Start with one role</p>
           <h2 className="lc-h2 mx-auto mb-4 max-w-3xl">
-            Turn your next opening into a scored hiring form.
+            Turn your next opening into a scored shortlist.
           </h2>
           <p className="lc-sub mx-auto mb-9">
-            Build the form, collect structured applications, and review GitHub-backed candidate signals from one focused workspace.
+            Build a simple form. Collect structured applications. Review real work.
           </p>
           <div className="flex flex-wrap justify-center gap-3">
             <Link href="/dashboard" className="lc-btn-primary font-sans text-sm">

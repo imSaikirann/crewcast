@@ -2,6 +2,7 @@ import * as z from 'zod';
 export const ApplicationFindManyResultSchema = z.object({
   data: z.array(z.object({
   id: z.string(),
+  trackingToken: z.string(),
   jobId: z.string(),
   job: z.unknown(),
   fullName: z.string(),

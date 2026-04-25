@@ -6,6 +6,7 @@ import Footer from "@/components/landing/Footer";
 import { StatsBar, Features } from "@/components/landing/Stats";
 import { Comparison } from "@/components/landing/Comparison";
 import { HowItWorks } from "@/components/landing/HowItWorks";
+import { WhyCrewcast } from "@/components/landing/WhyCrewcast";
 
 export default function Home() {
   return (
@@ -16,6 +17,7 @@ export default function Home() {
 
       <Hero />
       <StatsBar />
+      <WhyCrewcast />
       <HowItWorks />
       <Features />
       <Comparison />

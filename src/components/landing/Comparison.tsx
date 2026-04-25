@@ -6,25 +6,25 @@ import { X, Check } from "lucide-react";
 
 const rows = [
   {
-    feature:   "GitHub signal on every application",
+    feature:   "A signal score on every application",
     without:   false,
     with:      true,
     highlight: true,
   },
   {
-    feature:   "Auto-ranked candidate shortlist",
+    feature:   "A ranked shortlist (built-in)",
     without:   false,
     with:      true,
     highlight: false,
   },
   {
-    feature:   "Language & stack match scoring",
+    feature:   "Language + stack match",
     without:   false,
     with:      true,
     highlight: false,
   },
   {
-    feature:   "Activity streak & commit history",
+    feature:   "Activity + consistency signals",
     without:   false,
     with:      true,
     highlight: false,
@@ -42,13 +42,13 @@ const rows = [
     highlight: false,
   },
   {
-    feature:   "Reviewing resumes manually",
+    feature:   "Manual resume screening",
     without:   true,
     with:      false,
     highlight: false,
   },
   {
-    feature:   "Blind keyword-based filtering",
+    feature:   "Blind keyword filtering",
     without:   true,
     with:      false,
     highlight: false,
@@ -96,11 +96,10 @@ export function Comparison() {
         animate={inView ? { opacity: 1 } : {}}
         transition={{ delay: 0.1 }}
       >
-        Crewcast doesn't replace recruiter judgment — it gives it a foundation of
-        real engineering evidence from day one.
+        Crewcast doesn’t replace judgment. It replaces guessing.
       </motion.p>
 
-      {/* Comparison table */}
+      {/* Comparison table (mobile-friendly) */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={inView ? { opacity: 1, y: 0 } : {}}
@@ -108,6 +107,8 @@ export function Comparison() {
         className="rounded-[8px] border border-[var(--lc-border)] overflow-hidden"
         style={{ background: "var(--lc-bg-1)" }}
       >
+        <div className="overflow-x-auto">
+          <div className="min-w-[560px]">
 
         {/* Column headers */}
         <div
@@ -206,7 +207,7 @@ export function Comparison() {
         >
           <div className="px-6 py-5 flex items-center">
             <p className="text-[12px]" style={{ color: "var(--lc-text-3)" }}>
-              Free to start. 
+              Free to start.
             </p>
           </div>
           <div className="border-l border-[var(--lc-border)]" />
@@ -226,6 +227,8 @@ export function Comparison() {
           </div>
         </div>
 
+          </div>
+        </div>
       </motion.div>
     </section>
   );

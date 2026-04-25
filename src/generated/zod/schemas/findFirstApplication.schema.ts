@@ -11,6 +11,7 @@ import { ApplicationScalarFieldEnumSchema } from './enums/ApplicationScalarField
 
 export const ApplicationFindFirstSelectSchema: z.ZodType<Prisma.ApplicationSelect> = z.object({
     id: z.boolean().optional(),
+    trackingToken: z.boolean().optional(),
     jobId: z.boolean().optional(),
     job: z.boolean().optional(),
     fullName: z.boolean().optional(),
@@ -25,6 +26,7 @@ export const ApplicationFindFirstSelectSchema: z.ZodType<Prisma.ApplicationSelec
 
 export const ApplicationFindFirstSelectZodSchema = z.object({
     id: z.boolean().optional(),
+    trackingToken: z.boolean().optional(),
     jobId: z.boolean().optional(),
     job: z.boolean().optional(),
     fullName: z.boolean().optional(),

@@ -5,6 +5,7 @@ import { SortOrderSchema } from '../enums/SortOrder.schema'
 const makeSchema = () => z.object({
   salaryMin: SortOrderSchema.optional(),
   salaryMax: SortOrderSchema.optional(),
+  openings: SortOrderSchema.optional(),
   contractDurationMonths: SortOrderSchema.optional(),
   version: SortOrderSchema.optional(),
   reportCount: SortOrderSchema.optional(),

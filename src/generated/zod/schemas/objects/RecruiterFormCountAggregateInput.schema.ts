@@ -18,6 +18,7 @@ const makeSchema = () => z.object({
   salaryMax: z.literal(true).optional(),
   currency: z.literal(true).optional(),
   techStack: z.literal(true).optional(),
+  openings: z.literal(true).optional(),
   contractDurationMonths: z.literal(true).optional(),
   showCompanyName: z.literal(true).optional(),
   status: z.literal(true).optional(),

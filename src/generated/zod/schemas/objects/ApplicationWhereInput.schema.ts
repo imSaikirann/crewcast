@@ -14,6 +14,7 @@ const applicationwhereinputSchema = z.object({
   OR: z.lazy(() => ApplicationWhereInputObjectSchema).array().optional(),
   NOT: z.union([z.lazy(() => ApplicationWhereInputObjectSchema), z.lazy(() => ApplicationWhereInputObjectSchema).array()]).optional(),
   id: z.union([z.lazy(() => StringFilterObjectSchema), z.string().max(24)]).optional(),
+  trackingToken: z.union([z.lazy(() => StringFilterObjectSchema), z.string()]).optional(),
   jobId: z.union([z.lazy(() => StringFilterObjectSchema), z.string().max(24)]).optional(),
   fullName: z.union([z.lazy(() => StringFilterObjectSchema), z.string()]).optional(),
   email: z.union([z.lazy(() => StringFilterObjectSchema), z.string()]).optional(),

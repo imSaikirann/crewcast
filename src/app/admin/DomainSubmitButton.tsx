@@ -4,12 +4,18 @@ import { useFormStatus } from "react-dom";
 
 import { Button } from "@/components/ui/button";
 
-export default function DomainSubmitButton() {
+export default function DomainSubmitButton({
+  idleLabel = "Create or update domain",
+  pendingLabel = "Saving domain...",
+}: {
+  idleLabel?: string;
+  pendingLabel?: string;
+} = {}) {
   const { pending } = useFormStatus();
 
   return (
     <Button type="submit" className="w-full" disabled={pending}>
-      {pending ? "Saving domain..." : "Create or update domain"}
+      {pending ? pendingLabel : idleLabel}
     </Button>
   );
 }

@@ -1,6 +1,7 @@
 import * as z from 'zod';
 export const ApplicationUpsertResultSchema = z.object({
   id: z.string(),
+  trackingToken: z.string(),
   jobId: z.string(),
   job: z.unknown(),
   fullName: z.string(),

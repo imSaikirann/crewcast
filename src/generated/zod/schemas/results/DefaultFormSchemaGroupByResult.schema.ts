@@ -5,6 +5,7 @@ export const DefaultFormSchemaGroupByResultSchema = z.array(z.object({
   version: z.number().int(),
   fields: z.unknown(),
   isActive: z.boolean(),
+  isForSoftwareRoles: z.boolean(),
   createdAt: z.date(),
   updatedAt: z.date(),
   _count: z.object({
@@ -14,6 +15,7 @@ export const DefaultFormSchemaGroupByResultSchema = z.array(z.object({
     version: z.number(),
     fields: z.number(),
     isActive: z.number(),
+    isForSoftwareRoles: z.number(),
     createdAt: z.number(),
     updatedAt: z.number()
   }).optional(),

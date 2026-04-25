@@ -11,6 +11,7 @@ const applicationscalarwherewithaggregatesinputSchema = z.object({
   OR: z.lazy(() => ApplicationScalarWhereWithAggregatesInputObjectSchema).array().optional(),
   NOT: z.union([z.lazy(() => ApplicationScalarWhereWithAggregatesInputObjectSchema), z.lazy(() => ApplicationScalarWhereWithAggregatesInputObjectSchema).array()]).optional(),
   id: z.union([z.lazy(() => StringWithAggregatesFilterObjectSchema), z.string().max(24)]).optional(),
+  trackingToken: z.union([z.lazy(() => StringWithAggregatesFilterObjectSchema), z.string()]).optional(),
   jobId: z.union([z.lazy(() => StringWithAggregatesFilterObjectSchema), z.string().max(24)]).optional(),
   fullName: z.union([z.lazy(() => StringWithAggregatesFilterObjectSchema), z.string()]).optional(),
   email: z.union([z.lazy(() => StringWithAggregatesFilterObjectSchema), z.string()]).optional(),

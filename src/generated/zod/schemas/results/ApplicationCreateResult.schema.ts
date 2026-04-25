@@ -1,6 +1,7 @@
 import * as z from 'zod';
 export const ApplicationCreateResultSchema = z.object({
   id: z.string(),
+  trackingToken: z.string(),
   jobId: z.string(),
   job: z.unknown(),
   fullName: z.string(),

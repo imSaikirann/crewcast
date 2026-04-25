@@ -7,6 +7,7 @@ const makeSchema = () => z.object({
   domainId: SortOrderSchema.optional(),
   version: SortOrderSchema.optional(),
   isActive: SortOrderSchema.optional(),
+  isForSoftwareRoles: SortOrderSchema.optional(),
   createdAt: SortOrderSchema.optional(),
   updatedAt: SortOrderSchema.optional()
 }).strict();

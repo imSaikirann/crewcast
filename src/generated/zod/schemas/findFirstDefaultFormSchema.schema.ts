@@ -16,6 +16,7 @@ export const DefaultFormSchemaFindFirstSelectSchema: z.ZodType<Prisma.DefaultFor
     version: z.boolean().optional(),
     fields: z.boolean().optional(),
     isActive: z.boolean().optional(),
+    isForSoftwareRoles: z.boolean().optional(),
     createdAt: z.boolean().optional(),
     updatedAt: z.boolean().optional()
   }).strict() as unknown as z.ZodType<Prisma.DefaultFormSchemaSelect>;
@@ -27,6 +28,7 @@ export const DefaultFormSchemaFindFirstSelectZodSchema = z.object({
     version: z.boolean().optional(),
     fields: z.boolean().optional(),
     isActive: z.boolean().optional(),
+    isForSoftwareRoles: z.boolean().optional(),
     createdAt: z.boolean().optional(),
     updatedAt: z.boolean().optional()
   }).strict();

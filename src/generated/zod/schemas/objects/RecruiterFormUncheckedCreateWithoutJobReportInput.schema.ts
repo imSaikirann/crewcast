@@ -26,6 +26,7 @@ const makeSchema = () => z.object({
   salaryMax: z.number().int().optional().nullable(),
   currency: z.string().optional().nullable(),
   techStack: z.union([z.lazy(() => RecruiterFormCreatetechStackInputObjectSchema), z.string().array()]).optional(),
+  openings: z.number().int().optional(),
   contractDurationMonths: z.number().int().optional().nullable(),
   showCompanyName: z.boolean().optional(),
   status: JobStatusSchema.optional(),

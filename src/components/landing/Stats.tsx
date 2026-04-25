@@ -16,10 +16,10 @@ import {
 } from "lucide-react";
 
 const stats = [
-  { val: "0–100", label: "Scored on every submission"      },
-  { val: "4",     label: "Signal dimensions measured"      },
-  { val: "<5m",   label: "Candidate application time"      },
-  { val: "Public",label: "GitHub data only "  },
+  { val: "0–100", label: "A score for every application" },
+  { val: "4",     label: "Signals that matter" },
+  { val: "<5m",   label: "To apply — no resume loops" },
+  { val: "Public",label: "Public GitHub data only" },
 ];
 
 export function StatsBar() {
@@ -48,7 +48,7 @@ export function StatsBar() {
             >
               {s.val}
             </div>
-            <div className="text-[12px]" style={{ color: "var(--lc-text-3)" }}>
+            <div className="text-[12px]" style={{ color: "var(--lc-text-2)" }}>
               {s.label}
             </div>
           </motion.div>
@@ -65,25 +65,25 @@ const steps = [
     num: "01",
     Icon: Settings,
     title: "Set up your domain",
-    desc: "Register your company hiring domain and configure default form fields once. Reuse across every role.",
+    desc: "Create a domain once. Reuse it across every role.",
   },
   {
     num: "02",
     Icon: FileText,
     title: "Build a role form",
-    desc: "Add tech stack requirements, custom screening questions, and mark GitHub as required for software roles.",
+    desc: "Ask what matters. Keep it short. Add GitHub for engineering roles.",
   },
   {
     num: "03",
     Icon: Link2,
     title: "Share the public link",
-    desc: "Every job gets a unique URL. Post it anywhere — no account needed for candidates to apply.",
+    desc: "One link. Candidates apply without creating an account.",
   },
   {
     num: "04",
     Icon: BarChart2,
     title: "Review scored candidates",
-    desc: "Applications land ranked with GitHub signal breakdowns, language match %, and activity streaks.",
+    desc: "Applications arrive ranked — with a clear signal breakdown.",
   },
 ];
 
@@ -116,7 +116,7 @@ export function HowItWorks() {
         animate={inView ? { opacity: 1 } : {}}
         transition={{ delay: 0.1 }}
       >
-        Four steps. No integration required. Live in under 10 minutes.
+        Four steps. No integrations. You’re live in minutes.
       </motion.p>
 
       <div
@@ -172,7 +172,7 @@ const features = [
     id: "dashboard",
     Icon: LayoutGrid,
     title: "Recruiter dashboard",
-    desc: "All jobs, applications, and candidate scores in one place. No context switching.",
+    desc: "Everything in one place: jobs, applicants, scores, and decisions.",
     preview: (
       <div className="space-y-3">
         <div className="grid grid-cols-2 gap-2">
@@ -230,7 +230,7 @@ const features = [
     id: "scoring",
     Icon: Github,
     title: "GitHub signal scoring",
-    desc: "Repos, language match, activity, account age, OSS contributions — scored automatically on submit.",
+    desc: "A score you can trust — based on public work, not claims.",
     preview: (
       <div className="space-y-3">
         <div
@@ -277,7 +277,7 @@ const features = [
     id: "forms",
     Icon: FT,
     title: "Role-specific forms",
-    desc: "Custom questions, tech stack fields, salary range, and GitHub — all in one clean candidate flow.",
+    desc: "Simple for candidates. Structured for teams.",
     preview: (
       <div
         className="border border-[var(--lc-border)] rounded-[6px] overflow-hidden"
@@ -327,7 +327,7 @@ const features = [
     id: "analytics",
     Icon: TrendingUp,
     title: "Analytics & reporting",
-    desc: "Views, conversion rates, form quality scores, and recruiter activity tracked over time.",
+    desc: "Know what’s working: views, conversion, and funnel health.",
     preview: (
       <div className="space-y-3">
         <div className="grid grid-cols-2 gap-2">
@@ -382,7 +382,7 @@ const features = [
     id: "admin",
     Icon: Shield,
     title: "Admin domain control",
-    desc: "Manage hiring domains, recruiter access roles, default form settings, and platform-wide permissions.",
+    desc: "Control domains, defaults, and access — without duct tape.",
     preview: (
       <div className="space-y-2">
         {[

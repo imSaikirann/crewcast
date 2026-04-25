@@ -10,10 +10,10 @@ import { EnumWorkModeFieldUpdateOperationsInputObjectSchema as EnumWorkModeField
 import { NullableStringFieldUpdateOperationsInputObjectSchema as NullableStringFieldUpdateOperationsInputObjectSchema } from './NullableStringFieldUpdateOperationsInput.schema';
 import { NullableIntFieldUpdateOperationsInputObjectSchema as NullableIntFieldUpdateOperationsInputObjectSchema } from './NullableIntFieldUpdateOperationsInput.schema';
 import { RecruiterFormUpdatetechStackInputObjectSchema as RecruiterFormUpdatetechStackInputObjectSchema } from './RecruiterFormUpdatetechStackInput.schema';
+import { IntFieldUpdateOperationsInputObjectSchema as IntFieldUpdateOperationsInputObjectSchema } from './IntFieldUpdateOperationsInput.schema';
 import { BoolFieldUpdateOperationsInputObjectSchema as BoolFieldUpdateOperationsInputObjectSchema } from './BoolFieldUpdateOperationsInput.schema';
 import { JobStatusSchema } from '../enums/JobStatus.schema';
 import { EnumJobStatusFieldUpdateOperationsInputObjectSchema as EnumJobStatusFieldUpdateOperationsInputObjectSchema } from './EnumJobStatusFieldUpdateOperationsInput.schema';
-import { IntFieldUpdateOperationsInputObjectSchema as IntFieldUpdateOperationsInputObjectSchema } from './IntFieldUpdateOperationsInput.schema';
 import { NullableDateTimeFieldUpdateOperationsInputObjectSchema as NullableDateTimeFieldUpdateOperationsInputObjectSchema } from './NullableDateTimeFieldUpdateOperationsInput.schema';
 import { DateTimeFieldUpdateOperationsInputObjectSchema as DateTimeFieldUpdateOperationsInputObjectSchema } from './DateTimeFieldUpdateOperationsInput.schema';
 import { DomainsUpdateOneRequiredWithoutRecruiterFormsNestedInputObjectSchema as DomainsUpdateOneRequiredWithoutRecruiterFormsNestedInputObjectSchema } from './DomainsUpdateOneRequiredWithoutRecruiterFormsNestedInput.schema';
@@ -36,6 +36,7 @@ const makeSchema = () => z.object({
   salaryMax: z.union([z.number().int(), z.lazy(() => NullableIntFieldUpdateOperationsInputObjectSchema)]).optional().nullable(),
   currency: z.union([z.string(), z.lazy(() => NullableStringFieldUpdateOperationsInputObjectSchema)]).optional().nullable(),
   techStack: z.union([z.lazy(() => RecruiterFormUpdatetechStackInputObjectSchema), z.string().array()]).optional(),
+  openings: z.union([z.number().int(), z.lazy(() => IntFieldUpdateOperationsInputObjectSchema)]).optional(),
   contractDurationMonths: z.union([z.number().int(), z.lazy(() => NullableIntFieldUpdateOperationsInputObjectSchema)]).optional().nullable(),
   showCompanyName: z.union([z.boolean(), z.lazy(() => BoolFieldUpdateOperationsInputObjectSchema)]).optional(),
   status: z.union([JobStatusSchema, z.lazy(() => EnumJobStatusFieldUpdateOperationsInputObjectSchema)]).optional(),

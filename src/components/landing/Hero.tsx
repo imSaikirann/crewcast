@@ -56,19 +56,30 @@ export default function Hero() {
         {/* Headline block */}
         <div className="text-center max-w-[860px] mx-auto">
 
-          {/* Tag pill */}
-          <motion.div
-            variants={fadeUp}
-            initial="hidden"
-            animate="show"
-            custom={0}
-            className="inline-flex items-center gap-2 px-3 py-[5px] rounded-full border border-[var(--lc-border)]
-                       text-[11px] font-medium text-[var(--lc-text-3)] mb-8"
-          >
-            <span className="w-[5px] h-[5px] rounded-full bg-[var(--lc-text-3)]" />
-            GitHub-first hiring platform for engineering teams
-          </motion.div>
+<motion.div
+  variants={fadeUp}
+  initial="hidden"
+  animate="show"
+  custom={0}
+  className="
+    inline-flex items-center gap-2 px-4 py-1.5 rounded-full mb-8
+    border text-xs font-medium backdrop-blur-sm transition-colors
+  "
+  style={{
+    background: "var(--lc-accent-dim)",
+    borderColor: "var(--lc-border)",
+    color: "var(--lc-text)",
+  }}
+>
+  <span
+    className="w-1.5 h-1.5 rounded-full animate-pulse"
+    style={{ background: "var(--lc-success)" }}
+  />
 
+  <span>
+    GitHub-first hiring for engineering teams
+  </span>
+</motion.div>
           {/* Headline — heavy weight + italic contrast, no color accent */}
           <motion.h1
             variants={fadeUp}
@@ -96,8 +107,8 @@ export default function Hero() {
             className="text-[16px] text-[var(--lc-text-2)] max-w-[500px] mx-auto leading-[1.75] mb-10"
           >
             Stop reading the same resume keywords. Crewcast attaches GitHub
-            scoring to every engineering job form — ranked candidates with real
-            signal, not claimed skills.
+            scoring to every engineering job form  ranked candidates with real
+            signal
           </motion.p>
 
           {/* CTA */}
@@ -112,7 +123,7 @@ export default function Hero() {
               href="/dashboard"
               className="lc-btn-primary min-h-12 w-full max-w-[320px] justify-center px-6 text-center sm:w-auto sm:max-w-none"
             >
-              <span className="truncate">Start hiring free</span>
+              <span className="truncate">Start hiring </span>
               <ArrowRight className="size-4 shrink-0" />
             </Link>
           </motion.div>

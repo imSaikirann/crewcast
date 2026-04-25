@@ -4,6 +4,7 @@ import type { Prisma } from '@prisma/client';
 
 const makeSchema = () => z.object({
   id: z.literal(true).optional(),
+  trackingToken: z.literal(true).optional(),
   jobId: z.literal(true).optional(),
   fullName: z.literal(true).optional(),
   email: z.literal(true).optional(),

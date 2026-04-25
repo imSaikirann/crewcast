@@ -18,6 +18,7 @@ const makeSchema = () => z.object({
   salaryMax: SortOrderSchema.optional(),
   currency: SortOrderSchema.optional(),
   techStack: SortOrderSchema.optional(),
+  openings: SortOrderSchema.optional(),
   contractDurationMonths: SortOrderSchema.optional(),
   showCompanyName: SortOrderSchema.optional(),
   status: SortOrderSchema.optional(),
