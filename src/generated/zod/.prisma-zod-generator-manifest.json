@@ -1,7 +1,7 @@
 {
   "version": "1.0",
   "generatorVersion": "0.1.0",
-  "generatedAt": "2026-04-25T08:43:07.671Z",
+  "generatedAt": "2026-04-25T10:12:01.580Z",
   "outputPath": "C:\\Users\\neela\\OneDrive\\Desktop\\projects\\hiring\\crewcast\\src\\generated\\zod",
   "files": [
     "schemas\\enums\\UserScalarFieldEnum.schema.ts",

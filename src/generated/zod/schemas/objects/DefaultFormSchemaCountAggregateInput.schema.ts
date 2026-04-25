@@ -8,7 +8,6 @@ const makeSchema = () => z.object({
   version: z.literal(true).optional(),
   fields: z.literal(true).optional(),
   isActive: z.literal(true).optional(),
-  isForSoftwareRoles: z.literal(true).optional(),
   createdAt: z.literal(true).optional(),
   updatedAt: z.literal(true).optional(),
   _all: z.literal(true).optional()

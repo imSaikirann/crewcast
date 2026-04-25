@@ -6,7 +6,6 @@ export const DefaultFormSchemaAggregateResultSchema = z.object({  _count: z.obje
     version: z.number(),
     fields: z.number(),
     isActive: z.number(),
-    isForSoftwareRoles: z.number(),
     createdAt: z.number(),
     updatedAt: z.number()
   }).optional(),

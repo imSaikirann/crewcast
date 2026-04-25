@@ -17,7 +17,6 @@ const defaultformschemawhereinputSchema = z.object({
   version: z.union([z.lazy(() => IntFilterObjectSchema), z.number().int()]).optional(),
   fields: z.lazy(() => JsonFilterObjectSchema).optional(),
   isActive: z.union([z.lazy(() => BoolFilterObjectSchema), z.boolean()]).optional(),
-  isForSoftwareRoles: z.union([z.lazy(() => BoolFilterObjectSchema), z.boolean()]).optional(),
   createdAt: z.union([z.lazy(() => DateTimeFilterObjectSchema), z.coerce.date()]).optional(),
   updatedAt: z.union([z.lazy(() => DateTimeFilterObjectSchema), z.coerce.date()]).optional(),
   domain: z.union([z.lazy(() => DomainsScalarRelationFilterObjectSchema), z.lazy(() => DomainsWhereInputObjectSchema)]).optional()

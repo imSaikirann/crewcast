@@ -16,7 +16,6 @@ export const DefaultFormSchemaFindManySelectSchema: z.ZodType<Prisma.DefaultForm
     version: z.boolean().optional(),
     fields: z.boolean().optional(),
     isActive: z.boolean().optional(),
-    isForSoftwareRoles: z.boolean().optional(),
     createdAt: z.boolean().optional(),
     updatedAt: z.boolean().optional()
   }).strict() as unknown as z.ZodType<Prisma.DefaultFormSchemaSelect>;
@@ -28,7 +27,6 @@ export const DefaultFormSchemaFindManySelectZodSchema = z.object({
     version: z.boolean().optional(),
     fields: z.boolean().optional(),
     isActive: z.boolean().optional(),
-    isForSoftwareRoles: z.boolean().optional(),
     createdAt: z.boolean().optional(),
     updatedAt: z.boolean().optional()
   }).strict();

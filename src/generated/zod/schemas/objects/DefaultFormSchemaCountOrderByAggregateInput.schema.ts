@@ -8,7 +8,6 @@ const makeSchema = () => z.object({
   version: SortOrderSchema.optional(),
   fields: SortOrderSchema.optional(),
   isActive: SortOrderSchema.optional(),
-  isForSoftwareRoles: SortOrderSchema.optional(),
   createdAt: SortOrderSchema.optional(),
   updatedAt: SortOrderSchema.optional()
 }).strict();

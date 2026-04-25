@@ -234,7 +234,7 @@ model DefaultFormSchema {
   fields Json
 
   isActive Boolean @default(true)
-  isForSoftwareRoles Boolean
+
 
 
   createdAt DateTime @default(now())
