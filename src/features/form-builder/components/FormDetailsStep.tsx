@@ -70,16 +70,16 @@ export function FormDetailsStep({
 
         <Section title="Role info">
           <Field label="Title">
-            <Input className="cc-input" placeholder="Frontend Engineer" {...form.register("formTitle", { required: true, onChange: () => syncForm() })} />
+            <Input className="cc-input" placeholder="e.g. Software Engineer, Product Designer, Data Analyst" {...form.register("formTitle", { required: true, onChange: () => syncForm() })} />
           </Field>
           <Field label="Description">
-            <Textarea className="min-h-[120px] rounded-[10px] bg-secondary text-sm focus-visible:border-primary" placeholder="Describe the role..." {...form.register("formDescription", { required: true, onChange: () => syncForm() })} />
+            <Textarea className="min-h-[120px] rounded-[10px] bg-secondary text-sm focus-visible:border-primary" placeholder="Briefly describe responsibilities, requirements, and what success looks like." {...form.register("formDescription", { required: true, onChange: () => syncForm() })} />
           </Field>
         </Section>
 
         <Section title="Location & Work">
           <Field label="Location">
-            <Input className="cc-input" placeholder="Remote, Bengaluru, Hyderabad..." {...form.register("location", { required: true, onChange: () => syncForm() })} />
+            <Input className="cc-input" placeholder="e.g. Remote, Bengaluru, Hyderabad" {...form.register("location", { required: true, onChange: () => syncForm() })} />
           </Field>
           <Field label="Work mode">
             <Segmented value={currentWorkMode} options={workModes} onChange={(value) => {
@@ -173,7 +173,7 @@ export function FormDetailsStep({
                     addTag()
                   }
                 }}
-                placeholder="e.g. React, TypeScript, Node..."
+                placeholder="e.g. React, Figma, SQL, Python, AWS..."
                 className="h-8 w-full bg-transparent px-1 text-sm outline-none placeholder:text-muted-foreground"
               />
             </div>
