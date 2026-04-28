@@ -4,6 +4,7 @@ import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
 import { X, Check, ArrowRight } from "lucide-react";
 import Link from "next/link";
+import { CrewcastMark } from "../brand/CrewcastLogo";
 
 const rows = [
   {
@@ -49,15 +50,7 @@ const rows = [
   },
 ];
 
-function ShipMark({ size = 24 }: { size?: number }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 44 44" fill="none">
-      <rect width="44" height="44" rx="9" fill="#f0f0f0" />
-      <polygon points="22,10 22,30 12,30" fill="#080808" />
-      <rect x="12" y="33" width="20" height="5" rx="1.5" fill="#080808" />
-    </svg>
-  );
-}
+
 
 export function Comparison() {
   const ref = useRef(null);
@@ -100,7 +93,7 @@ export function Comparison() {
       </div>
 
 
-      <div className="mt-6 overflow-x-auto rounded-lg border border-[var(--lc-border)] bg-[var(--lc-bg-1)]">
+      <div className="mt-6 overflow-x-auto rounded-lg border border-dashed border-[var(--lc-border)] bg-[var(--lc-bg-1)]">
         <div className="min-w-[640px]">
           <div className="grid grid-cols-[1fr_130px_150px] border-b border-[var(--lc-border)] bg-[var(--lc-bg-2)]">
             <div className="px-4 py-3 text-[11px] uppercase tracking-wide text-[var(--lc-text-3)] sm:px-6 sm:py-4">
@@ -108,14 +101,12 @@ export function Comparison() {
             </div>
 
             <div className="border-l border-[var(--lc-border)] px-3 py-3 text-center text-[11px] uppercase tracking-wide text-[var(--lc-text-3)] sm:px-4 sm:py-4">
-              Old flow
+              Others
             </div>
 
             <div className="flex items-center justify-center gap-2 border-l border-[var(--lc-border)] px-3 py-3 sm:px-4 sm:py-4">
-              <ShipMark size={20} />
-              <span className="text-[11px] uppercase tracking-wide text-[var(--lc-text)]">
-                Crewcast
-              </span>
+              <CrewcastMark  />
+              
             </div>
           </div>
 
@@ -125,11 +116,11 @@ export function Comparison() {
               initial={{ opacity: 0 }}
               animate={inView ? { opacity: 1 } : {}}
               transition={{ delay: i * 0.05 }}
-              className="grid grid-cols-[1fr_130px_150px] border-b border-[var(--lc-border)] last:border-0"
+              className="grid grid-cols-[1fr_130px_150px] border-b border-dashed border-[var(--lc-border)] last:border-0"
             >
               <div className="flex items-center gap-2 px-4 py-3 text-[13px] text-[var(--lc-text-2)] sm:gap-3 sm:px-6 sm:py-4 sm:text-sm">
                 {row.highlight && (
-                  <span className="rounded border border-[var(--lc-border-hover)] px-2 py-0.5 text-[9px] uppercase tracking-wide text-[var(--lc-text)]">
+                  <span className="rounded border border-dashed bg-green-200 border-[var(--lc-border-hover)] text-green-600 px-2 py-0.5 text-[9px] uppercase tracking-wide text-[var(--lc-text)]">
                     Core
                   </span>
                 )}
@@ -139,11 +130,11 @@ export function Comparison() {
               <div className="flex items-center justify-center border-l border-[var(--lc-border)]">
                 {row.without ? (
                   <span className="inline-flex h-6 w-6 items-center justify-center rounded-full border border-[var(--lc-border)] text-[var(--lc-text-2)]">
-                    <Check size={14} />
+                    <Check  className="text-green-500" size={14} />
                   </span>
                 ) : (
-                  <span className="inline-flex h-6 w-6 items-center justify-center rounded-full border border-[var(--lc-border)] text-[var(--lc-text-3)]">
-                    <X size={14} />
+                  <span className="inline-flex h-6 w-6 items-center justify-center rounded-full border  border-[var(--lc-border)] text-[var(--lc-text-3)]">
+                    <X className="text-red-400"  size={14} />
                   </span>
                 )}
               </div>
@@ -151,11 +142,11 @@ export function Comparison() {
               <div className="flex items-center justify-center border-l border-[var(--lc-border)]">
                 {row.with ? (
                   <span className="inline-flex h-6 w-6 items-center justify-center rounded-full border border-[var(--lc-border-hover)] bg-[var(--lc-bg-2)] text-[var(--lc-text)]">
-                    <Check size={14} />
+                    <Check className="text-green-500" size={14} />
                   </span>
                 ) : (
                   <span className="inline-flex h-6 w-6 items-center justify-center rounded-full border border-[var(--lc-border)] text-[var(--lc-text-3)]">
-                    <X size={14} />
+                    <X className="text-red-400" size={14} />
                   </span>
                 )}
               </div>

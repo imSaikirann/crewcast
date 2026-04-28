@@ -17,28 +17,41 @@ const fadeUp: Variants = {
 
 const candidates = [
   {
-    initials: "AK",
-    name: "Aditya Kumar",
-    role: "github.com/adityak · TS, React",
-    score: 91,
+    initials: "LU",
+    name: "Monkey D. Luffy",
+    role: "Full Stack Engineer · High commit velocity · TypeScript, Node.js · ships without overthinking",
+    score: 95,
     tier: "high",
   },
   {
-    initials: "PS",
-    name: "Priya Sharma",
-    role: "github.com/priya-sh · Go, gRPC",
-    score: 78,
+    initials: "ZO",
+    name: "Roronoa Zoro",
+    role: "Backend Engineer · Distributed systems · Go, Rust · zero downtime mindset",
+    score: 90,
+    tier: "high",
+  },
+  {
+    initials: "SA",
+    name: "Sanji",
+    role: "Frontend Engineer · UI performance · React, CSS · pixel-perfect obsession",
+    score: 84,
     tier: "mid",
   },
   {
-    initials: "RV",
-    name: "Rahul Verma",
-    role: "github.com/rv-dev · Node, Python",
-    score: 62,
+    initials: "NA",
+    name: "Nami",
+    role: "Data Engineer · Analytics pipelines · Python, SQL · reads data like a map",
+    score: 80,
+    tier: "mid",
+  },
+  {
+    initials: "CH",
+    name: "Tony Tony Chopper",
+    role: "ML Engineer · Learning systems · Python, TensorFlow · fast learner energy",
+    score: 68,
     tier: "low",
   },
 ];
-
 const bars = [
   { label: "Repositories", pct: 91 },
   { label: "Commit frequency", pct: 84 },
@@ -73,16 +86,19 @@ export default function Hero() {
       <div className="relative z-10 mx-auto w-full max-w-[1100px]">
         <div className="mx-auto max-w-[900px] text-center">
     
-  <motion.div
+          <motion.div
            variants={fadeUp}
   initial="hidden"
   animate="show"
   custom={0}
           className="mb-5 inline-flex items-center gap-2 rounded-full border border-border bg-background/60 px-3 py-1 backdrop-blur-md"
         >
-          <span className="size-1.5 rounded-full bg-emerald-500 shadow-[0_0_8px_#10b981aa]" />
+          <span className="relative flex size-1.5">
+            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-500 opacity-75" />
+            <span className="relative inline-flex size-1.5 rounded-full bg-emerald-500 shadow-[0_0_8px_#10b981aa]" />
+          </span>
           <span className="font-mono text-[10.5px] uppercase tracking-[0.14em] text-muted-foreground">
-            Built for engineering hiring teams
+            GitHub signal for technical hiring
           </span>
         </motion.div>
 
