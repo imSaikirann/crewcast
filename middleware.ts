@@ -1,31 +1,42 @@
-// middleware.ts
-
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { getToken } from "next-auth/jwt";
 
 export async function middleware(req: NextRequest) {
-  let session: Awaited<ReturnType<typeof getToken>> = null;
+  const { pathname } = req.nextUrl;
+
+  let token = null;
+
   try {
-    session = await getToken({
+    token = await getToken({
       req,
-      // Avoid crashing the edge runtime when the secret isn't present (eg preview builds).
       secret: process.env.NEXTAUTH_SECRET,
+
+  
+      cookieName:
+        process.env.NODE_ENV === "production"
+          ? "__Secure-next-auth.session-token"
+          : "next-auth.session-token",
     });
-  } catch {
-    session = null;
+  } catch (e) {
+    console.log("JWT ERROR:", e);
   }
 
-  const { pathname } = req.nextUrl;
+  const isLoggedIn = !!token;
+
+
+  console.log("PATH:", pathname);
+  console.log("TOKEN EXISTS:", isLoggedIn);
 
   const DASHBOARD = "/dashboard";
   const LOGIN = "/login";
 
-  if (pathname.startsWith(LOGIN) && session) {
+ 
+  if (pathname.startsWith(LOGIN) && isLoggedIn) {
     return NextResponse.redirect(new URL(DASHBOARD, req.url));
   }
 
-  if (pathname.startsWith(DASHBOARD) && !session) {
+  if (pathname.startsWith(DASHBOARD) && !isLoggedIn) {
     const url = req.nextUrl.clone();
     url.pathname = LOGIN;
     url.searchParams.set("from", pathname);
