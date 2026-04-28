@@ -62,6 +62,10 @@ const WEEKS = 53;
 const DAYS = 7;
 const CELL = 12;
 const GAP = 3;
+const MOBILE_WEEKS = 52;
+const MOBILE_DAYS = 28;
+const MOBILE_CELL = 6;
+const MOBILE_GAP = 2;
 const COLORS = ["transparent", "#0e4429", "#006d32", "#26a641", "#39d353"];
 
 const seeded = (i: number) => {
@@ -77,8 +81,15 @@ const levelFor = (i: number) => {
   return 4;
 };
 
+const glowClassFor = (i: number) => {
+  if ([87, 256, 693, 1210].includes(i)) return "cc-glow-cell cc-glow-cell-hot";
+  if ([42, 198, 340, 912].includes(i)) return "cc-glow-cell cc-glow-cell-bright";
+  return "cc-glow-cell";
+};
+
 function ContributionGraph() {
   const cells: React.ReactNode[] = [];
+  const mobileCells: React.ReactNode[] = [];
   // Pick a few cells to "glow" — the active commits
   const glowCells = [42, 87, 134, 198, 256, 301, 340];
 
@@ -100,8 +111,33 @@ function ContributionGraph() {
           fill={bg === "transparent" ? "none" : bg}
           stroke={lvl === 0 ? "hsl(var(--foreground) / 0.08)" : "none"}
           strokeWidth={1}
-          className={isGlow ? "cc-glow-cell" : ""}
-          style={isGlow ? { animationDelay: `${(i % 5) * 0.6}s` } : undefined}
+          className={isGlow ? glowClassFor(i) : ""}
+          style={isGlow ? { animationDelay: `${(i % 7) * 0.42}s` } : undefined}
+        />
+      );
+    }
+  }
+
+  for (let w = 0; w < MOBILE_WEEKS; w++) {
+    for (let d = 0; d < MOBILE_DAYS; d++) {
+      const i = w * MOBILE_DAYS + d;
+      const lvl = levelFor(i);
+      const bg = COLORS[lvl];
+      const isGlow = glowCells.includes(i) || [478, 693, 912, 1210].includes(i);
+      mobileCells.push(
+        <rect
+          key={i}
+          x={w * (MOBILE_CELL + MOBILE_GAP)}
+          y={d * (MOBILE_CELL + MOBILE_GAP)}
+          width={MOBILE_CELL}
+          height={MOBILE_CELL}
+          rx={1.5}
+          ry={1.5}
+          fill={bg === "transparent" ? "none" : bg}
+          stroke={lvl === 0 ? "hsl(var(--foreground) / 0.08)" : "none"}
+          strokeWidth={1}
+          className={isGlow ? glowClassFor(i) : ""}
+          style={isGlow ? { animationDelay: `${(i % 9) * 0.34}s` } : undefined}
         />
       );
     }
@@ -109,6 +145,8 @@ function ContributionGraph() {
 
   const width = WEEKS * (CELL + GAP) - GAP;
   const height = DAYS * (CELL + GAP) - GAP;
+  const mobileWidth = MOBILE_WEEKS * (MOBILE_CELL + MOBILE_GAP) - MOBILE_GAP;
+  const mobileHeight = MOBILE_DAYS * (MOBILE_CELL + MOBILE_GAP) - MOBILE_GAP;
 
   return (
     <div
@@ -123,9 +161,16 @@ function ContributionGraph() {
       }}
     >
       <svg
+        viewBox={`0 0 ${mobileWidth} ${mobileHeight}`}
+        preserveAspectRatio="xMidYMid slice"
+        className="absolute inset-0 h-full w-full md:hidden"
+      >
+        {mobileCells}
+      </svg>
+      <svg
         viewBox={`0 0 ${width} ${height}`}
         preserveAspectRatio="xMidYMid slice"
-        className="absolute inset-0 h-full w-full"
+        className="absolute inset-0 hidden h-full w-full md:block"
       >
         {cells}
       </svg>
@@ -144,16 +189,48 @@ export default function Footer() {
         :global(.cc-glow-cell) {
           transform-box: fill-box;
           transform-origin: center;
-          animation: ccGlowCell 3s ease-in-out infinite;
+          animation: ccGlowCell 3.8s ease-in-out infinite;
+          filter:
+            drop-shadow(0 0 2px #39d35366)
+            drop-shadow(0 0 8px #39d35333);
+        }
+        :global(.cc-glow-cell-bright) {
+          animation-duration: 3.1s;
+        }
+        :global(.cc-glow-cell-hot) {
+          animation-duration: 2.45s;
+          animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
         }
         @keyframes ccGlowCell {
-          0%, 100% {
+          0%,
+          100% {
             fill: #0e4429;
-            filter: drop-shadow(0 0 0 #39d35300);
+            opacity: 0.72;
+            filter:
+              drop-shadow(0 0 0 #39d35300)
+              drop-shadow(0 0 0 #39d35300);
+          }
+          35% {
+            fill: #26a641;
+            opacity: 0.9;
+            filter:
+              drop-shadow(0 0 4px #39d35388)
+              drop-shadow(0 0 12px #39d35344);
           }
           50% {
             fill: #39d353;
-            filter: drop-shadow(0 0 6px #39d353cc);
+            opacity: 1;
+            filter:
+              drop-shadow(0 0 7px #39d353dd)
+              drop-shadow(0 0 18px #39d35366)
+              drop-shadow(0 0 30px #39d35333);
+          }
+          68% {
+            fill: #26a641;
+            opacity: 0.9;
+            filter:
+              drop-shadow(0 0 4px #39d35388)
+              drop-shadow(0 0 14px #39d35344);
           }
         }
 

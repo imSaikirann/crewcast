@@ -65,32 +65,40 @@ export function Comparison() {
 
   return (
     <section className="lc-section" ref={ref}>
-      <motion.p
-        className="lc-tag"
-        initial={{ opacity: 0 }}
-        animate={inView ? { opacity: 1 } : {}}
-      >
-        Signal vs noise
-      </motion.p>
+      <div className="mx-auto mb-14 max-w-3xl text-center sm:mb-20">
+        <motion.div
+          initial={{ opacity: 0, y: 8 }}
+          animate={inView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.4 }}
+          className="mb-5 inline-flex items-center gap-2 rounded-full border border-border bg-background/60 px-3 py-1 backdrop-blur-md"
+        >
+          <span className="size-1.5 rounded-full bg-emerald-500 shadow-[0_0_8px_#10b981aa]" />
+          <span className="font-mono text-[10.5px] uppercase tracking-[0.14em] text-muted-foreground">
+            Signal vs noise
+          </span>
+        </motion.div>
 
-      <motion.h2
-        className="lc-h2"
-        initial={{ opacity: 0, y: 10 }}
-        animate={inView ? { opacity: 1, y: 0 } : {}}
-      >
-        Simple hiring system.
-        <br />
-        Better technical decisions.
-      </motion.h2>
+        <motion.h2
+          initial={{ opacity: 0, y: 12 }}
+          animate={inView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.5, delay: 0.05 }}
+          className="text-balance font-extrabold leading-[1.05] tracking-[-0.04em] text-foreground"
+          style={{ fontSize: "clamp(2rem, 5.5vw, 3.75rem)" }}
+        >
+          Simple hiring system.{" "}
+          <em className="font-light italic text-foreground/85">Better decisions.</em>
+        </motion.h2>
 
-      <motion.p
-        className="lc-sub mb-8"
-        initial={{ opacity: 0 }}
-        animate={inView ? { opacity: 1 } : {}}
-      >
-        This is the difference between resume-heavy screening and a workflow designed
-        for engineering roles.
-      </motion.p>
+        <motion.p
+          initial={{ opacity: 0, y: 8 }}
+          animate={inView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.5, delay: 0.12 }}
+          className="mx-auto mt-4 max-w-xl text-[14.5px] leading-relaxed text-muted-foreground"
+        >
+          See the difference between resume-heavy screening and a workflow designed for engineering roles.
+        </motion.p>
+      </div>
+
 
       <div className="mt-6 overflow-x-auto rounded-lg border border-[var(--lc-border)] bg-[var(--lc-bg-1)]">
         <div className="min-w-[640px]">

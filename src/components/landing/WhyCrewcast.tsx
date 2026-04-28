@@ -33,8 +33,42 @@ export function WhyCrewcast() {
 
   return (
     <section className="lc-section" style={{ paddingTop: 56 }} ref={ref}>
+      <div className="mx-auto mb-14 max-w-3xl text-center sm:mb-20">
+        <motion.div
+          initial={{ opacity: 0, y: 8 }}
+          animate={inView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.4 }}
+          className="mb-5 inline-flex items-center gap-2 rounded-full border border-border bg-background/60 px-3 py-1 backdrop-blur-md"
+        >
+          <span className="size-1.5 rounded-full bg-emerald-500 shadow-[0_0_8px_#10b981aa]" />
+          <span className="font-mono text-[10.5px] uppercase tracking-[0.14em] text-muted-foreground">
+            Why Crewcast
+          </span>
+        </motion.div>
+
+        <motion.h2
+          initial={{ opacity: 0, y: 12 }}
+          animate={inView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.5, delay: 0.05 }}
+          className="text-balance font-extrabold leading-[1.05] tracking-[-0.04em] text-foreground"
+          style={{ fontSize: "clamp(2rem, 5.5vw, 3.75rem)" }}
+        >
+          Hiring should reward{" "}
+          <em className="font-light italic text-foreground/85">real work.</em>
+        </motion.h2>
+
+        <motion.p
+          initial={{ opacity: 0, y: 8 }}
+          animate={inView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.5, delay: 0.12 }}
+          className="mx-auto mt-4 max-w-xl text-[14.5px] leading-relaxed text-muted-foreground"
+        >
+          Structured applications, GitHub insights, and a workflow that is fair to candidates and fast for recruiters.
+        </motion.p>
+      </div>
+
       <motion.p
-        className="lc-tag"
+        className="hidden"
         initial={{ opacity: 0 }}
         animate={inView ? { opacity: 1 } : {}}
       >
@@ -42,7 +76,7 @@ export function WhyCrewcast() {
       </motion.p>
 
       <motion.h2
-        className="lc-h2"
+        className="hidden"
         initial={{ opacity: 0, y: 12 }}
         animate={inView ? { opacity: 1, y: 0 } : {}}
         transition={{ delay: 0.05 }}
@@ -51,7 +85,7 @@ export function WhyCrewcast() {
       </motion.h2>
 
       <motion.p
-        className="lc-sub mb-12"
+        className="hidden"
         initial={{ opacity: 0 }}
         animate={inView ? { opacity: 1 } : {}}
         transition={{ delay: 0.1 }}
@@ -93,4 +127,3 @@ export function WhyCrewcast() {
     </section>
   );
 }
-
