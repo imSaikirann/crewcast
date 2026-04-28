@@ -8,6 +8,7 @@ export default function page() {
   return (
     <AppPage
       width="form"
+      backButton={{ fallbackHref: "/dashboard/domains", label: "Back to domains" }}
       breadcrumbs={[
         { label: "Dashboard", href: "/dashboard" },
         { label: "New form" },

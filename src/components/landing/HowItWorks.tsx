@@ -63,48 +63,31 @@ export function HowItWorks() {
         Four steps. Clear workflow. No complexity.
       </motion.p>
 
-      <div className="grid lg:grid-cols-[380px_1fr] gap-10">
+      <div className="grid gap-8 lg:grid-cols-[360px_1fr]">
 
-        {/* LEFT: Steps */}
-        <div className="space-y-3">
+        {/* LEFT: Steps (no timeline rail, cleaner and stable) */}
+        <div className="space-y-2">
           {steps.map((step, i) => {
             const isActive = i === active;
             const isDone = i < active;
-            const isLast = i === steps.length - 1;
 
             return (
-              <div key={i} className="relative">
-
-                {/* Connector */}
-                {!isLast && (
-                  <div
-                    className="absolute left-[13px] top-8 w-[1px] h-[calc(100%-8px)]"
-                    style={{
-                      background: isDone
-                        ? "var(--lc-text)"
-                        : "var(--lc-border)",
-                    }}
-                  />
-                )}
-
+              <div key={i}>
                 <motion.button
                   onClick={() => setActive(i)}
                   initial={{ opacity: 0, x: -10 }}
                   animate={inView ? { opacity: 1, x: 0 } : {}}
                   transition={{ delay: i * 0.05 }}
-                  className="flex items-start gap-4 p-4 rounded-xl w-full text-left transition-all"
+                  className="flex w-full items-start gap-3 rounded-lg p-4 text-left transition-all"
                   style={{
-                    background: isActive
-                      ? "var(--lc-bg-2)"
-                      : "transparent",
+                    background: isActive ? "var(--lc-bg-2)" : "var(--lc-bg-1)",
                     border: isActive
                       ? "1px solid var(--lc-border-hover)"
-                      : "1px solid transparent",
+                      : "1px solid var(--lc-border)",
                   }}
                 >
-                  {/* Dot */}
                   <div
-                    className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold shrink-0 relative z-10"
+                    className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-xs font-bold"
                     style={{
                       background:
                         isActive || isDone
@@ -120,8 +103,7 @@ export function HowItWorks() {
                     {isDone ? "✓" : i + 1}
                   </div>
 
-                  {/* Text */}
-                  <div>
+                  <div className="min-w-0">
                     <p
                       className="text-sm font-semibold"
                       style={{
@@ -132,7 +114,7 @@ export function HowItWorks() {
                           : "var(--lc-text-3)",
                       }}
                     >
-                      {step.title}
+                      <span className="truncate">{step.title}</span>
                     </p>
 
                     <p className="text-xs mt-1 text-[var(--lc-text-3)]">

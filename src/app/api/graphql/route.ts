@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
+import { getClientFingerprint, rateLimit, rateLimitResponse } from "@/lib/rateLimit";
 import { scoreGitHubProfile } from "@/services/githubScore";
 
 type GraphQLRequestBody = {
@@ -23,6 +24,14 @@ const schemaDescription = {
 };
 
 export async function GET(request: NextRequest) {
+  const fingerprint = getClientFingerprint(request);
+  const limit = await rateLimit({
+    key: `crewcast:rl:graphql:get:${fingerprint.hash}`,
+    limit: 20,
+    windowSeconds: 60,
+  });
+  if (!limit.allowed) return rateLimitResponse(limit);
+
   const query = request.nextUrl.searchParams.get("query");
 
   if (!query) {
@@ -47,6 +56,14 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
+  const fingerprint = getClientFingerprint(request);
+  const limit = await rateLimit({
+    key: `crewcast:rl:graphql:post:${fingerprint.hash}`,
+    limit: 30,
+    windowSeconds: 60,
+  });
+  if (!limit.allowed) return rateLimitResponse(limit);
+
   const body = await readJsonBody(request);
 
   if (!body.query) {
@@ -58,6 +75,9 @@ export async function POST(request: NextRequest) {
 
 async function executeGraphQLRequest(body: GraphQLRequestBody) {
   const query = body.query?.trim() ?? "";
+  if (query.length > 5000) {
+    return graphQLError("Query is too large.", 413);
+  }
 
   if (query.includes("__schema") || query.includes("__type")) {
     return NextResponse.json(schemaDescription);
@@ -71,6 +91,9 @@ async function executeGraphQLRequest(body: GraphQLRequestBody) {
 
   if (!username) {
     return graphQLError('Argument "username" is required.', 400);
+  }
+  if (!/^[a-z\d](?:[a-z\d-]{0,37})$/i.test(username)) {
+    return graphQLError('Argument "username" is invalid.', 400);
   }
 
   try {

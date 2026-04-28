@@ -4,6 +4,7 @@ import { getServerSession } from "next-auth"
 import { authOptions } from "@/app/api/auth/[...nextauth]/route"
 import { prisma } from "@/lib/prisma"
 import { createAndSendRecruiterVerification } from "@/lib/recruiterVerification"
+import { rateLimit, rateLimitResponse } from "@/lib/rateLimit"
 
 export async function POST() {
   try {
@@ -27,6 +28,18 @@ export async function POST() {
 
     if (recruiter.verified) {
       return NextResponse.json({ message: "Company email is already verified" }, { status: 409 })
+    }
+
+    const cooldownLimit = await rateLimit({
+      key: `crewcast:rl:resend-verification:${session.user.id}:${recruiter.companyEmail}`,
+      limit: 1,
+      windowSeconds: 10 * 60,
+    })
+    if (!cooldownLimit.allowed) {
+      return rateLimitResponse(
+        cooldownLimit,
+        "Verification email already sent recently. Please wait before requesting another one."
+      )
     }
 
     await createAndSendRecruiterVerification(session.user.id, recruiter.companyEmail)

@@ -71,7 +71,7 @@ export default function Navbar() {
           transition: "border-color 0.2s, background 0.2s",
         }}
       >
-        <div className="mx-auto flex h-16 max-w-[1100px] items-center justify-between px-6">
+        <div className="mx-auto flex h-16 max-w-[1200px] items-center justify-between px-3 md:px-6">
 
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2.5 no-underline">

@@ -11,7 +11,8 @@ export async function GET(
   context: { params: Promise<{ domainId: string }> }
 ) {
   try {
-    await requireRole(ROLES.USER);
+    const auth = await requireRole(ROLES.USER);
+    if (!auth.ok) return auth.response;
 
     const { domainId } = await context.params;
 

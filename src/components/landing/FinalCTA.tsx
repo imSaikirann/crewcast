@@ -26,7 +26,10 @@ export function FinalCTA() {
       >
         <div
           className="pointer-events-none absolute -top-24 left-1/2 h-[300px] w-[400px] -translate-x-1/2"
-          style={{ background: "radial-gradient(ellipse, rgba(173,250,29,0.07) 0%, transparent 70%)" }}
+          style={{
+            background:
+              "radial-gradient(ellipse, rgba(255,255,255,0.08) 0%, transparent 72%)",
+          }}
         />
         <div className="relative z-10">
           <p className="lc-tag mb-5 justify-center">Start with one role</p>

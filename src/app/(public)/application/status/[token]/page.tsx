@@ -11,33 +11,29 @@ export default async function ApplicationStatusPage({
   params: Promise<{ token: string }>;
 }) {
   const { token } = await params;
-  const applicationId = isMongoObjectId(token) ? token : null;
-
-  const application = applicationId
-    ? await prisma.application.findUnique({
-        where: { id: applicationId },
+  const application = await prisma.application.findUnique({
+    where: { trackingToken: token },
+    select: {
+      fullName: true,
+      email: true,
+      status: true,
+      createdAt: true,
+      updatedAt: true,
+      jobId: true,
+      job: {
         select: {
-          fullName: true,
-          email: true,
-          status: true,
-          createdAt: true,
-          updatedAt: true,
-          jobId: true,
-          job: {
+          title: true,
+          publicId: true,
+          openings: true,
+          recruiter: {
             select: {
-              title: true,
-              publicId: true,
-              openings: true,
-              recruiter: {
-                select: {
-                  companyName: true,
-                },
-              },
+              companyName: true,
             },
           },
         },
-      })
-    : null;
+      },
+    },
+  });
 
   if (!application) {
     return (
@@ -243,7 +239,3 @@ const STATUS_STEPS = [
     description: "The application is no longer active for this role.",
   },
 ];
-
-function isMongoObjectId(value: string) {
-  return /^[a-f\d]{24}$/i.test(value);
-}

@@ -231,9 +231,25 @@ function startOfMonth() {
 
 export async function GET() {
   try {
+    const session = await getServerSession(authOptions);
+    if (!session?.user?.id) {
+      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+    }
+
+    const recruiter = await prisma.recruiter.findUnique({
+      where: { userId: session.user.id },
+      select: { id: true },
+    });
+
+    if (!recruiter) {
+      return NextResponse.json({ message: "Recruiter not found" }, { status: 404 });
+    }
+
     const data = await prisma.recruiterForm.findMany({
+      where: { recruiterId: recruiter.id },
       select: {
         id: true,
+        publicId: true,
         title: true,
         status: true,
         createdAt: true,

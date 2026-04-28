@@ -10,7 +10,8 @@ import { ROLES } from "@/lib/constants/roles";
 
 export async function GET() {
   try {
-    await requireRole(ROLES.USER);
+    const auth = await requireRole(ROLES.USER);
+    if (!auth.ok) return auth.response;
 
     const domains = await cachedJson(
       { key: cacheKeys.domains, ttl: cacheTtl.domains },

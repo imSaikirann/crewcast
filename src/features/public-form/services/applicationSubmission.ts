@@ -146,7 +146,7 @@ export async function submitApplication({
     body: {
       success: true,
       id: application.id,
-      trackingUrl: `${origin}/application/status/${application.id}`,
+        trackingUrl: `${origin}/application/status/${application.trackingToken}`,
       scoreStatus: "pending",
     },
   };

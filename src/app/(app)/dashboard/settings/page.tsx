@@ -4,6 +4,7 @@ import RecruiterSettingsPage from "@/features/recruiter/pages/RecruiterSettingsP
 export default function Page() {
   return (
     <AppPage
+      backButton={{ fallbackHref: "/dashboard", label: "Back to dashboard" }}
       breadcrumbs={[
         { label: "Dashboard", href: "/dashboard" },
         { label: "Settings" },
