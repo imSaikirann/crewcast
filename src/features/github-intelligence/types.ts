@@ -38,6 +38,22 @@ export type GitHubInsightReport = {
     ownedRepos: number;
     contributedRepos: number;
   };
+  contributionMetrics: {
+    commitsAuthored: number;
+    pullRequestsOpened: number;
+    pullRequestsMerged: number;
+    issuesOpened: number;
+    issuesClosed: number;
+    reviewComments: number;
+    issueComments: number;
+    repositoriesContributedTo: number;
+    followers: number;
+    stars: number;
+    forks: number;
+    languagesUsed: number;
+    recentActivity: number;
+    category: string;
+  };
   warnings: string[];
 };
 
@@ -56,6 +72,7 @@ export type GitHubRepositorySignal = {
   forkCount: number;
   diskUsage: number;
   languages: Record<string, number>;
+  totalCommits: number;
   commitsLast90Days: number;
   recentCommitMessages: string[];
   contributors: number;
@@ -81,6 +98,14 @@ export type GitHubCandidateData = {
   };
   repositories: GitHubRepositorySignal[];
   pullRequests: GitHubPullRequestSignal[];
+  collaboration: {
+    pullRequestsOpened: number;
+    pullRequestsMerged: number;
+    issuesOpened: number;
+    issuesClosed: number;
+    reviewComments: number;
+    issueComments: number;
+  };
   fetchedAt: string;
 };
 

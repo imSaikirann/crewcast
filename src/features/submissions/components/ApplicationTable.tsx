@@ -324,7 +324,7 @@ function ApplicationDetails({
   const breakdown = latestScore?.breakdown;
   const insight = getInsightReport(application);
   const github = getGitHubUsername(application);
-  const signalRows = breakdown?.signals
+  const signalRows: Array<[string, unknown]> = breakdown?.signals
     ? [
         ["Original repos", breakdown.signals.originalRepos],
         ["Recent repos", breakdown.signals.recentRepos],
@@ -346,180 +346,263 @@ function ApplicationDetails({
         : [];
 
   return (
-    <div className="grid gap-5 xl:grid-cols-[360px_1fr]">
-      <div className="space-y-3 rounded-lg border bg-background p-4">
-        <div className="flex items-start justify-between gap-4">
-          <div>
-            <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-              GitHub evidence
-            </p>
-            <p className="mt-1 text-lg font-semibold">
-              {github ? `@${github}` : "No username"}
-            </p>
-          </div>
-          <ScoreBadge score={latestScore?.totalScore} />
-        </div>
-
-        {insight && (
-          <div className="space-y-3 rounded-lg border bg-secondary/25 p-3">
-            <div className="flex flex-wrap items-center gap-2">
-              <ConfidenceBadge confidence={insight.confidence} />
-              <StatusPill label="Activity" value={insight.activity.status} />
-            </div>
-            <p className="text-sm leading-6 text-foreground">
-              {insight.summary}
-            </p>
-          </div>
-        )}
-
-        {insight && <InsightScoreGrid insight={insight} />}
-
-        {signalRows.length > 0 && (
-          <div className="grid grid-cols-2 gap-2">
-            {signalRows.map(([label, value]) => (
-              <div key={label} className="rounded-md bg-muted/50 px-3 py-2">
-                <p className="text-base font-semibold">{String(value)}</p>
-                <p className="text-xs text-muted-foreground">{label}</p>
-              </div>
-            ))}
-          </div>
-        )}
-
-        {languages.length > 0 && (
-          <div>
-            <p className="mb-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">
-              Languages
-            </p>
-            <div className="flex flex-wrap gap-2">
-              {languages.map(([language, count]) => (
-                <Badge key={language} variant="outline">
-                  {language} {String(count)}
-                </Badge>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {insight ? (
-          <TechInsight insight={insight} />
-        ) : skillsMatch ? (
-          <div className="rounded-md border bg-muted/25 p-3">
-            <div className="mb-2 flex items-center justify-between gap-3">
+    <div className="space-y-5">
+      {insight ? (
+        <GitHubReportHero
+          insight={insight}
+          github={github}
+          totalScore={latestScore?.totalScore}
+        />
+      ) : (
+        <div className="rounded-lg border bg-background p-4">
+          <div className="flex items-start justify-between gap-4">
+            <div>
               <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-                Tech match
+                GitHub evidence
               </p>
-              <Badge variant="secondary">
-                {skillsMatch.percentage}% match
-              </Badge>
+              <p className="mt-1 text-lg font-semibold">
+                {github ? `@${github}` : "No username"}
+              </p>
             </div>
-            {skillsMatch.matched?.length > 0 && (
-              <div className="mb-2">
-                <p className="mb-1 text-xs text-muted-foreground">Matched</p>
-                <div className="flex flex-wrap gap-1.5">
-                  {skillsMatch.matched.map((skill: string) => (
-                    <Badge key={skill} className="bg-emerald-600 text-white">
-                      {skill}
-                    </Badge>
-                  ))}
-                </div>
-              </div>
-            )}
-            {skillsMatch.missing?.length > 0 && (
-              <div>
-                <p className="mb-1 text-xs text-muted-foreground">Missing</p>
-                <div className="flex flex-wrap gap-1.5">
-                  {skillsMatch.missing.map((skill: string) => (
-                    <Badge key={skill} variant="outline">
-                      {skill}
-                    </Badge>
-                  ))}
-                </div>
-              </div>
-            )}
+            <ScoreBadge score={latestScore?.totalScore} />
           </div>
-        ) : null}
+        </div>
+      )}
 
-        {insight?.oss && (
-          <div className="rounded-md border bg-muted/25 p-3">
-            <p className="mb-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">
-              OSS contributions
-            </p>
-            <div className="grid grid-cols-2 gap-2">
-              <MiniMetric label="PRs" value={insight.oss.totalPRs} />
-              <MiniMetric label="Merged" value={insight.oss.mergedPRs} />
+      {insight ? (
+        <div className="grid gap-5 xl:grid-cols-[1fr_340px]">
+          <div className="space-y-5">
+            <ContributionModelPanel insight={insight} />
+            <div className="grid gap-4 lg:grid-cols-2">
+              <ProjectHighlights projects={insight.projects} />
+              <CommitHighlights commits={insight.commits} />
             </div>
-            {insight.oss.topRepos.length > 0 && (
-              <div className="mt-3 flex flex-wrap gap-1.5">
-                {insight.oss.topRepos.map((repo) => (
-                  <Badge key={repo} variant="outline">
-                    {repo}
+          </div>
+
+          <div className="space-y-4">
+            <ScoreBreakdownPanel insight={insight} />
+            <CollaborationPanel insight={insight} />
+            <LanguageEvidencePanel insight={insight} languages={languages} />
+            {signalRows.length > 0 && <RepositorySnapshot rows={signalRows} />}
+          </div>
+        </div>
+      ) : skillsMatch ? (
+        <div className="rounded-lg border bg-background p-4">
+          <div className="mb-3 flex items-center justify-between gap-3">
+            <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+              Tech match
+            </p>
+            <Badge variant="secondary">
+              {skillsMatch.percentage}% match
+            </Badge>
+          </div>
+          {skillsMatch.matched?.length > 0 && (
+            <div className="mb-3">
+              <p className="mb-1 text-xs text-muted-foreground">Matched</p>
+              <div className="flex flex-wrap gap-1.5">
+                {skillsMatch.matched.map((skill: string) => (
+                  <Badge key={skill} className="bg-emerald-600 text-white">
+                    {skill}
                   </Badge>
                 ))}
               </div>
-            )}
-          </div>
-        )}
+            </div>
+          )}
+          {skillsMatch.missing?.length > 0 && (
+            <div>
+              <p className="mb-1 text-xs text-muted-foreground">Missing</p>
+              <div className="flex flex-wrap gap-1.5">
+                {skillsMatch.missing.map((skill: string) => (
+                  <Badge key={skill} variant="outline">
+                    {skill}
+                  </Badge>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      ) : null}
 
-        {warningMessages.length > 0 && (
-          <div className="rounded-md border border-amber-500/30 bg-amber-500/10 p-3 text-xs text-amber-700">
-            {warningMessages.join(" ")}
-          </div>
-        )}
-      </div>
+      {warningMessages.length > 0 && (
+        <div className="rounded-lg border border-amber-500/30 bg-amber-500/10 p-4 text-sm text-amber-700">
+          {warningMessages.join(" ")}
+        </div>
+      )}
 
-      <div className="space-y-5">
-        {insight && (
-          <div className="grid gap-4 lg:grid-cols-2">
-            <ProjectHighlights projects={insight.projects} />
-            <CommitHighlights commits={insight.commits} />
-          </div>
-        )}
-
-        <div className="rounded-lg border bg-background p-4">
-          <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-            Candidate responses
-          </p>
-          <div className="mt-3 grid gap-3 md:grid-cols-2">
-            {getResponseRows(application.responses, fields).map(({ key, label, value }) => (
-              <Detail
-                key={key}
-                label={label}
-                value={value}
-              />
-            ))}
-          </div>
+      <div className="rounded-lg border bg-background p-4">
+        <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+          Candidate responses
+        </p>
+        <div className="mt-3 grid gap-3 md:grid-cols-2">
+          {getResponseRows(application.responses, fields).map(({ key, label, value }) => (
+            <Detail
+              key={key}
+              label={label}
+              value={value}
+            />
+          ))}
         </div>
       </div>
     </div>
   );
 }
 
-function InsightScoreGrid({ insight }: { insight: GitHubInsightReport }) {
+function GitHubReportHero({
+  insight,
+  github,
+  totalScore,
+}: {
+  insight: GitHubInsightReport;
+  github: string | null;
+  totalScore?: number;
+}) {
+  const metrics = insight.contributionMetrics;
+
   return (
-    <div className="grid grid-cols-2 gap-2">
-      <MiniMetric label="Tech match" value={`${insight.breakdown.techMatchScore}/100`} />
-      <MiniMetric label="Activity" value={`${insight.breakdown.activityScore}/100`} />
-      <MiniMetric label="Repo quality" value={`${insight.breakdown.repoScore}/100`} />
-      <MiniMetric label="OSS" value={`${insight.breakdown.ossScore}/100`} />
+    <section className="rounded-lg border bg-background p-5">
+      <div className="grid gap-5 lg:grid-cols-[220px_1fr] lg:items-center">
+        <div className="rounded-lg border bg-secondary/35 p-4">
+          <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+            GitHub score
+          </p>
+          <div className="mt-3 flex items-end gap-2">
+            <span className="text-5xl font-semibold tracking-tight">
+              {totalScore ?? insight.totalScore}
+            </span>
+            <span className="pb-2 text-sm font-medium text-muted-foreground">/100</span>
+          </div>
+          <ProgressBar value={totalScore ?? insight.totalScore} className="mt-4" />
+          <div className="mt-3 flex flex-wrap gap-2">
+            <ConfidenceBadge confidence={insight.confidence} />
+            <StatusPill label="Activity" value={insight.activity.status} />
+          </div>
+        </div>
+
+        <div className="min-w-0">
+          <div className="flex flex-wrap items-center gap-2">
+            <Badge variant="secondary">{metrics?.category ?? "GitHub profile"}</Badge>
+            {github && (
+              <a
+                href={`https://github.com/${github}`}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center gap-1 rounded-md border px-2.5 py-1 text-sm text-primary underline-offset-4 hover:underline"
+              >
+                @{github}
+                <ExternalLink className="size-3" />
+              </a>
+            )}
+          </div>
+          <p className="mt-3 text-lg font-semibold leading-7">
+            {insight.summary}
+          </p>
+          <div className="mt-4 grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
+            <MiniMetric label="Commits" value={formatCompact(metrics?.commitsAuthored ?? 0)} />
+            <MiniMetric label="Followers" value={formatCompact(metrics?.followers ?? 0)} />
+            <MiniMetric label="Stars + forks" value={formatCompact((metrics?.stars ?? 0) + (metrics?.forks ?? 0))} />
+            <MiniMetric label="Languages" value={metrics?.languagesUsed ?? 0} />
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function ScoreBreakdownPanel({ insight }: { insight: GitHubInsightReport }) {
+  const rows = [
+    ["Repository signal", insight.breakdown.repoScore],
+    ["Languages", insight.breakdown.techMatchScore],
+    ["Recent activity", insight.breakdown.activityScore],
+    ["Collaboration", insight.breakdown.ossScore],
+  ] as const;
+
+  return (
+    <div className="rounded-lg border bg-background p-4">
+      <SectionTitle title="Score breakdown" />
+      <div className="mt-3 space-y-3">
+        {rows.map(([label, value]) => (
+          <MetricBar key={label} label={label} value={value} />
+        ))}
+      </div>
     </div>
   );
 }
 
-function TechInsight({ insight }: { insight: GitHubInsightReport }) {
+function ContributionModelPanel({ insight }: { insight: GitHubInsightReport }) {
+  const metrics = insight.contributionMetrics;
+
+  if (!metrics) return null;
+
+  return (
+    <div className="rounded-lg border bg-background p-4">
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div>
+          <SectionTitle title="Contribution model" />
+          <p className="mt-1 text-sm text-muted-foreground">
+            Public GitHub metrics normalized with the executive-summary scoring weights.
+          </p>
+        </div>
+        <Badge variant="secondary">{metrics.category}</Badge>
+      </div>
+      <div className="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+        <SignalTile label="Commits authored" value={metrics.commitsAuthored} detail="Weight 15%" />
+        <SignalTile label="PRs opened" value={metrics.pullRequestsOpened} detail="Weight 15%" />
+        <SignalTile label="PRs merged" value={metrics.pullRequestsMerged} detail="Weight 10%" />
+        <SignalTile label="Issues opened" value={metrics.issuesOpened} detail="Weight 10%" />
+        <SignalTile label="Repos contributed" value={metrics.repositoriesContributedTo} detail="Weight 10%" />
+        <SignalTile label="Followers" value={metrics.followers} detail="Weight 10%" />
+        <SignalTile label="Stars + forks" value={metrics.stars + metrics.forks} detail={`${metrics.stars} stars / ${metrics.forks} forks`} />
+        <SignalTile label="Recent activity" value={metrics.recentActivity ? "Active" : "Quiet"} detail="Last 30 days" />
+      </div>
+    </div>
+  );
+}
+
+function CollaborationPanel({ insight }: { insight: GitHubInsightReport }) {
+  const metrics = insight.contributionMetrics;
+
+  return (
+    <div className="rounded-lg border bg-background p-4">
+      <SectionTitle title="Collaboration" />
+      <div className="mt-3 grid grid-cols-2 gap-2">
+        <MiniMetric label="Visible PRs" value={insight.oss.totalPRs} />
+        <MiniMetric label="Merged PRs" value={insight.oss.mergedPRs} />
+        <MiniMetric label="Issues closed" value={metrics?.issuesClosed ?? 0} />
+        <MiniMetric label="Review comments" value={metrics?.reviewComments ?? 0} />
+      </div>
+      {insight.oss.topRepos.length > 0 && (
+        <div className="mt-3 space-y-2">
+          <p className="text-xs text-muted-foreground">Top external repositories</p>
+          <div className="flex flex-wrap gap-1.5">
+            {insight.oss.topRepos.map((repo) => (
+              <Badge key={repo} variant="outline" className="max-w-full truncate">
+                {repo}
+              </Badge>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function LanguageEvidencePanel({
+  insight,
+  languages,
+}: {
+  insight: GitHubInsightReport;
+  languages: [string, unknown][];
+}) {
   const depthEntries = Object.entries(insight.techAnalysis.depth).slice(0, 6);
 
   return (
-    <div className="rounded-md border bg-muted/25 p-3">
-      <div className="mb-2 flex items-center justify-between gap-3">
-        <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-          Tech analysis
-        </p>
-        <Badge variant="secondary">
-          {insight.breakdown.techMatchScore}/100
-        </Badge>
+    <div className="rounded-lg border bg-background p-4">
+      <div className="flex items-center justify-between gap-3">
+        <SectionTitle title="Language evidence" />
+        <Badge variant="secondary">{insight.breakdown.techMatchScore}/100</Badge>
       </div>
       {insight.techAnalysis.matched.length > 0 && (
-        <div className="mb-2">
+        <div className="mt-3">
           <p className="mb-1 text-xs text-muted-foreground">Matched</p>
           <div className="flex flex-wrap gap-1.5">
             {insight.techAnalysis.matched.map((skill) => (
@@ -531,7 +614,7 @@ function TechInsight({ insight }: { insight: GitHubInsightReport }) {
         </div>
       )}
       {insight.techAnalysis.missing.length > 0 && (
-        <div className="mb-2">
+        <div className="mt-3">
           <p className="mb-1 text-xs text-muted-foreground">Missing</p>
           <div className="flex flex-wrap gap-1.5">
             {insight.techAnalysis.missing.map((skill) => (
@@ -543,7 +626,7 @@ function TechInsight({ insight }: { insight: GitHubInsightReport }) {
         </div>
       )}
       {depthEntries.length > 0 && (
-        <div>
+        <div className="mt-3">
           <p className="mb-1 text-xs text-muted-foreground">Depth</p>
           <div className="flex flex-wrap gap-1.5">
             {depthEntries.map(([skill, depth]) => (
@@ -552,6 +635,31 @@ function TechInsight({ insight }: { insight: GitHubInsightReport }) {
           </div>
         </div>
       )}
+      {languages.length > 0 && (
+        <div className="mt-3">
+          <p className="mb-1 text-xs text-muted-foreground">Top language bytes</p>
+          <div className="flex flex-wrap gap-1.5">
+            {languages.map(([language, count]) => (
+              <Badge key={language} variant="outline">
+                {language} {formatCompact(Number(count))}
+              </Badge>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function RepositorySnapshot({ rows }: { rows: Array<[string, unknown]> }) {
+  return (
+    <div className="rounded-lg border bg-background p-4">
+      <SectionTitle title="Repository snapshot" />
+      <div className="mt-3 grid grid-cols-2 gap-2">
+        {rows.map(([label, value]) => (
+          <MiniMetric key={label} label={label} value={String(value)} />
+        ))}
+      </div>
     </div>
   );
 }
@@ -620,6 +728,63 @@ function CommitHighlights({ commits }: { commits: string[] }) {
           ))}
         </ul>
       )}
+    </div>
+  );
+}
+
+function SectionTitle({ title }: { title: string }) {
+  return (
+    <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+      {title}
+    </p>
+  );
+}
+
+function SignalTile({
+  label,
+  value,
+  detail,
+}: {
+  label: string;
+  value: string | number;
+  detail: string;
+}) {
+  return (
+    <div className="rounded-md border bg-muted/25 px-3 py-3">
+      <p className="text-xl font-semibold tracking-tight">
+        {typeof value === "number" ? formatCompact(value) : value}
+      </p>
+      <p className="mt-1 text-xs font-medium text-foreground">{label}</p>
+      <p className="mt-1 text-xs text-muted-foreground">{detail}</p>
+    </div>
+  );
+}
+
+function MetricBar({ label, value }: { label: string; value: number }) {
+  return (
+    <div>
+      <div className="mb-1 flex items-center justify-between gap-3 text-sm">
+        <span className="font-medium">{label}</span>
+        <span className="text-muted-foreground">{value}/100</span>
+      </div>
+      <ProgressBar value={value} />
+    </div>
+  );
+}
+
+function ProgressBar({
+  value,
+  className = "",
+}: {
+  value: number;
+  className?: string;
+}) {
+  return (
+    <div className={`h-2 overflow-hidden rounded-full bg-muted ${className}`}>
+      <div
+        className="h-full rounded-full bg-primary transition-all"
+        style={{ width: `${Math.max(0, Math.min(100, value))}%` }}
+      />
     </div>
   );
 }
@@ -819,6 +984,13 @@ function formatResponsePreview(value: unknown) {
   if (value === undefined || value === null || value === "") return "-";
   if (typeof value === "object") return "Submitted";
   return String(value);
+}
+
+function formatCompact(value: number) {
+  return new Intl.NumberFormat("en", {
+    notation: "compact",
+    maximumFractionDigits: 1,
+  }).format(value);
 }
 
 function formatValue(value: unknown): React.ReactNode {

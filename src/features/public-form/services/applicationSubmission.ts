@@ -4,45 +4,9 @@ import { cacheKeys } from "@/lib/cacheKeys";
 import { extractGitHubUsername, scoreGitHubProfile } from "@/lib/githubScoring";
 import { prisma } from "@/lib/prisma";
 import { cacheDel } from "@/lib/redis";
+import { FormFieldLike, SubmitApplicationInput, SubmitApplicationResult } from "../types/submission";
+import { ResumeUpload } from "../types/resume";
 
-type SubmitApplicationInput = {
-  publicFormId: string;
-  origin: string;
-  responses: Record<string, unknown>;
-};
-
-type SubmitApplicationResult =
-  | {
-      ok: true;
-      status: number;
-      body: {
-        success: true;
-        id: string;
-        trackingUrl: string;
-        scoreStatus: "pending";
-      };
-    }
-  | {
-      ok: false;
-      status: number;
-      body: {
-        error: string;
-      };
-    };
-
-type FormFieldLike = {
-  id?: string;
-  label?: string;
-  type?: string;
-  required?: boolean;
-};
-
-type ResumeUpload = {
-  url: string;
-  name: string;
-  size: number;
-  type: string;
-};
 
 const MAX_RESUME_SIZE = 5 * 1024 * 1024;
 

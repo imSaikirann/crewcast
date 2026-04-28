@@ -44,6 +44,22 @@ export function emptyGitHubInsightReport(message: string): GitHubInsightReport {
       ownedRepos: 0,
       contributedRepos: 0,
     },
+    contributionMetrics: {
+      commitsAuthored: 0,
+      pullRequestsOpened: 0,
+      pullRequestsMerged: 0,
+      issuesOpened: 0,
+      issuesClosed: 0,
+      reviewComments: 0,
+      issueComments: 0,
+      repositoriesContributedTo: 0,
+      followers: 0,
+      stars: 0,
+      forks: 0,
+      languagesUsed: 0,
+      recentActivity: 0,
+      category: "Minimal Contributor",
+    },
     warnings: [message],
   };
 }

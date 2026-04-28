@@ -18,8 +18,8 @@ export default function Home() {
       <WhyCrewcast />
       <HowItWorks />
       <Comparison />
-      <FinalCTA />
-      <Footer />
+      {/* <FinalCTA /> */}
+      <Footer  />
     </main>
   );
 }

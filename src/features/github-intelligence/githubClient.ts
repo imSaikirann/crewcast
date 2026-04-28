@@ -11,6 +11,7 @@ import type {
 
 const GITHUB_GRAPHQL_URL = "https://api.github.com/graphql";
 const RECENT_COMMIT_DAYS = 90;
+const GRAPHQL_REPOS_PER_PAGE = 20;
 
 type GraphQLResponse<T> = {
   data?: T;
@@ -47,6 +48,9 @@ type RepoNode = {
               committedDate: string;
             }>;
           };
+          recentHistory?: {
+            totalCount: number;
+          };
         }
       | Record<string, never>;
   } | null;
@@ -69,6 +73,7 @@ type PullRequestNode = {
 
 type CandidateQuery = {
   user: {
+    id: string;
     login: string;
     name: string | null;
     bio: string | null;
@@ -83,9 +88,25 @@ type CandidateQuery = {
     };
     createdAt: string;
   } | null;
-  search: {
+  pullRequestSearch: {
+    issueCount: number;
     nodes: PullRequestNode[];
   };
+  mergedPullRequestSearch: {
+    issueCount: number;
+  };
+  issueSearch: {
+    issueCount: number;
+  };
+  closedIssueSearch: {
+    issueCount: number;
+  };
+};
+
+type UserIdQuery = {
+  user: {
+    id: string;
+  } | null;
 };
 
 export async function fetchGitHubCandidateData(
@@ -108,15 +129,15 @@ export async function fetchGitHubCandidateData(
   if (!token) throw new Error("GITHUB_TOKEN is required for GitHub intelligence.");
 
   try {
-    const data = await fetchGitHubCandidateDataGraphQL(login, token);
+    const data = await fetchGitHubCandidateDataRest(login, token);
     await cacheSet(cacheKey, JSON.stringify(data), cacheTtl.githubIntel);
     return data;
   } catch (error) {
-    console.warn("GitHub GraphQL intelligence failed; falling back to REST.", {
+    console.warn("GitHub REST intelligence failed; falling back to GraphQL.", {
       username: login,
       reason: getErrorSummary(error),
     });
-    const data = await fetchGitHubCandidateDataRest(login, token);
+    const data = await fetchGitHubCandidateDataGraphQL(login, token);
     await cacheSet(cacheKey, JSON.stringify(data), cacheTtl.githubIntel);
     return data;
   }
@@ -139,6 +160,14 @@ async function fetchGitHubCandidateDataGraphQL(
   token: string
 ): Promise<GitHubCandidateData> {
   const since = new Date(Date.now() - RECENT_COMMIT_DAYS * 24 * 60 * 60 * 1000).toISOString();
+  const author = await githubGraphQL<UserIdQuery>({
+    token,
+    query: USER_ID_QUERY,
+    variables: { login },
+  });
+
+  if (!author.user) throw new Error("GitHub user was not found.");
+
   const repositories: GitHubRepositorySignal[] = [];
   let cursor: string | null = null;
   let profile: GitHubCandidateData["profile"] | null = null;
@@ -149,9 +178,14 @@ async function fetchGitHubCandidateDataGraphQL(
       query: CANDIDATE_QUERY,
       variables: {
         login,
+        authorId: author.user.id,
         repoCursor: cursor,
+        repoLimit: GRAPHQL_REPOS_PER_PAGE,
         since,
         prQuery: `author:${login} type:pr`,
+        mergedPrQuery: `author:${login} type:pr is:merged`,
+        issueQuery: `author:${login} type:issue`,
+        closedIssueQuery: `author:${login} type:issue is:closed`,
       },
     });
 
@@ -169,7 +203,13 @@ async function fetchGitHubCandidateDataGraphQL(
     repositories.push(...response.user.repositories.nodes.map(mapRepository));
 
     if (!response.user.repositories.pageInfo.hasNextPage) {
-      return buildCandidateData(login, profile, repositories, response.search.nodes);
+      return buildCandidateData(login, profile, repositories, {
+        pullRequestNodes: response.pullRequestSearch.nodes,
+        pullRequestsOpened: response.pullRequestSearch.issueCount,
+        pullRequestsMerged: response.mergedPullRequestSearch.issueCount,
+        issuesOpened: response.issueSearch.issueCount,
+        issuesClosed: response.closedIssueSearch.issueCount,
+      });
     }
 
     cursor = response.user.repositories.pageInfo.endCursor;
@@ -180,9 +220,14 @@ async function fetchGitHubCandidateDataGraphQL(
     query: CANDIDATE_QUERY,
     variables: {
       login,
+      authorId: author.user.id,
       repoCursor: cursor,
+      repoLimit: GRAPHQL_REPOS_PER_PAGE,
       since,
       prQuery: `author:${login} type:pr`,
+      mergedPrQuery: `author:${login} type:pr is:merged`,
+      issueQuery: `author:${login} type:issue`,
+      closedIssueQuery: `author:${login} type:issue is:closed`,
     },
   });
 
@@ -199,7 +244,13 @@ async function fetchGitHubCandidateDataGraphQL(
 
   if (!profile) throw new Error("GitHub user was not found.");
 
-  return buildCandidateData(login, profile, repositories, fallbackResponse.search.nodes);
+  return buildCandidateData(login, profile, repositories, {
+    pullRequestNodes: fallbackResponse.pullRequestSearch.nodes,
+    pullRequestsOpened: fallbackResponse.pullRequestSearch.issueCount,
+    pullRequestsMerged: fallbackResponse.mergedPullRequestSearch.issueCount,
+    issuesOpened: fallbackResponse.issueSearch.issueCount,
+    issuesClosed: fallbackResponse.closedIssueSearch.issueCount,
+  });
 }
 
 async function githubGraphQL<T>({
@@ -252,13 +303,27 @@ function buildCandidateData(
   username: string,
   profile: GitHubCandidateData["profile"],
   repositories: GitHubRepositorySignal[],
-  pullRequestNodes: PullRequestNode[]
+  collaboration: {
+    pullRequestNodes: PullRequestNode[];
+    pullRequestsOpened: number;
+    pullRequestsMerged: number;
+    issuesOpened: number;
+    issuesClosed: number;
+  }
 ): GitHubCandidateData {
   return {
     username,
     profile,
     repositories,
-    pullRequests: pullRequestNodes.map(mapPullRequest),
+    pullRequests: collaboration.pullRequestNodes.map(mapPullRequest),
+    collaboration: {
+      pullRequestsOpened: collaboration.pullRequestsOpened,
+      pullRequestsMerged: collaboration.pullRequestsMerged,
+      issuesOpened: collaboration.issuesOpened,
+      issuesClosed: collaboration.issuesClosed,
+      reviewComments: 0,
+      issueComments: 0,
+    },
     fetchedAt: new Date().toISOString(),
   };
 }
@@ -286,7 +351,10 @@ function mapRepository(repo: RepoNode): GitHubRepositorySignal {
     languages: Object.fromEntries(
       repo.languages.edges.map((edge) => [edge.node.name, edge.size])
     ),
-    commitsLast90Days: commitHistory?.totalCount ?? 0,
+    totalCommits: commitHistory?.totalCount ?? 0,
+    commitsLast90Days: repo.defaultBranchRef?.target && "recentHistory" in repo.defaultBranchRef.target
+      ? repo.defaultBranchRef.target.recentHistory?.totalCount ?? 0
+      : 0,
     recentCommitMessages:
       commitHistory?.nodes.map((commit) => commit.messageHeadline) ?? [],
     contributors: repo.mentionableUsers.totalCount,
@@ -333,6 +401,11 @@ type RestCommit = {
   };
 };
 
+type RestCommitSignal = {
+  totalCommits: number;
+  recentCommits: RestCommit[];
+};
+
 type RestPullRequestSearchItem = {
   title: string;
   pull_request?: {
@@ -340,6 +413,11 @@ type RestPullRequestSearchItem = {
   };
   repository_url: string;
   created_at: string;
+};
+
+type RestIssueSearchResponse = {
+  total_count: number;
+  items: RestPullRequestSearchItem[];
 };
 
 async function fetchGitHubCandidateDataRest(
@@ -350,7 +428,26 @@ async function fetchGitHubCandidateDataRest(
   const publicHeaders = buildRestHeaders();
   const requestHeaders = await selectWorkingRestHeaders(login, headers, publicHeaders);
   const since = new Date(Date.now() - RECENT_COMMIT_DAYS * 24 * 60 * 60 * 1000).toISOString();
-  const [userResponse, repoResponse, prResponse] = await Promise.all([
+  const search = (q: string, perPage = 1) =>
+    axios
+      .get<RestIssueSearchResponse>("https://api.github.com/search/issues", {
+        headers: requestHeaders,
+        timeout: 12_000,
+        params: {
+          q,
+          per_page: perPage,
+        },
+      })
+      .catch(() => ({ data: { total_count: 0, items: [] } }));
+
+  const [
+    userResponse,
+    repoResponse,
+    prResponse,
+    mergedPrResponse,
+    issueResponse,
+    closedIssueResponse,
+  ] = await Promise.all([
     axios.get<RestUser>(`https://api.github.com/users/${login}`, {
       headers: requestHeaders,
       timeout: 12_000,
@@ -364,16 +461,10 @@ async function fetchGitHubCandidateDataRest(
         direction: "desc",
       },
     }),
-    axios
-      .get<{ items: RestPullRequestSearchItem[] }>("https://api.github.com/search/issues", {
-        headers: requestHeaders,
-        timeout: 12_000,
-        params: {
-          q: `author:${login} type:pr`,
-          per_page: 50,
-        },
-      })
-      .catch(() => ({ data: { items: [] } })),
+    search(`author:${login} type:pr`, 50),
+    search(`author:${login} type:pr is:merged`),
+    search(`author:${login} type:issue`),
+    search(`author:${login} type:issue is:closed`),
   ]);
 
   const enrichedRepos = await Promise.all(
@@ -386,17 +477,7 @@ async function fetchGitHubCandidateDataRest(
           })
           .then((response) => response.data)
           .catch(() => ({})),
-        axios
-          .get<RestCommit[]>(`https://api.github.com/repos/${repo.full_name}/commits`, {
-            headers: requestHeaders,
-            timeout: 12_000,
-            params: {
-              since,
-              per_page: 20,
-            },
-          })
-          .then((response) => response.data)
-          .catch(() => []),
+        fetchRestCommitSignal(repo.full_name, login, since, requestHeaders),
       ]);
 
       return mapRestRepository(repo, languages, commits);
@@ -415,8 +496,59 @@ async function fetchGitHubCandidateDataRest(
     },
     repositories: enrichedRepos,
     pullRequests: prResponse.data.items.map((item) => mapRestPullRequest(item)),
+    collaboration: {
+      pullRequestsOpened: prResponse.data.total_count,
+      pullRequestsMerged: mergedPrResponse.data.total_count,
+      issuesOpened: issueResponse.data.total_count,
+      issuesClosed: closedIssueResponse.data.total_count,
+      reviewComments: 0,
+      issueComments: 0,
+    },
     fetchedAt: new Date().toISOString(),
   };
+}
+
+async function fetchRestCommitSignal(
+  repoFullName: string,
+  login: string,
+  since: string,
+  headers: ReturnType<typeof buildRestHeaders>
+): Promise<RestCommitSignal> {
+  const [totalResponse, recentResponse] = await Promise.all([
+    axios
+      .get<RestCommit[]>(`https://api.github.com/repos/${repoFullName}/commits`, {
+        headers,
+        timeout: 12_000,
+        params: {
+          author: login,
+          per_page: 1,
+        },
+      })
+      .catch(() => null),
+    axios
+      .get<RestCommit[]>(`https://api.github.com/repos/${repoFullName}/commits`, {
+        headers,
+        timeout: 12_000,
+        params: {
+          author: login,
+          since,
+          per_page: 20,
+        },
+      })
+      .catch(() => null),
+  ]);
+
+  return {
+    totalCommits: totalResponse ? getRestTotalCount(totalResponse) : 0,
+    recentCommits: recentResponse?.data ?? [],
+  };
+}
+
+function getRestTotalCount(response: { data: unknown[]; headers: Record<string, unknown> }) {
+  const link = String(response.headers.link ?? "");
+  const lastPage = link.match(/[?&]page=(\d+)>;\s*rel="last"/)?.[1];
+  if (lastPage) return Number(lastPage);
+  return response.data.length;
 }
 
 function buildRestHeaders(token?: string) {
@@ -454,7 +586,7 @@ async function selectWorkingRestHeaders(
 function mapRestRepository(
   repo: RestRepo,
   languages: Record<string, number>,
-  commits: RestCommit[]
+  commits: RestCommitSignal
 ): GitHubRepositorySignal {
   return {
     name: repo.name,
@@ -471,8 +603,9 @@ function mapRestRepository(
     forkCount: repo.forks_count,
     diskUsage: repo.size,
     languages,
-    commitsLast90Days: commits.length,
-    recentCommitMessages: commits.map((commit) => commit.commit.message.split("\n")[0]),
+    totalCommits: commits.totalCommits,
+    commitsLast90Days: commits.recentCommits.length,
+    recentCommitMessages: commits.recentCommits.map((commit) => commit.commit.message.split("\n")[0]),
     contributors: 1,
   };
 }
@@ -500,11 +633,17 @@ function normalizeUsername(username: string) {
 const CANDIDATE_QUERY = `
   query CandidateGitHubIntel(
     $login: String!
+    $authorId: ID!
     $repoCursor: String
+    $repoLimit: Int!
     $since: GitTimestamp!
     $prQuery: String!
+    $mergedPrQuery: String!
+    $issueQuery: String!
+    $closedIssueQuery: String!
   ) {
     user(login: $login) {
+      id
       login
       name
       bio
@@ -512,7 +651,7 @@ const CANDIDATE_QUERY = `
         totalCount
       }
       repositories(
-        first: 50
+        first: $repoLimit
         after: $repoCursor
         orderBy: { field: UPDATED_AT, direction: DESC }
         privacy: PUBLIC
@@ -549,12 +688,15 @@ const CANDIDATE_QUERY = `
           defaultBranchRef {
             target {
               ... on Commit {
-                history(first: 20, since: $since) {
+                history(first: 20, author: { id: $authorId }) {
                   totalCount
                   nodes {
                     messageHeadline
                     committedDate
                   }
+                }
+                recentHistory: history(first: 1, since: $since, author: { id: $authorId }) {
+                  totalCount
                 }
               }
             }
@@ -566,7 +708,8 @@ const CANDIDATE_QUERY = `
       }
       createdAt
     }
-    search(query: $prQuery, type: ISSUE, first: 50) {
+    pullRequestSearch: search(query: $prQuery, type: ISSUE, first: 50) {
+      issueCount
       nodes {
         ... on PullRequest {
           title
@@ -580,6 +723,23 @@ const CANDIDATE_QUERY = `
           }
         }
       }
+    }
+    mergedPullRequestSearch: search(query: $mergedPrQuery, type: ISSUE, first: 1) {
+      issueCount
+    }
+    issueSearch: search(query: $issueQuery, type: ISSUE, first: 1) {
+      issueCount
+    }
+    closedIssueSearch: search(query: $closedIssueQuery, type: ISSUE, first: 1) {
+      issueCount
+    }
+  }
+`;
+
+const USER_ID_QUERY = `
+  query GitHubUserId($login: String!) {
+    user(login: $login) {
+      id
     }
   }
 `;

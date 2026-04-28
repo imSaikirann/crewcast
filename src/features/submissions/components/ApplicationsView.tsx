@@ -56,6 +56,22 @@ export type GitHubInsightReport = {
     ownedRepos: number;
     contributedRepos: number;
   };
+  contributionMetrics?: {
+    commitsAuthored: number;
+    pullRequestsOpened: number;
+    pullRequestsMerged: number;
+    issuesOpened: number;
+    issuesClosed: number;
+    reviewComments: number;
+    issueComments: number;
+    repositoriesContributedTo: number;
+    followers: number;
+    stars: number;
+    forks: number;
+    languagesUsed: number;
+    recentActivity: number;
+    category: string;
+  };
   warnings: string[];
 };
 
@@ -259,7 +275,7 @@ function CompareCard({
       </div>
       <div className="mt-4 grid grid-cols-2 gap-2">
         <CompareMetric
-          label="Tech match"
+          label="Languages"
           value={
             insight
               ? `${insight.breakdown.techMatchScore}/100`

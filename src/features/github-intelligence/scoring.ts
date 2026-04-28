@@ -8,10 +8,28 @@ import type {
 } from "./types";
 
 const WEIGHTS = {
-  techMatchScore: 0.35,
-  activityScore: 0.25,
-  repoScore: 0.25,
-  ossScore: 0.15,
+  commits: 0.15,
+  pullRequestsOpened: 0.15,
+  pullRequestsMerged: 0.1,
+  issuesOpened: 0.1,
+  reviewComments: 0.1,
+  repositoriesContributedTo: 0.1,
+  followers: 0.1,
+  starsForks: 0.1,
+  languageDiversity: 0.05,
+  recentActivity: 0.05,
+};
+
+const NORMALIZATION = {
+  commits: 500,
+  pullRequestsOpened: 100,
+  pullRequestsMerged: 100,
+  issuesOpened: 100,
+  reviewComments: 100,
+  repositoriesContributedTo: 100,
+  followers: 100,
+  starsForks: 500,
+  languages: 10,
 };
 
 const LOW_QUALITY_COMMIT_MESSAGES = new Set([
@@ -36,15 +54,33 @@ export function buildGitHubInsightReport(
   const recentRepos = ownedRepos.filter((repo) => isRecent(repo.pushedAt ?? repo.updatedAt, 90));
   const languageDepth = calculateLanguageDepth(repos);
   const techAnalysis = analyzeTechStack(languageDepth, options.requiredTechStack ?? []);
-  const repoScore = scoreRepositories(ownedRepos, recentRepos);
-  const activityScore = scoreActivity(recentRepos, ownedRepos);
   const oss = analyzeOss(data);
-  const ossScore = scoreOss(oss.totalPRs, oss.mergedPRs, oss.topRepos.length);
+  const contributionMetrics = buildContributionMetrics(data, ownedRepos, oss.topRepos.length);
+  const metricScores = scoreContributionMetrics(contributionMetrics);
+  const repoScore = scoreMetricGroup([
+    metricScores.commits,
+    metricScores.repositoriesContributedTo,
+    metricScores.starsForks,
+  ]);
+  const activityScore = metricScores.recentActivity;
+  const ossScore = scoreMetricGroup([
+    metricScores.pullRequestsOpened,
+    metricScores.pullRequestsMerged,
+    metricScores.issuesOpened,
+    metricScores.reviewComments,
+  ]);
+  const languageDiversityScore = metricScores.languageDiversity;
   const totalScore = clampScore(
-    repoScore * WEIGHTS.repoScore +
-      techAnalysis.matchScore * WEIGHTS.techMatchScore +
-      activityScore * WEIGHTS.activityScore +
-      ossScore * WEIGHTS.ossScore
+    metricScores.commits * WEIGHTS.commits +
+      metricScores.pullRequestsOpened * WEIGHTS.pullRequestsOpened +
+      metricScores.pullRequestsMerged * WEIGHTS.pullRequestsMerged +
+      metricScores.issuesOpened * WEIGHTS.issuesOpened +
+      metricScores.reviewComments * WEIGHTS.reviewComments +
+      metricScores.repositoriesContributedTo * WEIGHTS.repositoriesContributedTo +
+      metricScores.followers * WEIGHTS.followers +
+      metricScores.starsForks * WEIGHTS.starsForks +
+      metricScores.languageDiversity * WEIGHTS.languageDiversity +
+      metricScores.recentActivity * WEIGHTS.recentActivity
   );
   const projects = selectProjectHighlights(ownedRepos, techAnalysis.matched);
   const commits = selectMeaningfulCommits(ownedRepos);
@@ -71,10 +107,11 @@ export function buildGitHubInsightReport(
       missingTech: techAnalysis.missing,
       activityStatus,
       ossRepos: oss.topRepos.length,
+      category: contributionMetrics.category,
     }),
     breakdown: {
       repoScore,
-      techMatchScore: techAnalysis.matchScore,
+      techMatchScore: languageDiversityScore,
       activityScore,
       ossScore,
     },
@@ -94,8 +131,122 @@ export function buildGitHubInsightReport(
       ownedRepos: ownedRepos.length,
       contributedRepos: contributedRepos.size,
     },
+    contributionMetrics,
     warnings,
   };
+}
+
+function buildContributionMetrics(
+  data: GitHubCandidateData,
+  ownedRepos: GitHubRepositorySignal[],
+  externalContributionRepos: number
+): GitHubInsightReport["contributionMetrics"] {
+  const stars = ownedRepos.reduce((sum, repo) => sum + repo.stargazerCount, 0);
+  const forks = ownedRepos.reduce((sum, repo) => sum + repo.forkCount, 0);
+  const languagesUsed = new Set(
+    ownedRepos.flatMap((repo) => Object.keys(repo.languages).filter(Boolean))
+  ).size;
+  const recentActivity = isRecent(findLastActive(ownedRepos), 30) ? 1 : 0;
+  const commitsAuthored = ownedRepos.reduce((sum, repo) => sum + repo.totalCommits, 0);
+  const pullRequestsOpened =
+    data.collaboration?.pullRequestsOpened ?? data.pullRequests.length;
+  const pullRequestsMerged =
+    data.collaboration?.pullRequestsMerged ??
+    data.pullRequests.filter((pr) => pr.merged).length;
+  const issuesOpened = data.collaboration?.issuesOpened ?? 0;
+  const issuesClosed = data.collaboration?.issuesClosed ?? 0;
+  const reviewComments = data.collaboration?.reviewComments ?? 0;
+  const issueComments = data.collaboration?.issueComments ?? 0;
+  const repositoriesContributedTo = ownedRepos.length + externalContributionRepos;
+
+  return {
+    commitsAuthored,
+    pullRequestsOpened,
+    pullRequestsMerged,
+    issuesOpened,
+    issuesClosed,
+    reviewComments,
+    issueComments,
+    repositoriesContributedTo,
+    followers: data.profile.followers,
+    stars,
+    forks,
+    languagesUsed,
+    recentActivity,
+    category: categoryFromScore(
+      calculateContributionScore({
+        commitsAuthored,
+        pullRequestsOpened,
+        pullRequestsMerged,
+        issuesOpened,
+        reviewComments,
+        repositoriesContributedTo,
+        followers: data.profile.followers,
+        stars,
+        forks,
+        languagesUsed,
+        recentActivity,
+      })
+    ),
+  };
+}
+
+function scoreContributionMetrics(metrics: GitHubInsightReport["contributionMetrics"]) {
+  return {
+    commits: normalizeMetric(metrics.commitsAuthored, NORMALIZATION.commits),
+    pullRequestsOpened: normalizeMetric(
+      metrics.pullRequestsOpened,
+      NORMALIZATION.pullRequestsOpened
+    ),
+    pullRequestsMerged: normalizeMetric(
+      metrics.pullRequestsMerged,
+      NORMALIZATION.pullRequestsMerged
+    ),
+    issuesOpened: normalizeMetric(metrics.issuesOpened, NORMALIZATION.issuesOpened),
+    reviewComments: normalizeMetric(metrics.reviewComments, NORMALIZATION.reviewComments),
+    repositoriesContributedTo: normalizeMetric(
+      metrics.repositoriesContributedTo,
+      NORMALIZATION.repositoriesContributedTo
+    ),
+    followers: normalizeMetric(metrics.followers, NORMALIZATION.followers),
+    starsForks: normalizeMetric(metrics.stars + metrics.forks, NORMALIZATION.starsForks),
+    languageDiversity: normalizeMetric(metrics.languagesUsed, NORMALIZATION.languages),
+    recentActivity: metrics.recentActivity * 100,
+  };
+}
+
+function calculateContributionScore(metrics: {
+  commitsAuthored: number;
+  pullRequestsOpened: number;
+  pullRequestsMerged: number;
+  issuesOpened: number;
+  reviewComments: number;
+  repositoriesContributedTo: number;
+  followers: number;
+  stars: number;
+  forks: number;
+  languagesUsed: number;
+  recentActivity: number;
+}) {
+  const scores = scoreContributionMetrics({
+    ...metrics,
+    issuesClosed: 0,
+    issueComments: 0,
+    category: "",
+  });
+
+  return (
+    scores.commits * WEIGHTS.commits +
+    scores.pullRequestsOpened * WEIGHTS.pullRequestsOpened +
+    scores.pullRequestsMerged * WEIGHTS.pullRequestsMerged +
+    scores.issuesOpened * WEIGHTS.issuesOpened +
+    scores.reviewComments * WEIGHTS.reviewComments +
+    scores.repositoriesContributedTo * WEIGHTS.repositoriesContributedTo +
+    scores.followers * WEIGHTS.followers +
+    scores.starsForks * WEIGHTS.starsForks +
+    scores.languageDiversity * WEIGHTS.languageDiversity +
+    scores.recentActivity * WEIGHTS.recentActivity
+  );
 }
 
 function calculateLanguageDepth(repos: GitHubRepositorySignal[]) {
@@ -147,33 +298,6 @@ function analyzeTechStack(languageDepth: Record<string, number>, requiredTech: s
   };
 }
 
-function scoreRepositories(ownedRepos: GitHubRepositorySignal[], recentRepos: GitHubRepositorySignal[]) {
-  if (!ownedRepos.length) return 0;
-
-  const nonEmptyRepos = ownedRepos.filter((repo) => !repo.isEmpty && repo.diskUsage > 0);
-  const repoVolume = Math.min(nonEmptyRepos.length * 8, 35);
-  const recency = Math.min(recentRepos.length * 12, 30);
-  const stars = Math.min(
-    ownedRepos.reduce((sum, repo) => sum + repo.stargazerCount, 0) * 2,
-    15
-  );
-  const commitVolume = Math.min(
-    ownedRepos.reduce((sum, repo) => sum + repo.commitsLast90Days, 0) * 0.5,
-    20
-  );
-
-  return clampScore(repoVolume + recency + stars + commitVolume);
-}
-
-function scoreActivity(recentRepos: GitHubRepositorySignal[], ownedRepos: GitHubRepositorySignal[]) {
-  const commitsLast90 = ownedRepos.reduce((sum, repo) => sum + repo.commitsLast90Days, 0);
-  const activeRepoScore = Math.min(recentRepos.length * 18, 45);
-  const commitScore = Math.min(commitsLast90 * 0.8, 45);
-  const consistencyScore = recentRepos.length >= 3 && commitsLast90 >= 12 ? 10 : 0;
-
-  return clampScore(activeRepoScore + commitScore + consistencyScore);
-}
-
 function analyzeOss(data: GitHubCandidateData) {
   const externalPRs = data.pullRequests.filter(
     (pr) => pr.owner.toLowerCase() !== data.username.toLowerCase()
@@ -193,14 +317,6 @@ function analyzeOss(data: GitHubCandidateData) {
       .slice(0, 3)
       .map(([repo]) => repo),
   };
-}
-
-function scoreOss(totalPRs: number, mergedPRs: number, contributedRepos: number) {
-  return clampScore(
-    Math.min(totalPRs * 8, 40) +
-      Math.min(mergedPRs * 12, 45) +
-      Math.min(contributedRepos * 5, 15)
-  );
 }
 
 function selectProjectHighlights(
@@ -298,15 +414,16 @@ function buildSummary({
   missingTech,
   activityStatus,
   ossRepos,
+  category,
 }: {
   totalScore: number;
   matchedTech: string[];
   missingTech: string[];
   activityStatus: SignalStatus;
   ossRepos: number;
+  category: string;
 }) {
-  const strength =
-    totalScore >= 80 ? "Strong" : totalScore >= 60 ? "Promising" : "Limited";
+  const strength = category;
   const focus = matchedTech.length
     ? `${matchedTech.slice(0, 3).join(", ")}-focused developer`
     : "developer with limited role-specific public language evidence";
@@ -322,6 +439,24 @@ function buildSummary({
     : "";
 
   return `${strength} ${focus} with ${activity}${oss}${gap}.`;
+}
+
+function normalizeMetric(value: number, fullScoreAt: number) {
+  if (fullScoreAt <= 0) return 0;
+  return Math.min(value / fullScoreAt, 1) * 100;
+}
+
+function scoreMetricGroup(scores: number[]) {
+  if (!scores.length) return 0;
+  return clampScore(scores.reduce((sum, score) => sum + score, 0) / scores.length);
+}
+
+function categoryFromScore(score: number) {
+  if (score >= 80) return "Exceptional Contributor";
+  if (score >= 60) return "Strong Contributor";
+  if (score >= 40) return "Moderate Contributor";
+  if (score >= 20) return "Developing Contributor";
+  return "Minimal Contributor";
 }
 
 function toDepthLabels(languageDepth: Record<string, number>) {

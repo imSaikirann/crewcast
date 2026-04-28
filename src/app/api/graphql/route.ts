@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { getToken } from "next-auth/jwt";
 
 import { getClientFingerprint, rateLimit, rateLimitResponse } from "@/lib/rateLimit";
 import { scoreGitHubProfile } from "@/services/githubScore";
@@ -24,6 +25,9 @@ const schemaDescription = {
 };
 
 export async function GET(request: NextRequest) {
+  const authError = await requireGraphQLAuth(request);
+  if (authError) return authError;
+
   const fingerprint = getClientFingerprint(request);
   const limit = await rateLimit({
     key: `crewcast:rl:graphql:get:${fingerprint.hash}`,
@@ -56,6 +60,9 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
+  const authError = await requireGraphQLAuth(request);
+  if (authError) return authError;
+
   const fingerprint = getClientFingerprint(request);
   const limit = await rateLimit({
     key: `crewcast:rl:graphql:post:${fingerprint.hash}`,
@@ -71,6 +78,23 @@ export async function POST(request: NextRequest) {
   }
 
   return executeGraphQLRequest(body);
+}
+
+async function requireGraphQLAuth(request: NextRequest) {
+  const token = await getToken({
+    req: request,
+    secret: process.env.NEXTAUTH_SECRET,
+    cookieName:
+      process.env.NODE_ENV === "production"
+        ? "__Secure-next-auth.session-token"
+        : "next-auth.session-token",
+  });
+
+  if (!token) {
+    return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+  }
+
+  return null;
 }
 
 async function executeGraphQLRequest(body: GraphQLRequestBody) {
