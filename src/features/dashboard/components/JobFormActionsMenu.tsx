@@ -1,5 +1,10 @@
 "use client";
 
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { MoreHorizontal } from "lucide-react";
+
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -10,9 +15,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { api } from "@/lib/api";
 import { toast } from "@/lib/toast";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
 
 type Props = {
   publicId: string;
@@ -27,24 +29,22 @@ export function JobFormActionsMenu({ publicId, status, expired }: Props) {
   const isPublished = status === "PUBLISHED";
 
   const copyLink = async () => {
-    const url = `${window.location.origin}/form/${publicId}`;
-    await navigator.clipboard.writeText(url);
-    toast.success("Form link copied");
+    await navigator.clipboard.writeText(`${window.location.origin}/form/${publicId}`);
+    toast.success("Link copied");
   };
 
   const deleteForm = async () => {
-    const confirmed = window.confirm(
-      "Delete this form and all of its applications, scores, views, and reports? This cannot be undone."
-    );
-
-    if (!confirmed) return;
+    if (
+      !window.confirm(
+        "Delete this form and all of its applications, scores, views, and reports? This cannot be undone."
+      )
+    )
+      return;
 
     setIsDeleting(true);
     try {
       await api.delete(`/api/recruiters/forms/${publicId}`);
-      toast.success("Form deleted", {
-        description: "The form and its submissions were removed.",
-      });
+      toast.success("Form deleted");
       router.refresh();
     } catch (error: any) {
       toast.error("Could not delete form", {
@@ -58,23 +58,16 @@ export function JobFormActionsMenu({ publicId, status, expired }: Props) {
   const toggleStatus = async () => {
     const nextStatus = isPublished ? "ARCHIVED" : "PUBLISHED";
 
-    if (nextStatus === "ARCHIVED") {
-      const confirmed = window.confirm(
-        "Archive this form? Candidates will no longer be able to apply from the public link."
-      );
-
-      if (!confirmed) return;
-    }
+    if (
+      nextStatus === "ARCHIVED" &&
+      !window.confirm("Archive this form? Candidates will no longer be able to apply.")
+    )
+      return;
 
     setIsUpdatingStatus(true);
     try {
       await api.patch(`/api/recruiters/forms/${publicId}`, { status: nextStatus });
-      toast.success(nextStatus === "PUBLISHED" ? "Form published" : "Form archived", {
-        description:
-          nextStatus === "PUBLISHED"
-            ? "The public application link is live again."
-            : "The public application link is now closed.",
-      });
+      toast.success(nextStatus === "PUBLISHED" ? "Form published" : "Form archived");
       router.refresh();
     } catch (error: any) {
       toast.error("Could not update form", {
@@ -88,46 +81,42 @@ export function JobFormActionsMenu({ publicId, status, expired }: Props) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon">
-          <span className="text-lg leading-none">...</span>
+        <Button
+          variant="ghost"
+          size="icon-sm"
+          className="size-8 text-muted-foreground"
+          aria-label="Form actions"
+        >
+          <MoreHorizontal className="size-4" />
         </Button>
       </DropdownMenuTrigger>
 
-      <DropdownMenuContent align="end">
+      <DropdownMenuContent align="end" className="w-44">
         <DropdownMenuItem onClick={copyLink}>Copy link</DropdownMenuItem>
-        <DropdownMenuItem
-          disabled={isUpdatingStatus || expired}
-          onSelect={(event) => {
-            event.preventDefault();
-            void toggleStatus();
-          }}
-        >
-          {isUpdatingStatus
-            ? "Updating..."
-            : isPublished
-              ? "Archive form"
-              : "Publish form"}
-        </DropdownMenuItem>
-
-        <DropdownMenuItem asChild>
-          <Link href={`/dashboard/submissions/${publicId}`}>Submissions</Link>
-        </DropdownMenuItem>
-
-        <DropdownMenuItem asChild>
-          <Link href={`/dashboard/submissions/${publicId}/analytics`}>Analytics</Link>
-        </DropdownMenuItem>
-
         <DropdownMenuItem asChild>
           <Link href={`/form/${publicId}`}>View public form</Link>
         </DropdownMenuItem>
-
+        <DropdownMenuItem asChild>
+          <Link href={`/dashboard/submissions/${publicId}`}>Submissions</Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem asChild>
+          <Link href={`/dashboard/submissions/${publicId}/analytics`}>Analytics</Link>
+        </DropdownMenuItem>
         <DropdownMenuSeparator />
-
+        <DropdownMenuItem
+          disabled={isUpdatingStatus || expired}
+          onSelect={(e) => {
+            e.preventDefault();
+            void toggleStatus();
+          }}
+        >
+          {isUpdatingStatus ? "Updating..." : isPublished ? "Archive form" : "Publish form"}
+        </DropdownMenuItem>
         <DropdownMenuItem
           variant="destructive"
           disabled={isDeleting}
-          onSelect={(event) => {
-            event.preventDefault();
+          onSelect={(e) => {
+            e.preventDefault();
             void deleteForm();
           }}
         >

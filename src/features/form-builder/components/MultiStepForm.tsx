@@ -1,73 +1,89 @@
-"use client"
+"use client";
 
-import { useState } from "react"
+import { useState } from "react";
+import { ArrowLeft, ArrowRight, RotateCcw, Check, Loader2 } from "lucide-react";
 
-import { Button } from "@/components/ui/button"
-import { HugeIcon } from "@/utils/hugeicons"
-import { FieldType, FormField, JobFormDetails } from "../types/types"
-import { FormBuilderStep } from "./FormBuilderStep"
-import { FormDetailsStep } from "./FormDetailsStep"
+import { Button } from "@/components/ui/button";
+import { FieldType, FormField, JobFormDetails } from "../types/types";
+import { FormBuilderStep } from "./FormBuilderStep";
+import { FormDetailsStep } from "./FormDetailsStep";
 
-export function MultiStepForm(props: {
-  details: JobFormDetails
-  updateDetails: (k: keyof JobFormDetails, v: any) => void
-  fields: FormField[]
-  selectedFieldType: FieldType
-  setSelectedFieldType: (t: FieldType) => void
-  addField: (index?: number, typeOverride?: FieldType) => void
-  updateField: (id: string, u: Partial<FormField>) => void
-  removeField: (id: string) => void
-  reorderField: (fromId: string, toId: string) => void
-  addOption: (id: string, v: string) => void
-  removeOption: (id: string, i: number) => void
-  onSave: () => Promise<void>
-  isSaving: boolean
-  hasLocalDraft: boolean
-  resetDraft: () => void
-}) {
-  const [step, setStep] = useState<1 | 2>(1)
+type Props = {
+  details: JobFormDetails;
+  updateDetails: (k: keyof JobFormDetails, v: any) => void;
+  fields: FormField[];
+  selectedFieldType: FieldType;
+  setSelectedFieldType: (t: FieldType) => void;
+  addField: (index?: number, typeOverride?: FieldType) => void;
+  updateField: (id: string, u: Partial<FormField>) => void;
+  removeField: (id: string) => void;
+  reorderField: (fromId: string, toId: string) => void;
+  addOption: (id: string, v: string) => void;
+  removeOption: (id: string, i: number) => void;
+  onSave: () => Promise<void>;
+  isSaving: boolean;
+  hasLocalDraft: boolean;
+  resetDraft: () => void;
+};
+
+const STEPS = [
+  { id: 1, label: "Job details", hint: "Role, location, comp" },
+  { id: 2, label: "Application", hint: "Candidate fields" },
+] as const;
+
+export function MultiStepForm(props: Props) {
+  const [step, setStep] = useState<1 | 2>(1);
 
   return (
-    <div className="space-y-6">
-      <header className="flex flex-col gap-4 border-b pb-5 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-          <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
+    <div className="mx-auto w-full max-w-[920px] space-y-10 pb-28">
+      {/* Header */}
+      <header className="flex flex-col gap-4 border-b border-border pb-6 sm:flex-row sm:items-end sm:justify-between">
+        <div className="space-y-2">
+          <p className="text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground">
             Form builder
           </p>
-          <h1 className="mt-2 font-display text-2xl font-semibold tracking-tight">
+          <h1 className="font-display text-3xl font-semibold tracking-tight">
             Create job form
           </h1>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Drafts save automatically in this browser while you build.
+          <p className="text-sm text-muted-foreground">
+            Drafts auto-save in this browser while you build.
           </p>
         </div>
+
         {props.hasLocalDraft && (
-          <Button type="button" variant="outline" onClick={props.resetDraft} disabled={props.isSaving}>
-            Clear saved draft
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            onClick={props.resetDraft}
+            disabled={props.isSaving}
+            className="h-9 gap-1.5 text-xs text-muted-foreground hover:text-foreground"
+            data-testid="clear-draft-btn"
+          >
+            <RotateCcw className="size-3.5" />
+            Clear draft
           </Button>
         )}
       </header>
 
-      <div className="mx-auto flex max-w-[760px] items-end gap-3">
-        <StepButton active={step === 1} onClick={() => setStep(1)}>
-          1 / Job details
-        </StepButton>
-        <div className="mb-2 h-px flex-1 bg-border" />
-        <StepButton active={step === 2} onClick={() => setStep(2)}>
-          2 / Candidate fields
-        </StepButton>
-      </div>
+      {/* Stepper */}
+      <Stepper current={step} onSelect={(s) => setStep(s)} />
 
-      <div className={step === 1 ? "mx-auto max-w-[760px]" : ""}>
+      {/* Step content */}
+      <div>
         {step === 1 && (
           <FormDetailsStep
             values={props.details}
             onChange={(data) => {
-              Object.entries(data).forEach(([k, v]) => props.updateDetails(k as any, v))
+              Object.entries(data).forEach(([k, v]) =>
+                props.updateDetails(k as any, v)
+              );
             }}
             onNext={(data) => {
-              Object.entries(data).forEach(([k, v]) => props.updateDetails(k as any, v))
-              setStep(2)
+              Object.entries(data).forEach(([k, v]) =>
+                props.updateDetails(k as any, v)
+              );
+              setStep(2);
             }}
           />
         )}
@@ -88,46 +104,115 @@ export function MultiStepForm(props: {
         )}
       </div>
 
-      <div className="sticky bottom-0 -mx-4 flex items-center justify-between gap-3 border-t bg-background/95 px-4 py-3 backdrop-blur md:static md:mx-0 md:bg-transparent md:px-0">
-        <Button variant="ghost" onClick={() => step === 1 ? history.back() : setStep(1)} disabled={props.isSaving}>
-          <HugeIcon name="arrow-right" className="size-4 rotate-180" />
-          Back
-        </Button>
+      {/* Sticky footer */}
+      <div className="fixed inset-x-0 bottom-0 z-30 border-t border-border bg-background/85 backdrop-blur">
+        <div className="mx-auto flex max-w-[920px] items-center justify-between gap-3 px-5 py-3 sm:px-6">
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            onClick={() => (step === 1 ? history.back() : setStep(1))}
+            disabled={props.isSaving}
+            className="h-10 gap-1.5"
+            data-testid="builder-back-btn"
+          >
+            <ArrowLeft className="size-4" />
+            Back
+          </Button>
 
-        {step === 1 ? (
-          <Button className="bg-primary text-primary-foreground hover:bg-primary/90" type="submit" form="step1-form">
-            Next: Candidate fields
-            <HugeIcon name="arrow-right" className="size-4" />
-          </Button>
-        ) : (
-          <Button className="bg-primary text-primary-foreground hover:bg-primary/90" onClick={props.onSave} disabled={props.isSaving}>
-   
-            Publish form
-          </Button>
-        )}
+          <p className="hidden text-xs text-muted-foreground sm:block">
+            Step {step} of {STEPS.length}
+          </p>
+
+          {step === 1 ? (
+            <Button
+              type="submit"
+              form="step1-form"
+              size="sm"
+              className="h-10 gap-1.5 px-5 text-sm font-semibold"
+              data-testid="next-step-btn"
+            >
+              Next
+              <ArrowRight className="size-4" />
+            </Button>
+          ) : (
+            <Button
+              size="sm"
+              onClick={props.onSave}
+              disabled={props.isSaving}
+              className="h-10 gap-1.5 px-5 text-sm font-semibold"
+              data-testid="publish-form-btn"
+            >
+              {props.isSaving ? (
+                <>
+                  <Loader2 className="size-4 animate-spin" />
+                  Publishing
+                </>
+              ) : (
+                <>
+                  <Check className="size-4" />
+                  Publish form
+                </>
+              )}
+            </Button>
+          )}
+        </div>
       </div>
     </div>
-  )
+  );
 }
 
-function StepButton({
-  active,
-  onClick,
-  children,
+function Stepper({
+  current,
+  onSelect,
 }: {
-  active: boolean
-  onClick: () => void
-  children: React.ReactNode
+  current: 1 | 2;
+  onSelect: (s: 1 | 2) => void;
 }) {
   return (
-    <button
-      type="button"
-      onClick={onClick}
-      className={`border-b-2 pb-2 text-sm font-medium transition ${
-        active ? "border-primary text-primary" : "border-muted text-muted-foreground"
-      }`}
-    >
-      {children}
-    </button>
-  )
+    <ol className="flex items-center gap-3">
+      {STEPS.map((s, i) => {
+        const active = current === s.id;
+        const done = current > s.id;
+
+        return (
+          <li key={s.id} className="flex flex-1 items-center gap-3">
+            <button
+              type="button"
+              onClick={() => onSelect(s.id as 1 | 2)}
+              className="group flex flex-1 items-center gap-3 text-left"
+              data-testid={`step-${s.id}-btn`}
+            >
+              <span
+                className={`grid size-7 shrink-0 place-items-center rounded-full border text-[11px] font-semibold transition ${
+                  active
+                    ? "border-foreground bg-foreground text-background"
+                    : done
+                    ? "border-foreground/40 bg-foreground/5 text-foreground"
+                    : "border-border bg-background text-muted-foreground"
+                }`}
+              >
+                {done ? <Check className="size-3.5" strokeWidth={2.5} /> : s.id}
+              </span>
+              <span className="min-w-0 flex-1">
+                <span
+                  className={`block truncate text-sm font-medium ${
+                    active ? "text-foreground" : "text-muted-foreground"
+                  }`}
+                >
+                  {s.label}
+                </span>
+                <span className="block truncate text-xs text-muted-foreground">
+                  {s.hint}
+                </span>
+              </span>
+            </button>
+            {i < STEPS.length - 1 && (
+              <span className="hidden h-px flex-1 bg-border sm:block" />
+            )}
+          </li>
+        );
+      })}
+    </ol>
+  );
 }

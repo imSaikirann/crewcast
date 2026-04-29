@@ -1,5 +1,6 @@
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
+import { ArrowLeft, Send, AlertCircle, Paperclip } from "lucide-react";
 
 export function PublicFormReview({
   form,
@@ -10,42 +11,71 @@ export function PublicFormReview({
   error,
 }: any) {
   return (
-    <div className="space-y-8">
-      <div className="rounded-lg border bg-card p-5 shadow-sm sm:p-6">
-        <p className="text-sm text-muted-foreground">Final step</p>
-        <h2 className="mt-2 font-display text-3xl font-semibold tracking-tight">
+    <div className="space-y-10">
+      {/* Header */}
+      <div className="border-b border-border pb-3">
+        <p className="text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground">
+          Final step
+        </p>
+        <h2 className="mt-1 font-display text-2xl font-semibold tracking-tight sm:text-3xl">
           Review your application
         </h2>
-        <p className="mt-2 text-sm leading-6 text-muted-foreground">
-          Check your answers before sending them to the hiring team.
+        <p className="mt-2 text-sm text-muted-foreground">
+          Double-check your answers before sending.
         </p>
       </div>
 
-      <div className="overflow-hidden rounded-lg border bg-card shadow-sm">
+      {/* Answers */}
+      <dl className="divide-y divide-border">
         {form.fields.map((f: any) => (
-          <div key={f.id} className="grid gap-2 border-b px-5 py-4 last:border-b-0 sm:grid-cols-[220px_1fr] sm:gap-8 sm:px-6">
-            <span className="text-sm font-medium text-foreground">{f.label}</span>
-            <span className="break-words text-sm text-muted-foreground sm:text-right">
+          <div
+            key={f.id}
+            className="grid gap-1 py-4 sm:grid-cols-[200px_1fr] sm:gap-8"
+          >
+            <dt className="text-sm font-medium text-foreground">{f.label}</dt>
+            <dd className="break-words text-sm text-muted-foreground">
               {formatAnswer(answers[f.id])}
-            </span>
+            </dd>
           </div>
         ))}
-      </div>
+      </dl>
 
+      {/* Error */}
       {error && (
         <Alert variant="destructive">
+          <AlertCircle className="size-4" />
           <AlertTitle>Application not submitted</AlertTitle>
           <AlertDescription>{error}</AlertDescription>
         </Alert>
       )}
 
-      <div className="rounded-lg border bg-card p-4 shadow-sm sm:flex sm:items-center sm:justify-between sm:gap-4">
-        <Button variant="outline" onClick={onBack} disabled={loading} className="h-12 w-full rounded-md px-6 sm:w-auto">
-          Back
+      {/* CTAs */}
+      <div className="flex flex-col-reverse items-stretch gap-3 border-t border-border pt-6 sm:flex-row sm:items-center sm:justify-between">
+        <Button
+          variant="ghost"
+          onClick={onBack}
+          disabled={loading}
+          className="h-12 rounded-md px-4 text-sm font-medium text-muted-foreground hover:text-foreground"
+          data-testid="review-back-btn"
+        >
+          <ArrowLeft className="mr-1.5 size-4" />
+          Back to edit
         </Button>
 
-        <Button onClick={onSubmit} disabled={loading} className="mt-3 h-12 w-full rounded-md px-6 sm:mt-0 sm:w-auto">
-          {loading ? "Submitting..." : "Submit application"}
+        <Button
+          onClick={onSubmit}
+          disabled={loading}
+          className="h-12 rounded-md px-6 text-sm font-semibold"
+          data-testid="review-submit-btn"
+        >
+          {loading ? (
+            "Submitting…"
+          ) : (
+            <>
+              Submit application
+              <Send className="ml-1.5 size-4" />
+            </>
+          )}
         </Button>
       </div>
     </div>
@@ -53,9 +83,16 @@ export function PublicFormReview({
 }
 
 function formatAnswer(value: unknown) {
-  if (isResumeUpload(value)) return value.name;
+  if (isResumeUpload(value)) {
+    return (
+      <span className="inline-flex items-center gap-1.5">
+        <Paperclip className="size-3.5" />
+        {value.name}
+      </span>
+    );
+  }
   if (Array.isArray(value)) return value.join(", ");
-  if (value === undefined || value === null || value === "") return "-";
+  if (value === undefined || value === null || value === "") return "—";
   return String(value);
 }
 
@@ -64,6 +101,6 @@ function isResumeUpload(value: unknown): value is { name: string } {
     !!value &&
     typeof value === "object" &&
     "name" in value &&
-    typeof value.name === "string"
+    typeof (value as any).name === "string"
   );
 }

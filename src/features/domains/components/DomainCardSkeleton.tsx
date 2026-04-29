@@ -1,17 +1,41 @@
 export function DomainCardSkeleton() {
   return (
-    <div className="h-[170px] animate-pulse rounded-2xl border border-border bg-card p-5">
-      <div className="flex justify-between">
-        <div className="w-full space-y-3">
-          <div className="h-5 w-2/3 rounded bg-muted" />
-          <div className="h-4 w-full rounded bg-muted" />
-          <div className="h-4 w-5/6 rounded bg-muted" />
-        </div>
-
-        <div className="h-5 w-5 rounded-full bg-muted" />
+    <div
+      className="flex h-full flex-col rounded-lg border border-border bg-card p-5"
+      aria-hidden="true"
+    >
+      {/* Top row */}
+      <div className="flex items-start justify-between gap-3">
+        <Shimmer className="size-9 rounded-md" />
+        <Shimmer className="h-5 w-16 rounded-full" />
       </div>
 
-      <div className="mt-8 h-4 w-24 rounded bg-muted" />
+      {/* Title + description */}
+      <div className="mt-5 space-y-2">
+        <Shimmer className="h-4 w-3/5 rounded" />
+        <Shimmer className="h-3 w-full rounded" />
+        <Shimmer className="h-3 w-4/5 rounded" />
+      </div>
+
+      {/* Footer */}
+      <div className="mt-6 flex items-center justify-between border-t border-border pt-3">
+        <Shimmer className="h-3 w-20 rounded" />
+        <Shimmer className="h-3 w-12 rounded" />
+      </div>
     </div>
-  )
+  );
+}
+
+/**
+ * Token-driven shimmer that adapts to light + dark themes.
+ * Uses `bg-muted` (subtle) with `animate-pulse` — no hardcoded grays.
+ */
+function Shimmer({ className = "" }: { className?: string }) {
+  return (
+    <div
+      className={`relative overflow-hidden bg-muted ${className}`}
+    >
+      <div className="absolute inset-0 -translate-x-full animate-[shimmer_1.6s_infinite] bg-gradient-to-r from-transparent via-foreground/[0.04] to-transparent" />
+    </div>
+  );
 }

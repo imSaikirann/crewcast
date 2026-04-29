@@ -24,26 +24,29 @@ export function PublicFormShell({ form }: { form: any }) {
 
   useEffect(() => {
     if (!hydrated) return;
-
     const sub = methods.watch((values) => {
-      localStorage.setItem(getPublicFormStorageKey(form.publicId), JSON.stringify(values));
+      localStorage.setItem(
+        getPublicFormStorageKey(form.publicId),
+        JSON.stringify(values)
+      );
     });
-
     return () => sub.unsubscribe();
   }, [hydrated, methods, form.publicId]);
 
-  if (step === "done") {
-    localStorage.removeItem(getPublicFormStorageKey(form.publicId));
-  }
+  useEffect(() => {
+    if (step === "done") {
+      localStorage.removeItem(getPublicFormStorageKey(form.publicId));
+    }
+  }, [step, form.publicId]);
 
   return (
     <FormProvider {...methods}>
-      <main className="min-h-screen bg-background text-foreground">
-        <div className="mx-auto flex min-h-screen w-full max-w-[880px] flex-col px-4 py-6 sm:px-6 lg:px-0">
-          <div className="flex-1 py-8 sm:py-12">
-            <PublicFormMeta form={form} />
+      <main className="min-h-screen bg-background text-foreground antialiased">
+        <div className="mx-auto flex min-h-screen w-full max-w-[680px] flex-col px-5 sm:px-6 lg:px-0">
+          <div className="flex-1 pt-10 pb-12 sm:pt-16">
+            {step !== "done" && <PublicFormMeta form={form} />}
 
-            <div className="mt-8 sm:mt-10">
+            <div className="mt-10 sm:mt-14">
               {step === "form" && (
                 <PublicFormFields
                   form={form}
@@ -62,7 +65,9 @@ export function PublicFormShell({ form }: { form: any }) {
                 />
               )}
 
-              {step === "done" && <PublicFormSuccess trackingUrl={result?.trackingUrl} />}
+              {step === "done" && (
+                <PublicFormSuccess trackingUrl={result?.trackingUrl} />
+              )}
             </div>
           </div>
 

@@ -5,7 +5,6 @@ import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -30,6 +29,7 @@ interface ProfileSetupFormProps {
 export default function ProfileSetupForm({ existingProfile, onSuccess, onCancel }: ProfileSetupFormProps) {
   const [error, setError] = useState<string | null>(null)
   const queryClient = useQueryClient()
+
   const {
     register,
     handleSubmit,
@@ -71,70 +71,78 @@ export default function ProfileSetupForm({ existingProfile, onSuccess, onCancel 
       if (existingProfile) await updateMutation.mutateAsync(data)
       else await createMutation.mutateAsync(data)
     } catch (err: any) {
-      setError(err.response?.data?.message || err.response?.data?.error || "Failed to save profile. Please try again.")
+      setError(
+        err.response?.data?.message ||
+          err.response?.data?.error ||
+          "Failed to save profile. Please try again."
+      )
     }
   }
 
   const pending = isSubmitting || createMutation.isPending || updateMutation.isPending
 
   return (
-    <div className="mx-auto max-w-[560px]">
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 rounded-xl border bg-card p-5">
-        <div>
-          <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
-            {existingProfile ? "Company profile" : "Recruiter onboarding"}
-          </p>
-          <h1 className="mt-2 font-display text-xl font-semibold">
-            {existingProfile ? "Edit profile" : "Create your recruiter profile"}
-          </h1>
-          {!existingProfile && (
-            <p className="mt-2 text-sm text-muted-foreground">
-              Use a company email that matches your website. Personal inboxes like Gmail are not supported.
-            </p>
-          )}
-        </div>
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+      {!existingProfile && (
+        <p className="text-sm text-muted-foreground">
+          Use a company email that matches your website. Personal inboxes like Gmail are not
+          supported.
+        </p>
+      )}
 
+      <div className="grid gap-5 sm:grid-cols-2">
         <ProfileField label="Company name" error={errors.companyName?.message}>
-          <Input className="cc-input" placeholder="Acme Inc." {...register("companyName")} />
+          <Input placeholder="Acme Inc." {...register("companyName")} />
         </ProfileField>
         <ProfileField label="Company email" error={errors.companyEmail?.message}>
-          <Input className="cc-input" type="email" placeholder="contact@acme.com" {...register("companyEmail")} />
+          <Input type="email" placeholder="contact@acme.com" {...register("companyEmail")} />
         </ProfileField>
         <ProfileField label="Website URL" error={errors.website?.message}>
-          <Input className="cc-input" type="url" placeholder="https://acme.com" {...register("website")} />
+          <Input type="url" placeholder="https://acme.com" {...register("website")} />
         </ProfileField>
         <ProfileField label="LinkedIn URL" error={errors.linkedinLink?.message}>
-          <Input className="cc-input" type="url" placeholder="https://linkedin.com/company/acme" {...register("linkedinLink")} />
+          <Input
+            type="url"
+            placeholder="https://linkedin.com/company/acme"
+            {...register("linkedinLink")}
+          />
         </ProfileField>
+      </div>
 
-        {error && (
-          <Alert variant="destructive">
-            <AlertTitle>Profile not saved</AlertTitle>
-            <AlertDescription>{error}</AlertDescription>
-          </Alert>
-        )}
+      {error && (
+        <p className="rounded-lg border border-destructive/30 bg-destructive/10 px-3 py-2.5 text-sm text-destructive">
+          {error}
+        </p>
+      )}
 
-        <div className="flex gap-3 border-t pt-5">
-          {existingProfile && onCancel && (
-            <Button type="button" variant="ghost" onClick={onCancel} disabled={pending}>
-              Cancel
-            </Button>
-          )}
-          <Button type="submit" disabled={pending} className="ml-auto bg-primary text-primary-foreground hover:bg-primary/90">
-            {pending ? "Saving..." : existingProfile ? "Save changes" : "Create profile"}
+      <div className="flex items-center gap-3 border-t pt-5">
+        {existingProfile && onCancel && (
+          <Button type="button" variant="ghost" onClick={onCancel} disabled={pending}>
+            Cancel
           </Button>
-        </div>
-      </form>
-    </div>
+        )}
+        <Button type="submit" disabled={pending} className="ml-auto">
+          {pending ? "Saving..." : existingProfile ? "Save changes" : "Create profile"}
+        </Button>
+      </div>
+    </form>
   )
 }
 
-function ProfileField({ label, error, children }: { label: string; error?: string; children: React.ReactNode }) {
+function ProfileField({
+  label,
+  error,
+  children,
+}: {
+  label: string
+  error?: string
+  children: React.ReactNode
+}) {
   return (
-    <div className="space-y-2">
+    <div className="space-y-1.5">
       <Label className="text-[13px] font-medium text-muted-foreground">{label}</Label>
       {children}
-      {error && <p className="text-xs text-destructive">x {error}</p>}
+      {error && <p className="text-xs text-destructive">{error}</p>}
     </div>
   )
 }

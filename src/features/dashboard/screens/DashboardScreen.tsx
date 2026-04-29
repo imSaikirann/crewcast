@@ -56,7 +56,7 @@ export default function DashboardScreen({
         </Button>
       </div>
 
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-2 xl:grid-cols-4">
         <StatCard
           title="Active forms"
           value={`${activeForms}/${totalForms}`}
@@ -68,7 +68,7 @@ export default function DashboardScreen({
         <StatCard title="Conversion" value={`${conversionRate}%`} icon="target-03" />
       </div>
 
-      <div className="grid gap-3 lg:grid-cols-[1fr_auto]">
+      {/* <div className="grid gap-3 lg:grid-cols-[1fr_auto]">
         <div className="grid gap-3 sm:grid-cols-2">
           <LimitCard
             title="Active published forms"
@@ -87,7 +87,7 @@ export default function DashboardScreen({
           <HugeIcon name="credit-card" className="size-4" />
           Upgrade plan
         </Button>
-      </div>
+      </div> */}
 
       <section className="space-y-4">
         {!recruiter.verified && (
@@ -99,14 +99,14 @@ export default function DashboardScreen({
           </Alert>
         )}
 
-        {totalForms > 0 && !hasInternshipRole && (
+        {/* {totalForms > 0 && !hasInternshipRole && (
           <Alert className="rounded-lg">
             <AlertTitle>No internship role detected</AlertTitle>
             <AlertDescription>
               Create an internship form when you are hiring interns so candidates see the right role type and expectations.
             </AlertDescription>
           </Alert>
-        )}
+        )} */}
 
         {totalForms > 0 && !hasApplications && (
           <Alert className="rounded-lg">

@@ -1,19 +1,20 @@
-"use client"
+"use client";
 
-import React from "react"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Button } from "@/components/ui/button"
-import { HugeIcon } from "@/utils/hugeicons"
-import { FormField } from "../types/types"
-import { isGitHubField } from "@/lib/formFields"
+import React from "react";
+import { Lock, Trash2, Plus, X } from "lucide-react";
+
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+import { FormField } from "../types/types";
+import { isGitHubField } from "@/lib/formFields";
 
 interface FieldEditorProps {
-  field: FormField
-  onUpdate: (updates: Partial<FormField>) => void
-  onRemove: () => void
-  onAddOption: (option: string) => void
-  onRemoveOption: (index: number) => void
+  field: FormField;
+  onUpdate: (updates: Partial<FormField>) => void;
+  onRemove: () => void;
+  onAddOption: (option: string) => void;
+  onRemoveOption: (index: number) => void;
 }
 
 export function FieldEditor({
@@ -23,86 +24,90 @@ export function FieldEditor({
   onAddOption,
   onRemoveOption,
 }: FieldEditorProps) {
-  const [newOption, setNewOption] = React.useState("")
-  const locked = field.locked || isGitHubField(field)
+  const [newOption, setNewOption] = React.useState("");
+  const locked = field.locked || isGitHubField(field);
 
   const handleAddOption = () => {
     if (newOption.trim()) {
-      onAddOption(newOption.trim())
-      setNewOption("")
+      onAddOption(newOption.trim());
+      setNewOption("");
     }
-  }
+  };
 
   return (
-    <div className="rounded-lg border bg-card p-4 shadow-xs sm:p-5">
-      <div className="flex flex-row items-center justify-between gap-2 pb-4">
-        <h3 className="min-w-0 flex-1 truncate text-base font-semibold sm:text-lg">{field.label || "Untitled Field"}</h3>
+    <div className="rounded-lg border border-border bg-card p-5">
+      <div className="flex items-center justify-between gap-3 border-b border-border pb-4">
+        <h3 className="min-w-0 flex-1 truncate text-sm font-semibold">
+          {field.label || "Untitled field"}
+        </h3>
         <Button
           variant="ghost"
           size="icon"
           onClick={onRemove}
           disabled={locked}
-          className="h-8 w-8 text-destructive hover:text-destructive flex-shrink-0"
-          title={locked ? "Required for software job scoring" : "Remove field"}
+          title={locked ? "Locked for AI scoring" : "Remove field"}
+          className="size-8 text-muted-foreground hover:text-destructive disabled:opacity-50"
         >
-          <HugeIcon name={locked ? "lock" : "delete"} className="h-4 w-4" />
+          {locked ? <Lock className="size-4" /> : <Trash2 className="size-4" />}
         </Button>
       </div>
-      <div className="space-y-4">
-        <div>
-          <Label>Field Label *</Label>
+
+      <div className="mt-4 space-y-4">
+        <Field label="Field label" required>
           <Input
             value={field.label}
             onChange={(e) => onUpdate({ label: e.target.value })}
             placeholder="Enter field label"
-            className="mt-1"
             readOnly={locked}
+            className="h-10"
           />
-        </div>
+        </Field>
 
-        <div>
-          <Label>Placeholder</Label>
+        <Field label="Placeholder">
           <Input
             value={field.placeholder || ""}
             onChange={(e) => onUpdate({ placeholder: e.target.value })}
             placeholder="Enter placeholder text"
-            className="mt-1"
             readOnly={locked}
+            className="h-10"
           />
-        </div>
+        </Field>
 
-        <div className="flex items-center space-x-2">
+        <label
+          htmlFor={`required-${field.id}`}
+          className="flex items-center gap-2 text-sm"
+        >
           <input
             type="checkbox"
             id={`required-${field.id}`}
             checked={locked || field.required}
             onChange={(e) => onUpdate({ required: e.target.checked })}
             disabled={locked}
-            className="h-4 w-4 rounded border-gray-300"
+            className="size-3.5 rounded border-border"
           />
-          <Label htmlFor={`required-${field.id}`} className="cursor-pointer">
-            Required field
-          </Label>
+          Required field
           {locked && (
             <span className="text-xs text-muted-foreground">
-              Locked for GitHub scoring
+              · locked for scoring
             </span>
           )}
-        </div>
+        </label>
 
         {field.type === "select" && (
           <div className="space-y-2">
-            <Label>Options</Label>
-            <div className="flex flex-col sm:flex-row gap-2">
+            <Label className="text-[11px] font-medium uppercase tracking-[0.12em] text-muted-foreground">
+              Options
+            </Label>
+            <div className="flex flex-col gap-2 sm:flex-row">
               <Input
                 value={newOption}
                 onChange={(e) => setNewOption(e.target.value)}
                 placeholder="Add option"
-                className="flex-1"
+                className="h-10 flex-1"
                 onKeyDown={(e) => {
                   if (e.key === "Enter") {
-                    e.preventDefault()
-                    handleAddOption()
+                    e.preventDefault();
+                    handleAddOption();
                   }
                 }}
               />
@@ -111,28 +116,28 @@ export function FieldEditor({
                 variant="outline"
                 onClick={handleAddOption}
                 size="sm"
-                className="sm:w-auto w-full"
+                className="h-10 gap-1"
               >
+                <Plus className="size-3.5" />
                 Add
               </Button>
             </div>
             {field.options && field.options.length > 0 && (
-              <div className="space-y-2 mt-2">
+              <div className="space-y-1.5 pt-1">
                 {field.options.map((option, index) => (
                   <div
                     key={index}
-                    className="flex items-center justify-between p-2 bg-muted rounded-md"
+                    className="flex items-center justify-between rounded-md border border-border bg-background px-3 py-2"
                   >
                     <span className="text-sm">{option}</span>
-                    <Button
+                    <button
                       type="button"
-                      variant="ghost"
-                      size="icon"
                       onClick={() => onRemoveOption(index)}
-                      className="h-6 w-6 text-destructive"
+                      className="text-muted-foreground hover:text-destructive"
+                      aria-label="Remove option"
                     >
-                      <HugeIcon name="cancel" className="h-4 w-4" />
-                    </Button>
+                      <X className="size-3.5" />
+                    </button>
                   </div>
                 ))}
               </div>
@@ -141,5 +146,25 @@ export function FieldEditor({
         )}
       </div>
     </div>
-  )
+  );
+}
+
+function Field({
+  label,
+  required,
+  children,
+}: {
+  label: string;
+  required?: boolean;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="space-y-1.5">
+      <Label className="text-[13px] font-medium">
+        {label}
+        {required && <span className="ml-1 text-muted-foreground">*</span>}
+      </Label>
+      {children}
+    </div>
+  );
 }

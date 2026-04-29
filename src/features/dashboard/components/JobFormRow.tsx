@@ -9,23 +9,34 @@ export function JobFormRow({ form }: { form: JobForm }) {
   const status = getDisplayStatus(form.status, expired);
 
   return (
-    <div className="grid items-center gap-3 rounded-lg border bg-card px-4 py-3 text-sm transition duration-120 hover:-translate-y-0.5 hover:bg-secondary/60 md:grid-cols-[minmax(0,1.5fr)_auto_auto_auto_auto_auto_36px]">
-      <div className="min-w-0">
-        <h3 className="truncate font-semibold text-foreground">{form.title}</h3>
-        <p className="mt-0.5 truncate text-xs text-muted-foreground md:hidden">
-          {form.domainTitle || "General"} / {form.submissions} applications / {formatDate(form.createdAt)}
-        </p>
+    <div className="group flex items-center gap-3 rounded-lg border border-border/60 bg-card px-4 py-3 transition-colors hover:bg-secondary/50 md:grid md:grid-cols-[minmax(0,1.5fr)_auto_auto_auto_auto_auto_36px]">
+      {/* Title + mobile meta */}
+      <div className="min-w-0 flex-1">
+        <h3 className="truncate text-sm font-semibold text-foreground">{form.title}</h3>
+        <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-0.5 md:hidden">
+          <span className="text-xs text-muted-foreground">{form.domainTitle || "General"}</span>
+          <span className="text-xs text-muted-foreground">·</span>
+          <StatusBadge status={status} />
+          <span className="text-xs text-muted-foreground">·</span>
+          <span className="text-xs text-muted-foreground">{form.submissions} apps</span>
+        </div>
       </div>
-      <Badge className="w-fit rounded-full border-0 bg-accent px-2.5 py-1 text-[11px] text-accent-foreground hover:bg-accent">
+
+      {/* Desktop-only columns */}
+      <Badge className="hidden w-fit rounded-full border-0 bg-accent px-2.5 py-0.5 text-[11px] text-accent-foreground hover:bg-accent md:flex">
         {form.domainTitle || "General"}
       </Badge>
-      <StatusBadge status={status} />
-      <p className="hidden font-medium text-foreground md:block">
+      <span className="hidden md:block">
+        <StatusBadge status={status} />
+      </span>
+      <p className="hidden text-sm font-medium text-foreground md:block">
         {form.hiredCount}/{form.openings} hired
       </p>
-      <p className="hidden text-muted-foreground md:block">{form.submissions} apps</p>
-      <p className="hidden text-muted-foreground md:block">{formatDate(form.createdAt)}</p>
-      <div className="flex justify-end">
+      <p className="hidden text-sm text-muted-foreground md:block">{form.submissions} apps</p>
+      <p className="hidden text-sm text-muted-foreground md:block">{formatDate(form.createdAt)}</p>
+
+      {/* Actions */}
+      <div className="flex shrink-0 justify-end">
         <JobFormActionsMenu publicId={form.publicId} status={form.status} expired={expired} />
       </div>
     </div>
@@ -33,17 +44,15 @@ export function JobFormRow({ form }: { form: JobForm }) {
 }
 
 function StatusBadge({ status }: { status: "Published" | "Draft" | "Expired" | "Archived" }) {
-  const className =
+  const cls =
     status === "Published"
       ? "bg-[#4CAF82]/10 text-[#4CAF82]"
       : status === "Expired"
         ? "bg-destructive/10 text-destructive"
-        : status === "Archived"
-          ? "bg-muted text-muted-foreground"
         : "bg-muted text-muted-foreground";
 
   return (
-    <span className={`w-fit rounded-full px-2.5 py-1 text-[11px] font-medium ${className}`}>
+    <span className={`inline-flex w-fit rounded-full px-2 py-0.5 text-[11px] font-medium ${cls}`}>
       {status}
     </span>
   );

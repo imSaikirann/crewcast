@@ -1,18 +1,18 @@
-"use client"
+"use client";
 
-import React from "react"
-import { useForm, FormProvider } from "react-hook-form"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { HugeIcon } from "@/utils/hugeicons"
-import { FormPreview } from "./FormPreview"
+import React from "react";
+import { FormProvider, useForm } from "react-hook-form";
+import { X, Eye } from "lucide-react";
+
+import { Button } from "@/components/ui/button";
+import { FormPreview } from "./FormPreview";
 
 interface FormPreviewModalProps {
-  isOpen: boolean
-  onClose: () => void
-  formTitle: string
-  formDescription: string
-  fields: any[]
+  isOpen: boolean;
+  onClose: () => void;
+  formTitle: string;
+  formDescription: string;
+  fields: any[];
 }
 
 export function FormPreviewModal({
@@ -22,43 +22,59 @@ export function FormPreviewModal({
   formDescription,
   fields,
 }: FormPreviewModalProps) {
-  const methods = useForm()
+  const methods = useForm();
 
-  if (!isOpen) return null
+  if (!isOpen) return null;
 
   return (
     <FormProvider {...methods}>
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-2 sm:p-4" onClick={onClose}>
-        <Card 
-          className="w-full max-w-2xl max-h-[95vh] sm:max-h-[90vh] overflow-hidden flex flex-col" 
+      <div
+        className="fixed inset-0 z-50 flex items-center justify-center bg-foreground/40 p-3 backdrop-blur-sm sm:p-6"
+        onClick={onClose}
+      >
+        <div
+          className="flex max-h-[92vh] w-full max-w-2xl flex-col overflow-hidden rounded-lg border border-border bg-card shadow-2xl"
           onClick={(e) => e.stopPropagation()}
         >
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4 gap-2">
-            <CardTitle className="text-lg sm:text-xl">Form Preview</CardTitle>
-            <Button
-              variant="ghost"
-              size="icon"
+          <header className="flex items-center justify-between border-b border-border px-5 py-3.5">
+            <div className="flex items-center gap-2">
+              <span className="grid size-7 place-items-center rounded-md border border-border bg-secondary/40">
+                <Eye className="size-3.5 text-muted-foreground" strokeWidth={1.75} />
+              </span>
+              <h2 className="font-display text-sm font-semibold tracking-tight">
+                Form preview
+              </h2>
+            </div>
+            <button
+              type="button"
               onClick={onClose}
-              className="h-8 w-8 shrink-0"
+              aria-label="Close preview"
+              className="grid size-8 place-items-center rounded-md text-muted-foreground transition hover:bg-secondary hover:text-foreground"
+              data-testid="close-preview-modal-btn"
             >
-              <HugeIcon name="cancel" className="h-4 w-4" />
-            </Button>
-          </CardHeader>
-          <CardContent className="overflow-y-auto flex-1 p-4 sm:p-6">
+              <X className="size-4" />
+            </button>
+          </header>
+
+          <div className="flex-1 overflow-y-auto p-5 sm:p-6">
             <FormPreview
-              title={formTitle || "Untitled Form"}
+              title={formTitle || "Untitled form"}
               description={formDescription}
               fields={fields}
             />
-          </CardContent>
-          <div className="p-4 sm:p-6 border-t">
-            <Button onClick={onClose} className="w-full">
-              Close Preview
-            </Button>
           </div>
-        </Card>
+
+          <footer className="border-t border-border bg-background/40 px-5 py-3">
+            <Button
+              onClick={onClose}
+              variant="outline"
+              className="h-10 w-full rounded-md text-sm"
+            >
+              Close preview
+            </Button>
+          </footer>
+        </div>
       </div>
     </FormProvider>
-  )
+  );
 }
-

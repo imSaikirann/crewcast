@@ -85,7 +85,7 @@ export default async function Page({
 
   return (
     <AppPage
-      backButton={{ fallbackHref: "/dashboard/submissions", label: "Back to submissions" }}
+    
       breadcrumbs={[
         { label: "Dashboard", href: "/dashboard" },
         { label: "Submissions", href: "/dashboard/submissions" },

@@ -1,29 +1,67 @@
-"use client"
+"use client";
 
-import { useEffect, useMemo, useRef, useState } from "react"
-import { GripVertical, Lock, Pencil, Trash2 } from "lucide-react"
+import { useEffect, useMemo, useRef, useState } from "react";
+import {
+  GripVertical,
+  Lock,
+  Pencil,
+  Trash2,
+  Plus,
+  Check,
+  X,
+  Eye,
+  Type,
+  Mail,
+  Hash,
+  AlignLeft,
+  ListChecks,
+  CheckSquare,
+  Calendar,
+  FileUp,
+  Link2,
+} from "lucide-react";
 
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { HugeIcon } from "@/utils/hugeicons"
-import { isGitHubField } from "@/lib/formFields"
-import { FieldType, FormField, JobFormDetails } from "../types/types"
-import { FormPreview } from "./FormPreview"
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { isGitHubField } from "@/lib/formFields";
+import { FieldType, FormField, JobFormDetails } from "../types/types";
+import { FormPreview } from "./FormPreview";
 
-interface FormBuilderStepProps {
-  details: JobFormDetails
-  fields: FormField[]
-  selectedFieldType: FieldType
-  setSelectedFieldType: (type: FieldType) => void
-  handleAddField: (index?: number, typeOverride?: FieldType) => void
-  handleUpdateField: (id: string, updates: Partial<FormField>) => void
-  handleRemoveField: (id: string) => void
-  handleReorderField: (fromId: string, toId: string) => void
-  handleAddOption: (id: string, option: string) => void
-  handleRemoveOption: (id: string, index: number) => void
+const FIELD_TYPES: { value: FieldType; label: string; icon: any }[] = [
+  { value: "text", label: "Short text", icon: Type },
+  { value: "textarea", label: "Long text", icon: AlignLeft },
+  { value: "email", label: "Email", icon: Mail },
+  { value: "number", label: "Number", icon: Hash },
+  { value: "select", label: "Dropdown", icon: ListChecks },
+  { value: "checkbox", label: "Checkbox", icon: CheckSquare },
+  { value: "date", label: "Date", icon: Calendar },
+  { value: "file", label: "File", icon: FileUp },
+  { value: "url", label: "URL", icon: Link2 },
+];
+
+const ICON_BY_TYPE = Object.fromEntries(
+  FIELD_TYPES.map((t) => [t.value, t.icon])
+);
+
+interface Props {
+  details: JobFormDetails;
+  fields: FormField[];
+  selectedFieldType: FieldType;
+  setSelectedFieldType: (type: FieldType) => void;
+  handleAddField: (index?: number, typeOverride?: FieldType) => void;
+  handleUpdateField: (id: string, updates: Partial<FormField>) => void;
+  handleRemoveField: (id: string) => void;
+  handleReorderField: (fromId: string, toId: string) => void;
+  handleAddOption: (id: string, option: string) => void;
+  handleRemoveOption: (id: string, index: number) => void;
 }
 
 export function FormBuilderStep({
@@ -37,182 +75,213 @@ export function FormBuilderStep({
   handleReorderField,
   handleAddOption,
   handleRemoveOption,
-}: FormBuilderStepProps) {
-  const [editingId, setEditingId] = useState<string | null>(fields[0]?.id ?? null)
-  const [showTypes, setShowTypes] = useState(false)
-  const [previewTab, setPreviewTab] = useState<"builder" | "preview">("builder")
-  const draggedId = useRef<string | null>(null)
-  const previousFieldCount = useRef(fields.length)
+}: Props) {
+  const [editingId, setEditingId] = useState<string | null>(fields[0]?.id ?? null);
+  const [showTypes, setShowTypes] = useState(false);
+  const [view, setView] = useState<"builder" | "preview">("builder");
+  const draggedId = useRef<string | null>(null);
+  const previousCount = useRef(fields.length);
 
   useEffect(() => {
-    if (fields.length > previousFieldCount.current) {
-      setEditingId(fields[fields.length - 1]?.id ?? null)
+    if (fields.length > previousCount.current) {
+      setEditingId(fields[fields.length - 1]?.id ?? null);
     }
-    previousFieldCount.current = fields.length
-
-    if (!editingId && fields[0]) {
-      setEditingId(fields[0].id)
-    }
-  }, [editingId, fields])
-
-  const fieldTypes = useMemo(
-    () => [
-      { value: "text", label: "Text" },
-      { value: "email", label: "Email" },
-      { value: "number", label: "Number" },
-      { value: "textarea", label: "Textarea" },
-      { value: "select", label: "Select" },
-      { value: "checkbox", label: "Checkbox" },
-      { value: "date", label: "Date" },
-      { value: "file", label: "File" },
-      { value: "url", label: "URL" },
-    ],
-    []
-  )
-
-  const addSelectedField = (type: FieldType) => {
-    handleAddField(undefined, type)
-    setShowTypes(false)
-  }
+    previousCount.current = fields.length;
+    if (!editingId && fields[0]) setEditingId(fields[0].id);
+  }, [editingId, fields]);
 
   return (
     <div className="space-y-5">
-      <div className="grid grid-cols-2 gap-2 lg:hidden">
-        <Button variant={previewTab === "builder" ? "default" : "outline"} onClick={() => setPreviewTab("builder")}>Builder</Button>
-        <Button variant={previewTab === "preview" ? "default" : "outline"} onClick={() => setPreviewTab("preview")}>Preview</Button>
+      {/* Mobile tabs */}
+      <div className="inline-flex w-full gap-1 rounded-md border border-border bg-secondary/30 p-1 lg:hidden">
+        <TabBtn active={view === "builder"} onClick={() => setView("builder")}>
+          Builder
+        </TabBtn>
+        <TabBtn active={view === "preview"} onClick={() => setView("preview")}>
+          <Eye className="mr-1.5 size-3.5" />
+          Preview
+        </TabBtn>
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-[minmax(0,54fr)_minmax(360px,46fr)]">
-        <section className={previewTab === "preview" ? "hidden lg:block" : "space-y-4 rounded-lg border bg-card p-4 shadow-xs"}>
-          <header className="flex flex-col gap-3 border-b pb-4 sm:flex-row sm:items-center sm:justify-between">
+      <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_400px]">
+        {/* Builder */}
+        <section
+          className={view === "preview" ? "hidden lg:block" : "space-y-5"}
+        >
+          <header className="flex items-end justify-between border-b border-border pb-3">
             <div>
-              <h2 className="font-display text-lg font-semibold">Candidate fields</h2>
-              <p className="mt-1 text-[13px] text-muted-foreground">Drag fields to reorder. Click the pencil to edit.</p>
+              <p className="text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground">
+                Application
+              </p>
+              <h2 className="mt-1 font-display text-base font-semibold tracking-tight">
+                {fields.length} candidate field{fields.length === 1 ? "" : "s"}
+              </h2>
             </div>
-            <Badge variant="secondary" className="w-fit rounded-md">{fields.length} fields</Badge>
+            <p className="text-xs text-muted-foreground">Drag to reorder</p>
           </header>
 
-          <div className="space-y-2">
+          <ul className="space-y-2">
             {fields.map((field) => {
-              const locked = field.locked || isGitHubField(field)
-              const editing = editingId === field.id
+              const locked = field.locked || isGitHubField(field);
+              const editing = editingId === field.id;
+              const Icon = ICON_BY_TYPE[field.type] || Type;
 
               return (
-                <div
+                <li
                   key={field.id}
-                  draggable
-                  onDragStart={(event) => {
-                    draggedId.current = field.id
-                    event.dataTransfer.effectAllowed = "move"
+                  draggable={!locked}
+                  onDragStart={(e) => {
+                    draggedId.current = field.id;
+                    e.dataTransfer.effectAllowed = "move";
                   }}
-                  onDragOver={(event) => {
-                    event.preventDefault()
-                    event.dataTransfer.dropEffect = "move"
+                  onDragOver={(e) => {
+                    e.preventDefault();
+                    e.dataTransfer.dropEffect = "move";
                   }}
-                  onDrop={(event) => {
-                    event.preventDefault()
+                  onDrop={(e) => {
+                    e.preventDefault();
                     if (draggedId.current) {
-                      handleReorderField(draggedId.current, field.id)
-                      draggedId.current = null
+                      handleReorderField(draggedId.current, field.id);
+                      draggedId.current = null;
                     }
                   }}
-                  onDragEnd={() => {
-                    draggedId.current = null
-                  }}
-                  className={`rounded-lg border bg-background transition ${
-                    editing ? "border-primary" : "hover:bg-secondary/50"
+                  onDragEnd={() => (draggedId.current = null)}
+                  className={`overflow-hidden rounded-lg border bg-card transition ${
+                    editing
+                      ? "border-foreground/30 shadow-sm"
+                      : "border-border hover:border-foreground/20"
                   }`}
                 >
-                  <div className="flex items-center gap-3 px-3 py-3">
-                    <button
-                      type="button"
+                  <button
+                    type="button"
+                    onClick={() => setEditingId(editing ? null : field.id)}
+                    className="flex w-full items-center gap-3 px-3 py-3 text-left"
+                  >
+                    <span
                       className="cursor-grab text-muted-foreground active:cursor-grabbing"
-                      aria-label={`Drag ${field.label || "field"}`}
-                      title="Drag to reorder"
+                      aria-hidden
                     >
                       <GripVertical className="size-4" />
-                    </button>
-                    <HugeIcon name={locked ? "lock" : "edit"} className="size-4 shrink-0 text-muted-foreground" />
-                    <button
-                      type="button"
-                      onClick={() => setEditingId(field.id)}
-                      className="min-w-0 flex-1 text-left"
-                    >
-                      <span className="block truncate text-sm font-medium text-foreground">
+                    </span>
+                    <span className="grid size-7 shrink-0 place-items-center rounded-md border border-border bg-background">
+                      {locked ? (
+                        <Lock className="size-3.5 text-muted-foreground" />
+                      ) : (
+                        <Icon className="size-3.5" strokeWidth={1.75} />
+                      )}
+                    </span>
+                    <span className="min-w-0 flex-1">
+                      <span className="block truncate text-sm font-medium">
                         {field.label || "Untitled field"}
                       </span>
-                      <span className="mt-1 flex flex-wrap gap-1.5">
-                        <Badge variant="outline" className="rounded-md">{labelize(field.type)}</Badge>
-                        {field.required && <Badge variant="secondary" className="rounded-md">Required</Badge>}
-                        {locked && <Badge className="rounded-md bg-accent text-accent-foreground">AI scoring</Badge>}
+                      <span className="mt-0.5 flex items-center gap-1.5 text-[11px] text-muted-foreground">
+                        <span>{labelize(field.type)}</span>
+                        {field.required && (
+                          <>
+                            <span>·</span>
+                            <span>Required</span>
+                          </>
+                        )}
+                        {locked && (
+                          <>
+                            <span>·</span>
+                            <span>AI scoring</span>
+                          </>
+                        )}
                       </span>
-                    </button>
-                    <Button
-                      type="button"
-                      variant={editing ? "secondary" : "ghost"}
-                      size="icon-sm"
-                      onClick={() => setEditingId(editing ? null : field.id)}
-                      aria-label={`Edit ${field.label || "field"}`}
-                    >
-                      {locked ? <Lock className="size-4" /> : <Pencil className="size-4" />}
-                    </Button>
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="icon-sm"
-                      disabled={locked}
-                      onClick={() => handleRemoveField(field.id)}
-                      className="hover:text-destructive"
-                      aria-label={`Remove ${field.label || "field"}`}
-                    >
-                      <Trash2 className="size-4" />
-                    </Button>
-                  </div>
+                    </span>
+
+                    <span className="flex items-center gap-0.5">
+                      <span
+                        className="grid size-7 place-items-center rounded text-muted-foreground hover:bg-secondary hover:text-foreground"
+                        aria-hidden
+                      >
+                        <Pencil className="size-3.5" />
+                      </span>
+                      <span
+                        role="button"
+                        tabIndex={locked ? -1 : 0}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          if (!locked) handleRemoveField(field.id);
+                        }}
+                        className={`grid size-7 place-items-center rounded ${
+                          locked
+                            ? "cursor-not-allowed text-muted-foreground/40"
+                            : "text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
+                        }`}
+                      >
+                        <Trash2 className="size-3.5" />
+                      </span>
+                    </span>
+                  </button>
 
                   {editing && (
-                    <InlineFieldEditor
+                    <InlineEditor
                       field={field}
-                      fieldTypes={fieldTypes}
-                      onUpdate={(updates) => handleUpdateField(field.id, updates)}
+                      onUpdate={(u) => handleUpdateField(field.id, u)}
+                      onAddOption={(o) => handleAddOption(field.id, o)}
+                      onRemoveOption={(i) => handleRemoveOption(field.id, i)}
                       onDone={() => setEditingId(null)}
-                      onAddOption={(option) => handleAddOption(field.id, option)}
-                      onRemoveOption={(index) => handleRemoveOption(field.id, index)}
                     />
                   )}
-                </div>
-              )
+                </li>
+              );
             })}
-          </div>
+          </ul>
 
+          {/* Add field */}
           <div className="relative">
-            <Button variant="outline" className="h-12 w-full border-dashed text-muted-foreground" onClick={() => setShowTypes((v) => !v)}>
-              <HugeIcon name="add-circle" className="size-4" />
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setShowTypes((v) => !v)}
+              className="h-12 w-full justify-center gap-1.5 border-dashed border-border bg-transparent text-sm font-medium text-muted-foreground hover:bg-secondary/30 hover:text-foreground"
+              data-testid="add-field-btn"
+            >
+              <Plus className="size-4" />
               Add field
             </Button>
+
             {showTypes && (
-              <div className="absolute bottom-full z-20 mb-2 grid w-full grid-cols-2 gap-1 rounded-lg border bg-popover p-2 shadow-lg sm:grid-cols-3">
-                {fieldTypes.map((type) => (
-                  <button
-                    key={type.value}
-                    type="button"
-                    onClick={() => {
-                      const fieldType = type.value as FieldType
-                      setSelectedFieldType(fieldType)
-                      addSelectedField(fieldType)
-                    }}
-                    className={`rounded-lg px-3 py-2 text-left text-sm hover:bg-accent ${selectedFieldType === type.value ? "text-primary" : ""}`}
-                  >
-                    {type.label}
-                  </button>
-                ))}
+              <div className="absolute bottom-full z-20 mb-2 w-full rounded-lg border border-border bg-popover p-1.5 shadow-lg">
+                <p className="px-2.5 pb-1.5 pt-1 text-[10px] font-medium uppercase tracking-[0.12em] text-muted-foreground">
+                  Choose field type
+                </p>
+                <div className="grid gap-0.5 sm:grid-cols-2">
+                  {FIELD_TYPES.map((type) => {
+                    const Icon = type.icon;
+                    return (
+                      <button
+                        key={type.value}
+                        type="button"
+                        onClick={() => {
+                          setSelectedFieldType(type.value);
+                          handleAddField(undefined, type.value);
+                          setShowTypes(false);
+                        }}
+                        className="flex items-center gap-2.5 rounded-md px-2.5 py-2 text-left text-sm hover:bg-secondary"
+                      >
+                        <Icon className="size-3.5 text-muted-foreground" strokeWidth={1.75} />
+                        {type.label}
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
             )}
           </div>
         </section>
 
-        <aside className={previewTab === "builder" ? "hidden lg:block" : ""}>
-          <div className="sticky top-20 max-h-[calc(100vh-7rem)] overflow-y-auto rounded-lg border bg-card p-4 shadow-xs">
-            <p className="mb-3 text-[11px] uppercase tracking-widest text-muted-foreground">Preview only</p>
+        {/* Preview */}
+        <aside className={view === "builder" ? "hidden lg:block" : ""}>
+          <div className="sticky top-6 max-h-[calc(100vh-9rem)] overflow-y-auto rounded-lg border border-border bg-card p-5">
+            <div className="mb-4 flex items-center gap-1.5 border-b border-border pb-3">
+              <Eye className="size-3.5 text-muted-foreground" strokeWidth={1.75} />
+              <p className="text-[10px] font-medium uppercase tracking-[0.14em] text-muted-foreground">
+                Live preview
+              </p>
+            </div>
             <FormPreview
               title={details.formTitle || "Untitled job form"}
               description={details.formDescription}
@@ -222,87 +291,190 @@ export function FormBuilderStep({
         </aside>
       </div>
     </div>
-  )
+  );
 }
 
-function InlineFieldEditor({
+function InlineEditor({
   field,
-  fieldTypes,
   onUpdate,
-  onDone,
   onAddOption,
   onRemoveOption,
+  onDone,
 }: {
-  field: FormField
-  fieldTypes: { value: string; label: string }[]
-  onUpdate: (updates: Partial<FormField>) => void
-  onDone: () => void
-  onAddOption: (option: string) => void
-  onRemoveOption: (index: number) => void
+  field: FormField;
+  onUpdate: (u: Partial<FormField>) => void;
+  onAddOption: (o: string) => void;
+  onRemoveOption: (i: number) => void;
+  onDone: () => void;
 }) {
-  const [option, setOption] = useState("")
-  const locked = field.locked || isGitHubField(field)
+  const [option, setOption] = useState("");
+  const locked = field.locked || isGitHubField(field);
 
   return (
-    <div className="grid gap-3 border-t bg-secondary/40 p-3 sm:grid-cols-2">
-      <MiniField label="Label">
-        <Input className="cc-input" value={field.label} readOnly={locked} onChange={(e) => onUpdate({ label: e.target.value })} />
-      </MiniField>
-      <MiniField label="Type">
-        <Select value={field.type} disabled={locked} onValueChange={(value) => onUpdate({ type: value as FieldType })}>
-          <SelectTrigger className="cc-input">
+    <div
+      className="grid gap-4 border-t border-border bg-secondary/20 p-4 sm:grid-cols-2"
+      onClick={(e) => e.stopPropagation()}
+    >
+      <Mini label="Label">
+        <Input
+          className="h-9"
+          value={field.label}
+          readOnly={locked}
+          onChange={(e) => onUpdate({ label: e.target.value })}
+        />
+      </Mini>
+
+      <Mini label="Type">
+        <Select
+          value={field.type}
+          disabled={locked}
+          onValueChange={(value) => onUpdate({ type: value as FieldType })}
+        >
+          <SelectTrigger className="h-9">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            {fieldTypes.map((type) => <SelectItem key={type.value} value={type.value}>{type.label}</SelectItem>)}
+            {FIELD_TYPES.map((type) => (
+              <SelectItem key={type.value} value={type.value}>
+                {type.label}
+              </SelectItem>
+            ))}
           </SelectContent>
         </Select>
-      </MiniField>
-      <MiniField label="Placeholder">
-        <Input className="cc-input" value={field.placeholder || ""} readOnly={locked} onChange={(e) => onUpdate({ placeholder: e.target.value })} />
-      </MiniField>
-      <label className="flex items-end gap-2 pb-2 text-sm text-muted-foreground">
-        <input type="checkbox" checked={locked || field.required} disabled={locked} onChange={(e) => onUpdate({ required: e.target.checked })} />
-        Required
-      </label>
+      </Mini>
+
+      <Mini label="Placeholder">
+        <Input
+          className="h-9"
+          value={field.placeholder || ""}
+          readOnly={locked}
+          onChange={(e) => onUpdate({ placeholder: e.target.value })}
+        />
+      </Mini>
+
+      <Mini label="Settings">
+        <label className="inline-flex h-9 items-center gap-2 text-xs text-foreground">
+          <input
+            type="checkbox"
+            checked={locked || field.required}
+            disabled={locked}
+            onChange={(e) => onUpdate({ required: e.target.checked })}
+            className="size-3.5 rounded border-border"
+          />
+          Required field
+        </label>
+      </Mini>
 
       {field.type === "select" && (
         <div className="space-y-2 sm:col-span-2">
-          <Label className="text-xs text-muted-foreground">Options</Label>
+          <Label className="text-[11px] font-medium uppercase tracking-[0.12em] text-muted-foreground">
+            Options
+          </Label>
           <div className="flex gap-2">
-            <Input className="cc-input" value={option} onChange={(e) => setOption(e.target.value)} placeholder="Add option" />
-            <Button type="button" variant="outline" onClick={() => {
-              if (!option.trim()) return
-              onAddOption(option.trim())
-              setOption("")
-            }}>Add</Button>
+            <Input
+              className="h-9"
+              value={option}
+              onChange={(e) => setOption(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  if (!option.trim()) return;
+                  onAddOption(option.trim());
+                  setOption("");
+                }
+              }}
+              placeholder="Add option and press Enter"
+            />
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              className="h-9 gap-1"
+              onClick={() => {
+                if (!option.trim()) return;
+                onAddOption(option.trim());
+                setOption("");
+              }}
+            >
+              <Plus className="size-3.5" />
+              Add
+            </Button>
           </div>
-          <div className="flex flex-wrap gap-2">
-            {field.options?.map((item, index) => (
-              <span key={`${item}-${index}`} className="rounded-full bg-accent px-2.5 py-1 text-xs text-accent-foreground">
-                {item}
-                <button type="button" className="ml-2" onClick={() => onRemoveOption(index)}>x</button>
-              </span>
-            ))}
-          </div>
+          {field.options && field.options.length > 0 && (
+            <div className="flex flex-wrap gap-1.5">
+              {field.options.map((item, index) => (
+                <span
+                  key={`${item}-${index}`}
+                  className="inline-flex items-center gap-1 rounded-md border border-border bg-background px-2 py-0.5 text-xs"
+                >
+                  {item}
+                  <button
+                    type="button"
+                    onClick={() => onRemoveOption(index)}
+                    className="text-muted-foreground hover:text-foreground"
+                  >
+                    <X className="size-3" />
+                  </button>
+                </span>
+              ))}
+            </div>
+          )}
         </div>
       )}
-      <div className="sm:col-span-2">
-        <Button type="button" size="sm" onClick={onDone}>Done</Button>
+
+      <div className="flex justify-end sm:col-span-2">
+        <Button
+          type="button"
+          size="sm"
+          onClick={onDone}
+          className="h-8 gap-1 px-3 text-xs"
+        >
+          <Check className="size-3.5" />
+          Done
+        </Button>
       </div>
     </div>
-  )
+  );
 }
 
-function MiniField({ label, children }: { label: string; children: React.ReactNode }) {
+function Mini({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div className="space-y-1.5">
-      <Label className="text-xs text-muted-foreground">{label}</Label>
+      <Label className="text-[11px] font-medium uppercase tracking-[0.12em] text-muted-foreground">
+        {label}
+      </Label>
       {children}
     </div>
-  )
+  );
+}
+
+function TabBtn({
+  active,
+  onClick,
+  children,
+}: {
+  active: boolean;
+  onClick: () => void;
+  children: React.ReactNode;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`flex h-9 flex-1 items-center justify-center rounded text-xs font-medium transition ${
+        active
+          ? "bg-background text-foreground shadow-sm"
+          : "text-muted-foreground hover:text-foreground"
+      }`}
+    >
+      {children}
+    </button>
+  );
 }
 
 function labelize(value: string) {
-  return value.replaceAll("_", " ").toLowerCase().replace(/\b\w/g, (c) => c.toUpperCase())
+  return value
+    .replaceAll("_", " ")
+    .toLowerCase()
+    .replace(/\b\w/g, (c) => c.toUpperCase());
 }
