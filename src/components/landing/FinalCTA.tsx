@@ -24,9 +24,9 @@ export function FinalCTA() {
             "linear-gradient(hsl(var(--foreground) / 0.04) 1px, transparent 1px), linear-gradient(90deg, hsl(var(--foreground) / 0.04) 1px, transparent 1px)",
           backgroundSize: "56px 56px",
           maskImage:
-            "radial-gradient(ellipse 70% 60% at 50% 50%, black 30%, transparent 80%)",
+            "radial-gradient(ellipse 70% 60% at 50% 50%, var(--lc-bg) 30%, transparent 80%)",
           WebkitMaskImage:
-            "radial-gradient(ellipse 70% 60% at 50% 50%, black 30%, transparent 80%)",
+            "radial-gradient(ellipse 70% 60% at 50% 50%, var(--lc-bg) 30%, transparent 80%)",
         }}
       />
       <div

@@ -8,6 +8,8 @@ import { cacheKeys, cacheTtl } from "@/lib/cacheKeys";
 import { prisma } from "@/lib/prisma";
 import { HugeIcon, type HugeIconName } from "@/utils/hugeicons";
 
+export const dynamic = "force-dynamic";
+
 const comingSoonDomains = [
   {
     title: "AI / ML",
@@ -78,7 +80,7 @@ export default async function PublicDomainsPage() {
             "linear-gradient(var(--lc-grid) 1px, transparent 1px), linear-gradient(90deg, var(--lc-grid) 1px, transparent 1px)",
           backgroundSize: "56px 56px",
           maskImage:
-            "radial-gradient(ellipse 80% 50% at 50% 0%, black 20%, transparent 100%)",
+            "radial-gradient(ellipse 80% 50% at 50% 0%, #131313 20%, transparent 100%)",
         }}
       />
 

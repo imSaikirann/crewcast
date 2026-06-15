@@ -155,9 +155,9 @@ function ContributionGraph() {
       style={{
         opacity: 0.4,
         maskImage:
-          "radial-gradient(ellipse 90% 80% at 50% 50%, black 40%, transparent 95%)",
+          "radial-gradient(ellipse 90% 80% at 50% 50%, var(--lc-bg) 40%, transparent 95%)",
         WebkitMaskImage:
-          "radial-gradient(ellipse 90% 80% at 50% 50%, black 40%, transparent 95%)",
+          "radial-gradient(ellipse 90% 80% at 50% 50%, var(--lc-bg) 40%, transparent 95%)",
       }}
     >
       <svg

@@ -1,25 +1,27 @@
-// app/page.tsx  (or pages/index.tsx)
-
-import Hero from "@/components/landing/Hero";
-import { FinalCTA } from "@/components/landing/FinalCTA";
-import Footer from "@/components/landing/Footer";
-import { Comparison } from "@/components/landing/Comparison";
-import { HowItWorks } from "@/components/landing/HowItWorks";
-import { WhyCrewcast } from "@/components/landing/WhyCrewcast";
+import { Navbar } from "@/components/landing/newsletter/Navbar";
+import { Hero } from "@/components/landing/newsletter/Hero";
+import { SocialProof } from "@/components/landing/newsletter/SocialProof";
+import { Features } from "@/components/landing/newsletter/Features";
+import { Benefits } from "@/components/landing/newsletter/Benefits";
+import { StartupBenefits } from "@/components/landing/newsletter/StartupBenefits";
+import { Testimonials } from "@/components/landing/newsletter/Testimonials";
+import { FinalCTA } from "@/components/landing/newsletter/FinalCTA";
+import { Footer } from "@/components/landing/newsletter/Footer";
 
 export default function Home() {
   return (
-    <main
-      className="relative min-h-screen w-full overflow-x-hidden"
-      style={{ background: "var(--lc-bg)", color: "var(--lc-text)", fontFamily: "var(--lc-sans)" }}
-    >
-
-      <Hero />
-      <WhyCrewcast />
-      <HowItWorks />
-      <Comparison />
-      {/* <FinalCTA /> */}
-      <Footer  />
-    </main>
+    <div className="font-sora min-h-screen w-full overflow-x-hidden bg-white text-neutral-900 antialiased">
+      <Navbar />
+      <main>
+        <Hero />
+        <SocialProof />
+        <Features />
+        <Benefits />
+        <StartupBenefits />
+        <Testimonials />
+        <FinalCTA />
+      </main>
+      <Footer />
+    </div>
   );
 }

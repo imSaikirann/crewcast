@@ -192,9 +192,9 @@ export function HowItWorks() {
                 "radial-gradient(hsl(var(--foreground) / 0.12) 1px, transparent 1px)",
               backgroundSize: "18px 18px",
               maskImage:
-                "radial-gradient(ellipse 60% 60% at 50% 30%, black 30%, transparent 80%)",
+                "radial-gradient(ellipse 60% 60% at 50% 30%, var(--lc-bg) 30%, transparent 80%)",
               WebkitMaskImage:
-                "radial-gradient(ellipse 60% 60% at 50% 30%, black 30%, transparent 80%)",
+                "radial-gradient(ellipse 60% 60% at 50% 30%, var(--lc-bg) 30%, transparent 80%)",
             }}
           />
 

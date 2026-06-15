@@ -19,7 +19,7 @@ export default function Navbar() {
   const pathname = usePathname();
 
   return (
-    <header className="fixed top-0 inset-x-0 z-50 bg-white">
+    <header className="fixed top-0 inset-x-0 z-50 bg-background text-foreground">
 
       <div className="mx-auto max-w-[1100px] px-5">
 
@@ -45,15 +45,15 @@ export default function Navbar() {
                   href={l.href}
                   className={`relative transition ${
                     active
-                      ? "text-black"
-                      : "text-neutral-500 hover:text-black"
+                      ? "text-foreground"
+                      : "text-muted-foreground hover:text-foreground"
                   }`}
                 >
                   {l.label}
 
                   {/* subtle underline */}
                   {active && (
-                    <span className="absolute left-0 -bottom-1 h-[1px] w-full bg-black" />
+                    <span className="absolute left-0 -bottom-1 h-[1px] w-full bg-foreground" />
                   )}
                 </Link>
               );
@@ -65,7 +65,7 @@ export default function Navbar() {
             {!user ? (
               <button
                 onClick={() => signIn("google")}
-                className="text-[13px] font-medium text-black"
+                className="text-[13px] font-medium text-foreground"
               >
                 Sign in
               </button>
@@ -84,7 +84,7 @@ export default function Navbar() {
         </div>
 
         {/* Clean divider (no glass) */}
-        <div className="h-px bg-neutral-200" />
+        <div className="h-px bg-border" />
       </div>
 
       {/* Mobile */}

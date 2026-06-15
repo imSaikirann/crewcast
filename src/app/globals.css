@@ -5,6 +5,16 @@
   font-family: var(--lc-sans);
 }
 
+/* ── Newsletter landing typography ───────────────────────────── */
+.font-heading {
+  font-family: "Inter", "Helvetica Neue", Arial, sans-serif;
+  letter-spacing: -0.02em;
+}
+
+.font-sora {
+  font-family: "Sora", "Inter", system-ui, sans-serif;
+}
+
 @keyframes blink {
   0%, 100% { opacity: 1; }
   50% { opacity: 0; }
@@ -59,13 +69,13 @@
 }
 
 :root {
-  --font-dm-sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-dm-sans: "Inter", "Roboto", "Helvetica Neue", Arial, sans-serif;
 
   /* ── Core palette — pure monochrome ──────────────────────── */
-  --lc-bg:   #080808;   /* deepest page bg                     */
-  --lc-bg-1: #0e0e0e;   /* cards, panels                       */
-  --lc-bg-2: #141414;   /* elevated surfaces                   */
-  --lc-bg-3: #1c1c1c;   /* hover / active surfaces             */
+  --lc-bg:   #131313;   /* deepest page bg                     */
+  --lc-bg-1: #181818;   /* cards, panels                       */
+  --lc-bg-2: #202020;   /* elevated surfaces                   */
+  --lc-bg-3: #292929;   /* hover / active surfaces             */
 
   /* Borders — white alpha steps */
   --lc-border:       rgba(255, 255, 255, 0.08);
@@ -78,11 +88,11 @@
   --lc-text-2: #888888;   /* muted / secondary                 */
   --lc-text-3: #333333;   /* subtle / placeholder              */
 
-  /* ── Accent — white CTA on black ────────────────────────── */
+  /* ── Accent — white CTA on dark surface ─────────────────── */
   --lc-accent:        #e0e0e0;                 /* buttons, highlights */
   --lc-accent-strong: #ffffff;                 /* hover state         */
   --lc-accent-dim:    rgba(255, 255, 255, 0.06); /* soft accent bg    */
-  --lc-accent-text:   #080808;                 /* text ON accent bg   */
+  --lc-accent-text:   #131313;                 /* text ON accent bg   */
 
   /* ── Semantic — desaturated but distinct ────────────────── */
   --lc-danger:  #cc3333;
@@ -167,7 +177,7 @@
     --lc-text-3: #8a94a3;
 
     --lc-accent:        #111318;
-    --lc-accent-strong: #000000;
+    --lc-accent-strong: #131313;
     --lc-accent-dim:    rgba(15, 23, 42, 0.07);
     --lc-accent-text:   #ffffff;
 
@@ -195,7 +205,7 @@
   --lc-text-3: #8a94a3;
 
   --lc-accent:        #111318;
-  --lc-accent-strong: #000000;
+  --lc-accent-strong: #131313;
   --lc-accent-dim:    rgba(15, 23, 42, 0.07);
   --lc-accent-text:   #ffffff;
 
@@ -216,6 +226,8 @@
   }
   body {
     @apply bg-background text-foreground;
+    font-family: var(--lc-sans);
+    text-rendering: geometricPrecision;
   }
 }
 

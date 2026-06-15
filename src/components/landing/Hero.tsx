@@ -79,7 +79,7 @@ export default function Hero() {
             "linear-gradient(var(--lc-grid) 1px, transparent 1px), linear-gradient(90deg, var(--lc-grid) 1px, transparent 1px)",
           backgroundSize: "56px 56px",
           maskImage:
-            "radial-gradient(ellipse 75% 55% at 50% 0%, black 35%, transparent 100%)",
+            "radial-gradient(ellipse 75% 55% at 50% 0%, var(--lc-bg) 35%, transparent 100%)",
         }}
       />
 

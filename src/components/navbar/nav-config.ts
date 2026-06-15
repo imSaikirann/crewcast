@@ -10,5 +10,9 @@ export const navLinks: NavLink[] = [
 /** Routes where the navbar should be completely hidden */
 export const hiddenNavbarRoutes = ["/form", "/dashboard", "/admin"];
 
+/** Routes where the navbar is hidden only on an exact match */
+export const exactHiddenNavbarRoutes = ["/"];
+
 export const isNavbarHidden = (pathname: string) =>
+  exactHiddenNavbarRoutes.includes(pathname) ||
   hiddenNavbarRoutes.some((p) => pathname.startsWith(p));
