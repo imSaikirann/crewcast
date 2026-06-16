@@ -12,21 +12,21 @@ export function Hero() {
           GitHub-first hiring forms
         </p>
 
-        <h1 className="font-heading text-balance text-5xl font-bold leading-[1.05] text-neutral-900 sm:text-6xl md:text-7xl">
+        <h1 className="font-heading text-balance text-4xl font-bold leading-[1.08] text-neutral-900 sm:text-6xl sm:leading-[1.05] md:text-7xl">
           Hire for proof
           <br className="hidden sm:block" /> of work.
         </h1>
 
-        <p className="font-sora mx-auto mt-7 max-w-xl text-pretty text-lg leading-relaxed text-neutral-500">
+        <p className="font-sora mx-auto mt-7 max-w-xl text-pretty text-base leading-relaxed text-neutral-500 sm:text-lg">
           Crewcast turns role-specific forms into ranked shortlists. Publish one
           link, collect structured applications, and review candidates with
-          GitHub-backed scoring — fair to candidates, fast for recruiters.
+          GitHub-backed scoring that's fair to candidates and fast for recruiters.
         </p>
 
         <div id="get-started" className="mx-auto mt-10 max-w-md scroll-mt-24">
           <EmailForm size="lg" buttonLabel="Get started" />
           <p className="font-sora mt-4 text-sm text-neutral-400">
-            Free to start. No credit card. Set up your first form in minutes.
+            Free to start. Set up your first form in minutes.
           </p>
         </div>
       </div>

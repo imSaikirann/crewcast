@@ -9,7 +9,7 @@ const features = [
   {
     icon: CompassIcon,
     title: "GitHub-backed scoring",
-    body: "Every application arrives with a 0–100 score and a clear breakdown — activity, repo quality, open-source signal, and stack match.",
+    body: "Every application arrives with a 0 to 100 score and a clear breakdown of activity, repo quality, open-source signal, and stack match.",
   },
   {
     icon: ClockIcon,
@@ -28,7 +28,7 @@ export function Features() {
           </h2>
           <p className="font-sora mt-4 text-lg leading-relaxed text-neutral-500">
             Crewcast weighs real projects and open-source contributions over
-            resume buzzwords — so the right work rises to the top faster.
+            resume buzzwords, so the right work rises to the top faster.
           </p>
         </div>
 

@@ -9,7 +9,7 @@ const testimonials = [
   },
   {
     quote:
-      "Finally, screening that rewards what engineers actually build. One link, structured answers, real signal — no more spreadsheet chaos.",
+      "Finally, screening that rewards what engineers actually build. One link, structured answers, real signal, and no more spreadsheet chaos.",
     name: "Daniel Cho",
     role: "Founder, Arc Labs",
   },

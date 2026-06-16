@@ -15,7 +15,7 @@ const startupBenefits = [
   {
     icon: GaugeIcon,
     title: "Proof of work over resume lines",
-    body: "A polished resume says little about how someone builds. We rank candidates on what they actually shipped — commits, projects, and code quality.",
+    body: "A polished resume says little about how someone builds. We rank candidates on what they actually shipped: commits, projects, and code quality.",
   },
   {
     icon: BranchIcon,
@@ -61,7 +61,7 @@ export function StartupBenefits() {
           </h2>
           <p className="font-sora mt-4 text-lg leading-relaxed text-neutral-500">
             Small teams can&apos;t afford a bad hire or a week lost to screening.
-            Crewcast cuts both — so you spend time on the people who can actually
+            Crewcast cuts both, so you spend time on the people who can actually
             do the work.
           </p>
         </div>

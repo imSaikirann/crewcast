@@ -3,6 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useState } from "react";
+import { ArrowRightIcon } from "./icons";
 
 const links = [
   { label: "How it works", href: "#features" },
@@ -56,9 +57,13 @@ export function Navbar() {
 
         <a
           href="#get-started"
-          className="font-sora inline-flex items-center rounded-full bg-neutral-900 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-neutral-700"
+          className="font-sora group inline-flex items-center gap-1.5 rounded-full bg-neutral-900 px-4 py-2 text-sm font-medium text-white shadow-sm ring-1 ring-neutral-900/10 transition-all duration-200 hover:-translate-y-0.5 hover:bg-neutral-800 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900 focus-visible:ring-offset-2"
         >
           Get started
+          <ArrowRightIcon
+            size={15}
+            className="transition-transform duration-200 group-hover:translate-x-0.5"
+          />
         </a>
       </nav>
     </header>

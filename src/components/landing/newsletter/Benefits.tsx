@@ -9,7 +9,7 @@ const benefits = [
   {
     icon: ShieldIcon,
     title: "Less spam, better fit",
-    body: "Candidates apply in two minutes — no logins, no CV uploads.",
+    body: "Candidates apply in two minutes, with no logins and no CV uploads.",
   },
   {
     icon: BookIcon,
