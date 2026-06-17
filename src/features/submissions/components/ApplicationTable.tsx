@@ -75,7 +75,7 @@ export default function ApplicationTable({
 
   if (!applications.length) {
     return (
-      <div className="rounded-xl border border-dashed bg-background p-10 text-center">
+      <div className="rounded-lg border border-dashed border-border/60 p-10 text-center">
         <p className="font-medium">No applications match this view.</p>
         <p className="mt-1 text-sm text-muted-foreground">
           Try clearing filters or sharing the public form link again.
@@ -86,35 +86,35 @@ export default function ApplicationTable({
 
   return (
     <section className="space-y-4">
-      <div className="overflow-hidden rounded-lg border bg-background shadow-sm">
-        <div className="flex flex-col gap-3 border-b px-5 py-4 md:flex-row md:items-center md:justify-between">
+      <div className="overflow-hidden rounded-lg border border-border/60">
+        <div className="flex flex-col gap-3 border-b border-border/60 px-4 py-3 md:flex-row md:items-center md:justify-between">
           <div>
-            <h2 className="font-display text-base font-semibold">Candidate review</h2>
+            <h2 className="text-sm font-semibold">Candidate review</h2>
             <p className="text-sm text-muted-foreground">
               Review applications, update status, or open a row for GitHub evidence.
             </p>
           </div>
-          <Badge variant={compareIds.length === 3 ? "default" : "secondary"}>
+          <Badge variant={compareIds.length === 3 ? "default" : "secondary"} className="font-normal">
             {compareIds.length}/3 selected
           </Badge>
         </div>
 
         <div className="hidden overflow-x-auto lg:block">
           <table className="w-full text-sm">
-            <thead className="bg-muted/70 text-xs uppercase tracking-wide text-muted-foreground">
+            <thead className="border-b border-border/60 bg-muted/30 text-xs uppercase tracking-wide text-muted-foreground">
               <tr>
-                <th className="px-5 py-3 text-left">Compare</th>
-                <th className="px-5 py-3 text-left">Candidate</th>
+                <th className="px-4 py-2.5 text-left font-medium">Compare</th>
+                <th className="px-4 py-2.5 text-left font-medium">Candidate</th>
                 {responseColumns.map((field) => (
-                  <th key={field.id} className="px-5 py-3 text-left">
+                  <th key={field.id} className="px-4 py-2.5 text-left font-medium">
                     {field.label}
                   </th>
                 ))}
-                <th className="px-5 py-3 text-left">GitHub score</th>
-                <th className="px-5 py-3 text-left">GitHub</th>
-                <th className="px-5 py-3 text-left">Applied</th>
-                <th className="px-5 py-3 text-left">Status</th>
-                <th className="px-5 py-3 text-right">Action</th>
+                <th className="px-4 py-2.5 text-left font-medium">GitHub score</th>
+                <th className="px-4 py-2.5 text-left font-medium">GitHub</th>
+                <th className="px-4 py-2.5 text-left font-medium">Applied</th>
+                <th className="px-4 py-2.5 text-left font-medium">Status</th>
+                <th className="px-4 py-2.5 text-right font-medium">Action</th>
               </tr>
             </thead>
 
@@ -128,9 +128,9 @@ export default function ApplicationTable({
                   <tr
                     key={application.id}
                     onClick={() => setReviewApplication(application)}
-                    className="cursor-pointer border-t transition hover:bg-muted/35"
+                    className="cursor-pointer border-t border-border/50 transition hover:bg-muted/30"
                   >
-                    <td className="px-5 py-4">
+                    <td className="px-4 py-3">
                       <button
                         type="button"
                         onClick={(event) => {
@@ -138,17 +138,17 @@ export default function ApplicationTable({
                           onToggleCompare(application.id);
                         }}
                         className={[
-                          "grid size-8 place-items-center rounded-md border text-xs font-semibold transition",
+                          "grid size-7 place-items-center rounded-md border text-xs font-semibold transition",
                           selected
                             ? "border-primary bg-primary text-primary-foreground"
-                            : "border-border bg-muted/25 text-muted-foreground hover:text-foreground",
+                            : "border-border/60 text-muted-foreground hover:text-foreground",
                         ].join(" ")}
                         aria-label={`Compare ${application.fullName}`}
                       >
                         {selected ? compareIds.indexOf(application.id) + 1 : "+"}
                       </button>
                     </td>
-                    <td className="px-5 py-4">
+                    <td className="px-4 py-3">
                       <div className="flex items-center gap-3">
                         <Avatar name={application.fullName} />
                         <div className="min-w-0">
@@ -162,16 +162,16 @@ export default function ApplicationTable({
                       </div>
                     </td>
                     {responseColumns.map((field) => (
-                      <td key={field.id} className="max-w-56 px-5 py-4 text-muted-foreground">
+                      <td key={field.id} className="max-w-56 px-4 py-3 text-muted-foreground">
                         <span className="line-clamp-2 break-words">
                           {formatResponsePreview(application.responses[field.id])}
                         </span>
                       </td>
                     ))}
-                    <td className="px-5 py-4">
+                    <td className="px-4 py-3">
                       <ScoreBadge score={score} />
                     </td>
-                    <td className="px-5 py-4 text-muted-foreground">
+                    <td className="px-4 py-3 text-muted-foreground">
                       {github ? (
                         <a
                           href={`https://github.com/${github}`}
@@ -187,10 +187,10 @@ export default function ApplicationTable({
                         "-"
                       )}
                     </td>
-                    <td className="px-5 py-4 text-muted-foreground">
+                    <td className="px-4 py-3 text-muted-foreground">
                       {formatDateTime(application.createdAt)}
                     </td>
-                    <td className="px-5 py-4">
+                    <td className="px-4 py-3">
                       <StatusActions
                         application={application}
                         disabled={updatingId === application.id}
@@ -198,7 +198,7 @@ export default function ApplicationTable({
                         onChange={(status) => updateStatus(application.id, status)}
                       />
                     </td>
-                    <td className="px-5 py-4 text-right">
+                    <td className="px-4 py-3 text-right">
                       <Button
                         variant="ghost"
                         size="sm"
@@ -838,7 +838,7 @@ function Avatar({ name }: { name: string }) {
     .toUpperCase();
 
   return (
-    <div className="grid size-10 shrink-0 place-items-center rounded-md bg-primary text-sm font-semibold text-primary-foreground">
+    <div className="grid size-9 shrink-0 place-items-center rounded-md bg-muted text-xs font-semibold text-foreground">
       {initials || "C"}
     </div>
   );
@@ -846,28 +846,32 @@ function Avatar({ name }: { name: string }) {
 
 function ScoreBadge({ score }: { score?: number }) {
   if (typeof score !== "number") {
-    return <Badge variant="secondary">No score</Badge>;
+    return <Badge variant="secondary" className="font-normal">No score</Badge>;
   }
 
   const tone =
     score >= 80
-      ? "bg-emerald-600 text-white"
+      ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
       : score >= 60
-        ? "bg-amber-500 text-white"
-        : "bg-rose-600 text-white";
+        ? "bg-amber-500/10 text-amber-600 dark:text-amber-400"
+        : "bg-rose-500/10 text-rose-600 dark:text-rose-400";
 
-  return <Badge className={tone}>{score}/100</Badge>;
+  return <Badge className={`border-0 font-medium ${tone}`}>{score}/100</Badge>;
 }
 
 function StatusBadge({ status }: { status: string }) {
   const tone =
     status === "HIRED"
-      ? "bg-emerald-600 text-white"
+      ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
       : status === "REJECTED"
-        ? "bg-rose-600 text-white"
+        ? "bg-rose-500/10 text-rose-600 dark:text-rose-400"
         : "";
 
-  return <Badge className={tone} variant={tone ? "default" : "secondary"}>{status.toLowerCase()}</Badge>;
+  return (
+    <Badge className={`font-normal capitalize ${tone ? `border-0 ${tone}` : ""}`} variant={tone ? "default" : "secondary"}>
+      {status.toLowerCase()}
+    </Badge>
+  );
 }
 
 function StatusActions({

@@ -143,14 +143,14 @@ export default function Hero() {
           >
             <Link
               href="/dashboard"
-              className="lc-btn-primary min-h-12 w-full max-w-[320px] justify-center px-6 text-center sm:w-auto sm:max-w-none"
+              className="lc-btn-primary h-10 w-full max-w-[320px] justify-center px-5 text-center sm:w-auto sm:max-w-none"
             >
               <span className="truncate">Create your first hiring form</span>
               <ArrowRight className="size-4 shrink-0" />
             </Link>
             <Link
               href="/jobs"
-              className="lc-btn-ghost min-h-12 w-full max-w-[320px] justify-center px-6 text-center sm:w-auto sm:max-w-none"
+              className="lc-btn-ghost h-10 w-full max-w-[320px] justify-center px-5 text-center sm:w-auto sm:max-w-none"
             >
               View open roles
             </Link>

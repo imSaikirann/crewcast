@@ -33,18 +33,16 @@ export default function DashboardScreen({
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col gap-4 border-b pb-5 sm:flex-row sm:items-end sm:justify-between">
+      <div className="flex flex-col gap-4 border-b border-border/60 pb-5 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
-            Dashboard
-          </p>
           <HiringGreeting companyName={recruiter.companyName} />
           <p className="mt-1 text-sm text-muted-foreground">
             {recruiter.companyName} hiring workspace
           </p>
         </div>
         <Button
-          className="h-10 w-full sm:w-auto"
+          variant="outline"
+          className="h-9 w-full sm:w-auto"
           disabled={creating}
           onClick={() => {
             setCreating(true);
@@ -56,16 +54,15 @@ export default function DashboardScreen({
         </Button>
       </div>
 
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-2 xl:grid-cols-4">
+      <div className="grid grid-cols-2 divide-x divide-y divide-border/60 overflow-hidden rounded-lg border border-border/60 sm:divide-y-0 xl:grid-cols-4">
         <StatCard
           title="Active forms"
           value={`${activeForms}/${totalForms}`}
           intent="primary"
-          icon="briefcase"
         />
-        <StatCard title="Applications" value={totalSubmissions} icon="user-add" />
-        <StatCard title="Form views" value={totalViews} icon="views" />
-        <StatCard title="Conversion" value={`${conversionRate}%`} icon="target-03" />
+        <StatCard title="Applications" value={totalSubmissions} />
+        <StatCard title="Form views" value={totalViews} />
+        <StatCard title="Conversion" value={`${conversionRate}%`} />
       </div>
 
       {/* <div className="grid gap-3 lg:grid-cols-[1fr_auto]">
@@ -131,7 +128,7 @@ function HiringGreeting({ companyName }: { companyName: string }) {
   }, [companyName]);
 
   return (
-    <h1 className="mt-2 font-display text-2xl font-semibold tracking-tight">
+    <h1 className="text-xl font-semibold tracking-tight">
       {message}
     </h1>
   );

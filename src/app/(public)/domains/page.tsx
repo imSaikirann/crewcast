@@ -1,8 +1,9 @@
 import Link from "next/link";
-import { ArrowRight, BadgeCheck, Sparkles } from "lucide-react";
+import { ArrowRight, BadgeCheck } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Navbar } from "@/components/landing/newsletter/Navbar";
 import { cachedJson } from "@/lib/cache";
 import { cacheKeys, cacheTtl } from "@/lib/cacheKeys";
 import { prisma } from "@/lib/prisma";
@@ -65,64 +66,47 @@ export default async function PublicDomainsPage() {
   );
 
   return (
-    <main
-      className="min-h-screen px-4 pb-20 pt-28 text-foreground sm:px-6"
-      style={{
-        background: "var(--lc-bg)",
-        color: "var(--lc-text)",
-        fontFamily: "var(--lc-sans)",
-      }}
-    >
-      <div
-        className="pointer-events-none fixed inset-0"
+    <>
+      <Navbar />
+      <main
+        className="min-h-screen px-4 pb-20 pt-28 text-foreground sm:px-6"
         style={{
-          backgroundImage:
-            "linear-gradient(var(--lc-grid) 1px, transparent 1px), linear-gradient(90deg, var(--lc-grid) 1px, transparent 1px)",
-          backgroundSize: "56px 56px",
-          maskImage:
-            "radial-gradient(ellipse 80% 50% at 50% 0%, #131313 20%, transparent 100%)",
+          background: "var(--lc-bg)",
+          color: "var(--lc-text)",
+          fontFamily: "var(--lc-sans)",
         }}
-      />
-
+      >
       <section className="relative mx-auto max-w-[1100px]">
-        <div className="grid gap-8 border-b border-[var(--lc-border)] pb-10 lg:grid-cols-[minmax(0,1fr)_340px] lg:items-end">
+        <div className="grid gap-8 border-b border-[var(--lc-border)] pb-10 lg:grid-cols-[minmax(0,1fr)_320px] lg:items-end">
           <div>
-            <Badge variant="outline" className="mb-5 rounded-md">
-              Crewcast hiring domains
-            </Badge>
-            <h1 className="max-w-4xl font-display text-[clamp(42px,6vw,76px)] font-extrabold leading-[1.02] tracking-tight">
+            <h1 className="max-w-3xl text-3xl font-semibold leading-tight tracking-tight sm:text-4xl">
               Choose what you are hiring for.
             </h1>
-            <p className="mt-5 max-w-2xl text-base leading-7 text-[var(--lc-text-2)]">
+            <p className="mt-4 max-w-2xl text-sm leading-7 text-[var(--lc-text-2)]">
               Domains are role-ready hiring lanes. Each one can carry its own
               default form fields, evaluation signal, and candidate review flow.
             </p>
-            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-              <Button asChild size="lg" className="h-12 rounded-md">
+            <div className="mt-7 flex flex-col gap-3 sm:flex-row">
+              <Button asChild className="h-10 rounded-md">
                 <Link href="/dashboard/domains">
                   Start with a domain
                   <ArrowRight className="size-4" />
                 </Link>
               </Button>
-              <Button asChild size="lg" variant="outline" className="h-12 rounded-md">
+              <Button asChild variant="outline" className="h-10 rounded-md">
                 <Link href="/jobs">View open roles</Link>
               </Button>
             </div>
           </div>
 
-          <div className="rounded-lg border border-[var(--lc-border)] bg-[var(--lc-bg-1)] p-5 shadow-sm">
-            <div className="flex items-center gap-3">
-              <div className="grid size-10 place-items-center rounded-md bg-[var(--lc-bg-2)] text-[var(--lc-text)]">
-                <Sparkles className="size-5" />
-              </div>
-              <div>
-                <p className="text-sm font-semibold">Available now</p>
-                <p className="text-xs text-[var(--lc-text-2)]">
-                  Active hiring categories in Crewcast
-                </p>
-              </div>
+          <div className="rounded-lg border border-[var(--lc-border)] p-5">
+            <div>
+              <p className="text-sm font-semibold">Available now</p>
+              <p className="text-xs text-[var(--lc-text-2)]">
+                Active hiring categories in Crewcast
+              </p>
             </div>
-            <div className="mt-5 grid grid-cols-2 gap-3">
+            <div className="mt-4 grid grid-cols-2 divide-x divide-[var(--lc-border)] overflow-hidden rounded-md border border-[var(--lc-border)]">
               <DomainStat label="Domains" value={domains.length} />
               <DomainStat label="Forms" value={totalForms} />
             </div>
@@ -130,8 +114,8 @@ export default async function PublicDomainsPage() {
         </div>
 
         {domains.length === 0 ? (
-          <div className="mt-10 rounded-lg border border-dashed border-[var(--lc-border)] bg-[var(--lc-bg-1)] p-10 text-center">
-            <h2 className="font-display text-2xl font-semibold">
+          <div className="mt-10 rounded-lg border border-dashed border-[var(--lc-border)] p-10 text-center">
+            <h2 className="text-2xl font-semibold">
               Domains are being prepared.
             </h2>
             <p className="mx-auto mt-3 max-w-xl text-sm leading-6 text-[var(--lc-text-2)]">
@@ -141,14 +125,13 @@ export default async function PublicDomainsPage() {
           </div>
         ) : (
           <div className="mt-10 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-            {domains.map((domain, index) => (
+            {domains.map((domain) => (
               <DomainShowcaseCard
                 key={domain.id}
                 domain={{
                   ...domain,
                   formCount: domain._count.recruiterForms,
                 }}
-                index={index}
               />
             ))}
           </div>
@@ -157,10 +140,7 @@ export default async function PublicDomainsPage() {
         <section className="mt-14">
           <div className="mb-5 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-widest text-[var(--lc-text-3)]">
-                Adding more
-              </p>
-              <h2 className="mt-2 font-display text-2xl font-semibold">
+              <h2 className="text-2xl font-semibold">
                 More hiring lanes are coming.
               </h2>
             </div>
@@ -178,12 +158,12 @@ export default async function PublicDomainsPage() {
         </section>
       </section>
     </main>
+    </>
   );
 }
 
 function DomainShowcaseCard({
   domain,
-  index,
 }: {
   domain: {
     id: string;
@@ -193,32 +173,20 @@ function DomainShowcaseCard({
     haveDefaultForm: boolean;
     formCount: number;
   };
-  index: number;
 }) {
-  const accent = [
-    "from-emerald-500/20",
-    "from-sky-500/20",
-    "from-amber-500/20",
-    "from-rose-500/20",
-    "from-violet-500/20",
-  ][index % 5];
-
   return (
     <Link
       href={`/dashboard/forms/new?domain=${domain.id}`}
-      className="group relative min-h-72 overflow-hidden rounded-lg border border-[var(--lc-border)] bg-[var(--lc-bg-1)] p-5 transition hover:-translate-y-1 hover:border-[var(--lc-border-hover)]"
+      className="group relative flex min-h-72 flex-col rounded-lg border border-[var(--lc-border)] p-5 transition-colors hover:border-[var(--lc-border-hover)]"
     >
-      <div
-        className={`absolute inset-x-0 top-0 h-28 bg-gradient-to-b ${accent} to-transparent opacity-80`}
-      />
       <div className="relative flex h-full flex-col">
         <div className="flex items-start justify-between gap-3">
-          <div className="grid size-12 place-items-center rounded-md border border-[var(--lc-border)] bg-[var(--lc-bg-2)]">
-            <HugeIcon name="briefcase" className="size-6" />
+          <div className="grid size-11 place-items-center rounded-md border border-[var(--lc-border)]">
+            <HugeIcon name="briefcase" className="size-5" />
           </div>
           <div className="flex items-center gap-2">
             {domain.haveDefaultForm && (
-              <Badge variant="secondary" className="gap-1 rounded-md">
+              <Badge variant="secondary" className="gap-1 rounded-md font-normal">
                 <BadgeCheck className="size-3.5" />
                 default ready
               </Badge>
@@ -226,21 +194,21 @@ function DomainShowcaseCard({
           </div>
         </div>
 
-        <div className="mt-8">
-          <h3 className="font-display text-2xl font-semibold tracking-tight">
+        <div className="mt-6">
+          <h3 className="text-xl font-semibold tracking-tight">
             {domain.title}
           </h3>
-          <p className="mt-3 line-clamp-3 text-sm leading-6 text-[var(--lc-text-2)]">
+          <p className="mt-2 line-clamp-3 text-sm leading-6 text-[var(--lc-text-2)]">
             {domain.description}
           </p>
         </div>
 
-        <div className="mt-auto pt-8">
-          <div className="mb-4 grid grid-cols-2 gap-2">
+        <div className="mt-auto pt-6">
+          <div className="mb-4 grid grid-cols-2 divide-x divide-[var(--lc-border)] overflow-hidden rounded-md border border-[var(--lc-border)]">
             <MiniStat label="Live forms" value={domain.formCount} />
             <MiniStat label="Template" value={domain.haveDefaultForm ? "Ready" : "Custom"} />
           </div>
-          <span className="inline-flex items-center gap-2 text-sm font-semibold text-[var(--lc-text)] transition group-hover:translate-x-1">
+          <span className="inline-flex items-center gap-2 text-sm font-medium text-[var(--lc-text)] transition group-hover:translate-x-1">
             Hire in this domain
             <ArrowRight className="size-4" />
           </span>
@@ -261,20 +229,20 @@ function ComingSoonCard({
   };
 }) {
   return (
-    <div className="rounded-lg border border-dashed border-[var(--lc-border)] bg-[var(--lc-bg-1)] p-5">
+    <div className="rounded-lg border border-dashed border-[var(--lc-border)] p-5">
       <div className="flex items-start justify-between gap-3">
-        <div className="grid size-11 place-items-center rounded-md bg-[var(--lc-bg-2)]">
-          <HugeIcon name={domain.icon} className="size-6" />
+        <div className="grid size-11 place-items-center rounded-md border border-[var(--lc-border)]">
+          <HugeIcon name={domain.icon} className="size-5" />
         </div>
-        <Badge variant="outline" className="rounded-md">
+        <Badge variant="outline" className="rounded-md font-normal">
           soon
         </Badge>
       </div>
-      <h3 className="mt-6 font-display text-xl font-semibold">{domain.title}</h3>
+      <h3 className="mt-6 text-xl font-semibold">{domain.title}</h3>
       <p className="mt-2 text-sm leading-6 text-[var(--lc-text-2)]">
         {domain.description}
       </p>
-      <p className="mt-5 rounded-md bg-[var(--lc-bg-2)] px-3 py-2 text-xs text-[var(--lc-text-2)]">
+      <p className="mt-5 rounded-md border border-[var(--lc-border)] px-3 py-2 text-xs text-[var(--lc-text-2)]">
         {domain.signal}
       </p>
     </div>
@@ -283,8 +251,8 @@ function ComingSoonCard({
 
 function DomainStat({ label, value }: { label: string; value: number }) {
   return (
-    <div className="rounded-md bg-[var(--lc-bg-2)] px-4 py-3">
-      <p className="font-display text-2xl font-semibold">{value}</p>
+    <div className="px-4 py-3">
+      <p className="text-2xl font-semibold tabular-nums">{value}</p>
       <p className="text-xs text-[var(--lc-text-2)]">{label}</p>
     </div>
   );
@@ -292,7 +260,7 @@ function DomainStat({ label, value }: { label: string; value: number }) {
 
 function MiniStat({ label, value }: { label: string; value: number | string }) {
   return (
-    <div className="rounded-md border border-[var(--lc-border)] bg-[var(--lc-bg-2)] px-3 py-2">
+    <div className="px-3 py-2">
       <p className="text-sm font-semibold">{value}</p>
       <p className="text-[11px] text-[var(--lc-text-2)]">{label}</p>
     </div>

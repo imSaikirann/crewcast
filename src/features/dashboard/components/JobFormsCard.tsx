@@ -11,7 +11,7 @@ export function JobFormsCard({ forms }: { forms: JobForm[] }) {
     <section className="space-y-3">
       <div className="flex items-center justify-between gap-4">
         <div>
-          <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
+          <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
             Job forms
           </p>
           <p className="mt-0.5 text-sm text-muted-foreground">
@@ -27,15 +27,12 @@ export function JobFormsCard({ forms }: { forms: JobForm[] }) {
       </div>
 
       {forms.length === 0 ? (
-        <div className="rounded-lg border border-dashed bg-secondary/30 p-8 text-center">
-          <div className="mx-auto grid size-11 place-items-center rounded-lg bg-background text-primary shadow-xs">
-            <HugeIcon name="briefcase" className="size-5" />
-          </div>
-          <p className="mt-4 text-sm font-semibold text-foreground">No job forms yet</p>
+        <div className="rounded-lg border border-dashed border-border/60 p-8 text-center">
+          <p className="text-sm font-medium text-foreground">No job forms yet</p>
           <p className="mx-auto mt-1 max-w-sm text-sm text-muted-foreground">
             Start with a domain template, then publish a focused form for your next role.
           </p>
-          <Button asChild size="sm" className="mt-5">
+          <Button asChild variant="outline" size="sm" className="mt-5">
             <Link href="/dashboard/domains">
               <HugeIcon name="add-circle" className="size-4" />
               Create first form
@@ -43,7 +40,7 @@ export function JobFormsCard({ forms }: { forms: JobForm[] }) {
           </Button>
         </div>
       ) : (
-        <div className="space-y-2">
+        <div className="divide-y divide-border/60 overflow-hidden rounded-lg border border-border/60">
           {forms.map((form) => (
             <JobFormRow key={form.id} form={form} />
           ))}

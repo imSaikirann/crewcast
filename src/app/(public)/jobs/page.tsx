@@ -4,6 +4,7 @@
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import type { Job } from "@/features/jobs/types/job";
+import { Navbar } from "@/components/landing/newsletter/Navbar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -136,30 +137,22 @@ export default function JobsPage() {
   };
 
   return (
-    <main className="min-h-screen bg-background px-4 py-20 text-foreground sm:px-6 lg:px-8">
+    <>
+      <Navbar solid />
+      <main className="min-h-screen bg-white px-4 py-12 text-foreground sm:px-6 lg:px-8">
       <div className="mx-auto max-w-6xl space-y-8">
-        <section className="grid gap-6 border-b pb-7 lg:grid-cols-[minmax(0,1fr)_360px] lg:items-end">
+        <section className="grid gap-6 border-b border-border/60 pb-7 lg:grid-cols-[minmax(0,1fr)_320px] lg:items-end">
           <div>
-            <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-border bg-background/60 px-3 py-1 backdrop-blur-md">
-              <span className="relative flex size-1.5">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-500 opacity-75" />
-                <span className="relative inline-flex size-1.5 rounded-full bg-emerald-500 shadow-[0_0_8px_#10b981aa]" />
-              </span>
-              <span className="font-mono text-[10.5px] uppercase tracking-[0.14em] text-muted-foreground">
-                Open engineering roles
-              </span>
-            </div>
-            <h1 className="text-balance text-4xl font-extrabold tracking-[-0.04em] sm:text-5xl">
-              Find roles ranked by{" "}
-              <em className="font-light italic text-foreground/85">real signals.</em>
+            <h1 className="text-balance text-2xl font-semibold tracking-tight sm:text-3xl">
+              Open roles
             </h1>
-            <p className="mt-4 max-w-2xl text-sm leading-7 text-muted-foreground sm:text-[15px]">
+            <p className="mt-2 max-w-2xl text-sm leading-7 text-muted-foreground">
               Browse active Crewcast openings from verified hiring teams. Filter by stack,
               work mode, seniority, and role type.
             </p>
           </div>
 
-          <div className="grid grid-cols-3 gap-3 rounded-md border bg-card p-4 shadow-xs">
+          <div className="grid grid-cols-3 divide-x divide-border/60 overflow-hidden rounded-lg border border-border/60">
             <Stat label="Roles" value={jobs.length} />
             <Stat
               label="Remote"
@@ -185,7 +178,7 @@ export default function JobsPage() {
       {/* TOOLBAR */}
       <div
         data-testid="jobs-toolbar"
-        className="rounded-md border border-border/70 bg-card/60 p-2 shadow-xs backdrop-blur-md"
+        className="rounded-lg border border-border/60 p-2"
       >
         <div className="flex items-center gap-2">
           {/* Search — always visible */}
@@ -196,7 +189,7 @@ export default function JobsPage() {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Search role, company, stack…"
-              className="h-10 rounded-md border-border/60 bg-background/60 pl-9 pr-9 backdrop-blur"
+              className="h-9 rounded-md pl-9 pr-9"
             />
             {query ? (
               <button
@@ -216,7 +209,7 @@ export default function JobsPage() {
               <Button
                 data-testid="jobs-filters-trigger"
                 variant="outline"
-                className="relative h-10 gap-2 rounded-md border-border/70 bg-background/60 px-3 backdrop-blur lg:hidden"
+                className="relative h-9 gap-2 rounded-md px-3 lg:hidden"
               >
                 <Filter className="size-4" />
                 <span className="text-sm">Filters</span>
@@ -233,11 +226,11 @@ export default function JobsPage() {
 
             <SheetContent
               side="bottom"
-              className="rounded-t-md border-border/70 bg-card/95 backdrop-blur-xl"
+              className="rounded-t-lg border-border/60"
             >
               <SheetHeader className="text-left">
-                <SheetTitle className="flex items-center gap-2 font-display">
-                  <Filter className="size-4 text-primary" />
+                <SheetTitle className="flex items-center gap-2">
+                  <Filter className="size-4" />
                   Filters
                 </SheetTitle>
                 <SheetDescription>
@@ -338,7 +331,7 @@ export default function JobsPage() {
                 variant="ghost"
                 size="sm"
                 onClick={reset}
-                className="h-10 gap-1.5 rounded-md text-muted-foreground hover:text-foreground"
+                className="h-9 gap-1.5 rounded-md text-muted-foreground hover:text-foreground"
               >
                 <RotateCcw className="size-3.5" />
                 Reset
@@ -355,10 +348,6 @@ export default function JobsPage() {
             {filtered && filtered.length}
           </span>{" "}
           of {jobs && jobs.length} roles
-        </span>
-        <span className="hidden items-center gap-1.5 sm:flex">
-          <span className="size-1 rounded-full bg-emerald-500" />
-          Updated just now
         </span>
       </div>
 
@@ -379,6 +368,7 @@ export default function JobsPage() {
         )}
       </div>
     </main>
+    </>
   );
 }
 
@@ -386,11 +376,11 @@ export default function JobsPage() {
 
 function Stat({ label, value }: { label: string; value: number }) {
   return (
-    <div className="min-w-0">
+    <div className="min-w-0 px-4 py-3">
       <div className="text-2xl font-semibold tabular-nums tracking-tight">
         {value}
       </div>
-      <div className="mt-1 truncate text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
+      <div className="mt-1 truncate text-[11px] uppercase tracking-wide text-muted-foreground">
         {label}
       </div>
     </div>
@@ -400,12 +390,12 @@ function Stat({ label, value }: { label: string; value: number }) {
 function JobsSkeleton() {
   return (
     <div className="space-y-6">
-      <div className="h-[58px] animate-pulse rounded-md border bg-card/60" />
+      <div className="h-13 animate-pulse rounded-lg border border-border/60 bg-muted/30" />
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         {Array.from({ length: 4 }).map((_, index) => (
           <div
             key={index}
-            className="h-64 animate-pulse rounded-md border bg-card/60"
+            className="h-56 animate-pulse rounded-lg border border-border/60 bg-muted/30"
           />
         ))}
       </div>
@@ -420,37 +410,12 @@ function JobCard({ job }: { job: Job }) {
   return (
     <li
       data-testid={`job-card-${job.publicId}`}
-      className="group relative isolate overflow-hidden rounded-md"
+      className="group relative flex h-full flex-col gap-4 rounded-lg border border-border/60 p-5 transition-colors hover:border-border"
     >
-      {/* Hairline gradient border */}
-      <div
-        aria-hidden
-        className="absolute inset-0 rounded-md bg-gradient-to-br from-border/80 via-border/40 to-border/80 p-px transition group-hover:from-primary/40 group-hover:via-border/40 group-hover:to-primary/30"
-      >
-        <div className="size-full rounded-[5px] bg-card/70 backdrop-blur-md" />
-      </div>
-
-      {/* Inner top sheen */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-x-0 top-0 -z-0 h-px bg-gradient-to-r from-transparent via-foreground/10 to-transparent"
-      />
-
-      {/* Hover glow */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute -inset-px -z-0 rounded-md opacity-0 transition duration-500 group-hover:opacity-100"
-        style={{
-          background:
-            "radial-gradient(420px circle at var(--x,50%) var(--y,0%), hsl(var(--primary)/0.08), transparent 60%)",
-        }}
-      />
-
-      <div className="relative z-10 flex h-full flex-col gap-4 p-5 transition group-hover:-translate-y-0.5">
         {/* Header */}
         <div className="flex items-start justify-between gap-3">
           <div className="flex items-center gap-2.5 min-w-0">
-            <div className="grid size-9 shrink-0 place-items-center rounded-md border border-border/70 bg-background/60 font-display text-sm font-semibold uppercase backdrop-blur">
+            <div className="grid size-9 shrink-0 place-items-center rounded-md border border-border/60 text-sm font-semibold uppercase">
               {(job.companyName ?? "·").slice(0, 1)}
             </div>
             <div className="min-w-0">
@@ -480,7 +445,7 @@ function JobCard({ job }: { job: Job }) {
         </div>
 
         {/* Title */}
-        <h3 className="font-display text-lg font-semibold leading-snug tracking-tight">
+        <h3 className="text-lg font-semibold leading-snug tracking-tight">
           {job.title}
         </h3>
 
@@ -503,7 +468,7 @@ function JobCard({ job }: { job: Job }) {
               <Badge
                 key={t}
                 variant="secondary"
-                className="rounded-md bg-secondary/60 px-2 py-0.5 text-[10px] font-medium uppercase tracking-wider text-muted-foreground"
+                className="rounded-md px-2 py-0.5 text-[10px] font-medium uppercase tracking-wider text-muted-foreground"
               >
                 {t}
               </Badge>
@@ -511,7 +476,7 @@ function JobCard({ job }: { job: Job }) {
             {job.techStack.length > 5 ? (
               <Badge
                 variant="secondary"
-                className="rounded-md bg-secondary/40 px-2 py-0.5 text-[10px] font-medium text-muted-foreground"
+                className="rounded-md px-2 py-0.5 text-[10px] font-medium text-muted-foreground"
               >
                 +{job.techStack.length - 5}
               </Badge>
@@ -534,7 +499,7 @@ function JobCard({ job }: { job: Job }) {
               className={`inline-flex items-center gap-1 rounded-md border px-1.5 py-0.5 ${
                 urgent
                   ? "border-amber-500/30 bg-amber-500/10 text-amber-600 dark:text-amber-400"
-                  : "border-border/60 bg-background/40"
+                  : "border-border/60"
               }`}
             >
               <CalendarClock className="size-3" />
@@ -542,21 +507,16 @@ function JobCard({ job }: { job: Job }) {
             </span>
           </div>
 
-          {/* Unique apply CTA */}
+          {/* Apply CTA */}
           <Link
             href={`/form/${job.publicId}`}
             data-testid={`job-apply-${job.publicId}`}
-            className="group/btn relative inline-flex items-center gap-1.5 overflow-hidden rounded-md border border-primary/30 bg-primary/10 px-3 py-1.5 text-xs font-semibold text-primary transition hover:border-primary/60 hover:bg-primary hover:text-primary-foreground"
+            className="inline-flex items-center gap-1.5 rounded-md border border-border/60 px-3 py-1.5 text-xs font-medium transition-colors hover:bg-foreground hover:text-background"
           >
-            <span
-              aria-hidden
-              className="absolute inset-y-0 -left-12 w-12 -skew-x-12 bg-foreground/10 transition-all duration-500 group-hover/btn:left-[110%]"
-            />
             View role
-            <ArrowUpRight className="size-3.5 transition group-hover/btn:-translate-y-0.5 group-hover/btn:translate-x-0.5" />
+            <ArrowUpRight className="size-3.5" />
           </Link>
         </div>
-      </div>
     </li>
   );
 }
@@ -572,10 +532,10 @@ function MetaChip({
 }) {
   return (
     <span
-      className={`inline-flex items-center gap-1 rounded-md border px-2 py-0.5 text-[11px] backdrop-blur ${
+      className={`inline-flex items-center gap-1 rounded-md border px-2 py-0.5 text-[11px] ${
         accent
           ? "border-primary/25 bg-primary/10 text-primary"
-          : "border-border/60 bg-background/50 text-muted-foreground"
+          : "border-border/60 text-muted-foreground"
       }`}
     >
       <Icon className="size-3" />
@@ -643,8 +603,8 @@ function FilterSelect({
     <Select value={value} onValueChange={onChange}>
       <SelectTrigger
         data-testid={testId}
-        className={`rounded-md border-border/70 bg-background/60 backdrop-blur ${
-          compact ? "h-10 w-auto gap-1.5 px-3 text-sm" : "h-10"
+        className={`rounded-md ${
+          compact ? "h-9 w-auto gap-1.5 px-3 text-sm" : "h-9"
         }`}
       >
         {Icon && compact ? <Icon className="size-3.5 text-muted-foreground" /> : null}
@@ -678,16 +638,16 @@ function SortSegmented({
   return (
     <div
       data-testid={testId}
-      className="inline-flex h-10 items-center gap-0.5 rounded-md border border-border/70 bg-background/60 p-0.5 backdrop-blur"
+      className="inline-flex h-9 items-center gap-0.5 rounded-md border border-border/60 p-0.5"
     >
       {items.map((it) => (
         <button
           key={it.key}
           data-testid={`${testId}-${it.key}`}
           onClick={() => onChange(it.key)}
-          className={`relative rounded-md px-3 py-1.5 text-xs font-medium transition ${
+          className={`relative rounded-[5px] px-3 py-1.5 text-xs font-medium transition ${
             value === it.key
-              ? "bg-card text-foreground shadow-xs"
+              ? "bg-muted text-foreground"
               : "text-muted-foreground hover:text-foreground"
           }`}
         >
@@ -702,12 +662,12 @@ function EmptyState({ onReset }: { onReset: () => void }) {
   return (
     <div
       data-testid="jobs-empty"
-      className="flex flex-col items-center justify-center gap-3 rounded-md border border-dashed border-border/70 bg-card/40 px-6 py-16 text-center backdrop-blur"
+      className="flex flex-col items-center justify-center gap-3 rounded-lg border border-dashed border-border/60 px-6 py-16 text-center"
     >
-      <div className="grid size-10 place-items-center rounded-md border border-border/70 bg-background/60">
+      <div className="grid size-10 place-items-center rounded-md border border-border/60">
         <Search className="size-4 text-muted-foreground" />
       </div>
-      <p className="font-display text-lg font-semibold">No matching roles</p>
+      <p className="text-lg font-semibold">No matching roles</p>
       <p className="max-w-sm text-sm text-muted-foreground">
         Try a broader keyword or reset filters to see every open role on the
         board.

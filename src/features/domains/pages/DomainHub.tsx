@@ -29,14 +29,11 @@ export default function DomainsPage() {
   }, [query, domains]);
 
   return (
-    <div className="space-y-10">
+    <div className="space-y-8">
       {/* Header */}
-      <header className="flex flex-col gap-6 border-b border-border pb-6 lg:flex-row lg:items-end lg:justify-between">
-        <div className="max-w-2xl space-y-2">
-          <p className="text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground">
-            Step 1
-          </p>
-          <h1 className="font-display text-3xl font-semibold tracking-tight sm:text-4xl">
+      <header className="flex flex-col gap-6 border-b border-border/60 pb-6 lg:flex-row lg:items-end lg:justify-between">
+        <div className="max-w-2xl space-y-1.5">
+          <h1 className="text-xl font-semibold tracking-tight">
             Choose a domain
           </h1>
           <p className="text-sm text-muted-foreground">
@@ -53,7 +50,7 @@ export default function DomainsPage() {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search domains"
-            className="h-11 rounded-md border-border bg-background pl-9 text-sm"
+            className="h-9 rounded-md pl-9 text-sm"
             data-testid="domain-search-input"
           />
         </div>

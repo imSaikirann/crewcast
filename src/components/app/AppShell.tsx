@@ -109,7 +109,7 @@ export default function AppShell({ children }: { children: ReactNode }) {
         onClick={toggleCollapsed}
         aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
         className={cn(
-          "fixed top-[22px] z-50 hidden -translate-y-1/2 items-center justify-center rounded-full border border-border/60 bg-background shadow-sm transition-all duration-200 ease-in-out hover:bg-accent md:flex",
+          "fixed top-[22px] z-50 hidden -translate-y-1/2 items-center justify-center rounded-full border border-border/60 bg-background transition-all duration-200 ease-in-out hover:bg-accent md:flex",
           "h-5 w-5",
           collapsed ? "left-[49px]" : "left-[217px]"
         )}
@@ -188,7 +188,7 @@ export default function AppShell({ children }: { children: ReactNode }) {
       </main>
 
       {/* Mobile bottom nav */}
-      <nav className="fixed inset-x-3 bottom-3 z-40 grid grid-cols-4 rounded-2xl border border-border/60 bg-card/95 p-1 shadow-md backdrop-blur md:hidden">
+      <nav className="fixed inset-x-0 bottom-0 z-40 grid grid-cols-4 border-t border-border/60 bg-background/95 p-1 backdrop-blur md:hidden">
         {visibleNavItems
           .filter((item) => mobileNavHrefs.includes(item.href))
           .map((item) => {
@@ -198,9 +198,9 @@ export default function AppShell({ children }: { children: ReactNode }) {
                 key={item.href}
                 href={item.href}
                 className={cn(
-                  "flex flex-col items-center justify-center gap-1 rounded-xl px-1 py-2 text-[10px] font-medium transition-colors",
+                  "flex flex-col items-center justify-center gap-1 rounded-lg px-1 py-2 text-[10px] font-medium transition-colors",
                   active
-                    ? "bg-accent text-accent-foreground"
+                    ? "text-foreground"
                     : "text-muted-foreground hover:text-foreground"
                 )}
               >

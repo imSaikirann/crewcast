@@ -37,12 +37,9 @@ export function MultiStepForm(props: Props) {
   return (
     <div className="mx-auto w-full max-w-[920px] space-y-10 pb-28">
       {/* Header */}
-      <header className="flex flex-col gap-4 border-b border-border pb-6 sm:flex-row sm:items-end sm:justify-between">
-        <div className="space-y-2">
-          <p className="text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground">
-            Form builder
-          </p>
-          <h1 className="font-display text-3xl font-semibold tracking-tight">
+      <header className="flex flex-col gap-4 border-b border-border/60 pb-6 sm:flex-row sm:items-end sm:justify-between">
+        <div className="space-y-1.5">
+          <h1 className="text-xl font-semibold tracking-tight">
             Create job form
           </h1>
           <p className="text-sm text-muted-foreground">

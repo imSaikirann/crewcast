@@ -36,8 +36,8 @@ export function DomainCard({
         transition-all duration-150
         ${
           disabled
-            ? "cursor-not-allowed border-border opacity-60"
-            : "cursor-pointer border-border hover:border-foreground/20 hover:bg-secondary/30 hover:shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground/20"
+            ? "cursor-not-allowed border-border/60 opacity-60"
+            : "cursor-pointer border-border/60 hover:border-foreground/20 hover:bg-muted/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground/20"
         }
       `}
     >
@@ -99,8 +99,8 @@ export function DomainCard({
 
       {/* Disabled overlay */}
       {disabled && (
-        <div className="pointer-events-none absolute inset-0 flex items-center justify-center rounded-lg bg-background/70 backdrop-blur-[1px]">
-          <span className="rounded-md border border-border bg-card px-3 py-1.5 text-[11px] font-medium text-muted-foreground shadow-sm">
+        <div className="pointer-events-none absolute inset-0 flex items-center justify-center rounded-lg bg-background/70">
+          <span className="rounded-md border border-border/60 bg-card px-3 py-1.5 text-[11px] font-medium text-muted-foreground">
             {message}
           </span>
         </div>

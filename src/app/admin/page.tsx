@@ -109,21 +109,16 @@ export default async function AdminPage() {
   return (
     <AppShell>
       <main className="min-h-screen px-4 py-6 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-7xl space-y-8">
-          <div className="flex flex-col gap-2">
-            <p className="text-sm font-medium text-muted-foreground">
-              Platform control room
-            </p>
-            <h1 className="text-3xl font-bold tracking-tight">
-              Admin Analytics
-            </h1>
-            <p className="max-w-3xl text-muted-foreground">
+        <div className="mx-auto max-w-7xl space-y-6">
+          <div className="flex flex-col gap-1.5 border-b border-border/60 pb-5">
+            <h1 className="text-xl font-semibold tracking-tight">Admin analytics</h1>
+            <p className="max-w-3xl text-sm text-muted-foreground">
               Monitor recruiters, domains, forms, candidate flow, GitHub scoring,
               and report quality from one place.
             </p>
           </div>
 
-          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+          <div className="grid grid-cols-2 divide-x divide-y divide-border/60 overflow-hidden rounded-lg border border-border/60 sm:grid-cols-2 xl:grid-cols-4">
             <AdminMetric
               title="Recruiters"
               value={recruiterCount}
@@ -146,7 +141,7 @@ export default async function AdminPage() {
             />
           </div>
 
-          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+          <div className="grid grid-cols-2 divide-x divide-y divide-border/60 overflow-hidden rounded-lg border border-border/60 sm:grid-cols-2 xl:grid-cols-4">
             <AdminMetric
               title="Total domains"
               value={domainCount}
@@ -171,37 +166,37 @@ export default async function AdminPage() {
 
           <GitHubRateLimitCard rateLimit={githubRateLimit} />
 
-          <Card className="border-muted-foreground/15">
-            <CardHeader className="flex flex-row items-start justify-between gap-4">
+          <section className="rounded-lg border border-border/60">
+            <div className="flex flex-row items-start justify-between gap-4 border-b border-border/60 p-4">
               <div>
-                <CardTitle>Recent forms</CardTitle>
-                <CardDescription>
+                <h2 className="text-sm font-semibold">Recent forms</h2>
+                <p className="mt-0.5 text-sm text-muted-foreground">
                   Quick scan of recruiter activity and candidate traction.
-                </CardDescription>
+                </p>
               </div>
-              <Button asChild variant="outline">
+              <Button asChild variant="outline" size="sm">
                 <Link href="/admin/domains">Manage domains</Link>
               </Button>
-            </CardHeader>
-            <CardContent className="space-y-3">
+            </div>
+            <div>
               {recentForms.length === 0 ? (
-                <div className="rounded-md border border-dashed p-6 text-center text-sm text-muted-foreground">
+                <div className="p-6 text-center text-sm text-muted-foreground">
                   No forms created yet.
                 </div>
               ) : (
                 recentForms.map((form) => (
                   <div
                     key={form.publicId}
-                    className="grid gap-3 rounded-lg border p-4 md:grid-cols-[1fr_auto]"
+                    className="grid gap-3 border-t border-border/50 p-4 first:border-t-0 md:grid-cols-[1fr_auto]"
                   >
                     <div>
                       <div className="flex flex-wrap items-center gap-2">
                         <p className="font-medium">{form.title}</p>
-                        <Badge variant="secondary">
+                        <Badge variant="secondary" className="font-normal capitalize">
                           {form.status.toLowerCase()}
                         </Badge>
                         {form.recruiter.verified && (
-                          <Badge className="bg-emerald-600 text-white">
+                          <Badge className="border-0 bg-emerald-500/10 font-normal text-emerald-600 dark:text-emerald-400">
                             verified
                           </Badge>
                         )}
@@ -210,22 +205,16 @@ export default async function AdminPage() {
                         {form.recruiter.companyName}
                       </p>
                     </div>
-                    <div className="flex flex-wrap gap-2 text-xs text-muted-foreground">
-                      <span className="rounded-md bg-muted px-3 py-2">
-                        {form.viewCount} views
-                      </span>
-                      <span className="rounded-md bg-muted px-3 py-2">
-                        {form._count.applications} applications
-                      </span>
-                      <span className="rounded-md bg-muted px-3 py-2">
-                        {form.reportCount} reports
-                      </span>
+                    <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted-foreground md:justify-end">
+                      <span>{form.viewCount} views</span>
+                      <span>{form._count.applications} applications</span>
+                      <span>{form.reportCount} reports</span>
                     </div>
                   </div>
                 ))
               )}
-            </CardContent>
-          </Card>
+            </div>
+          </section>
         </div>
       </main>
     </AppShell>
@@ -255,16 +244,16 @@ type GitHubRateLimit =
 
 function GitHubRateLimitCard({ rateLimit }: { rateLimit: GitHubRateLimit }) {
   return (
-    <Card className="border-muted-foreground/15">
-      <CardHeader>
-        <CardTitle>GitHub token usage</CardTitle>
-        <CardDescription>
+    <section className="rounded-lg border border-border/60">
+      <div className="border-b border-border/60 p-4">
+        <h2 className="text-sm font-semibold">GitHub token usage</h2>
+        <p className="mt-0.5 text-sm text-muted-foreground">
           Live API quota for the GitHub token used by candidate scoring.
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
+        </p>
+      </div>
+      <div className="p-4">
         {!rateLimit.ok ? (
-          <div className="rounded-lg border border-dashed p-4 text-sm text-muted-foreground">
+          <div className="rounded-lg border border-dashed border-border/60 p-4 text-sm text-muted-foreground">
             {rateLimit.error}
           </div>
         ) : (
@@ -286,8 +275,8 @@ function GitHubRateLimitCard({ rateLimit }: { rateLimit: GitHubRateLimit }) {
             />
           </div>
         )}
-      </CardContent>
-    </Card>
+      </div>
+    </section>
   );
 }
 
@@ -302,7 +291,7 @@ function GitHubRateMetric({
 }) {
   if (!resource) {
     return (
-      <div className="rounded-lg border bg-card p-4">
+      <div className="rounded-lg border border-border/60 p-4">
         <p className="text-sm font-medium">{title}</p>
         <p className="mt-2 text-sm text-muted-foreground">No quota data returned.</p>
       </div>
@@ -313,26 +302,26 @@ function GitHubRateMetric({
     resource.limit > 0 ? Math.round((resource.used / resource.limit) * 100) : 0;
 
   return (
-    <div className="rounded-lg border bg-card p-4">
+    <div className="rounded-lg border border-border/60 p-4">
       <div className="flex items-start justify-between gap-3">
         <div>
           <p className="text-sm font-medium">{title}</p>
           <p className="mt-1 text-xs text-muted-foreground">{helper}</p>
         </div>
-        <Badge variant={resource.remaining > 0 ? "secondary" : "destructive"}>
+        <Badge variant={resource.remaining > 0 ? "secondary" : "destructive"} className="font-normal">
           {resource.remaining} left
         </Badge>
       </div>
-      <p className="mt-4 text-2xl font-bold">
+      <p className="mt-4 text-2xl font-semibold tabular-nums">
         {resource.used.toLocaleString()}
         <span className="text-sm font-medium text-muted-foreground">
           {" "}
           / {resource.limit.toLocaleString()}
         </span>
       </p>
-      <div className="mt-3 h-2 rounded-full bg-muted">
+      <div className="mt-3 h-1.5 rounded-full bg-muted">
         <div
-          className="h-2 rounded-full bg-primary"
+          className="h-1.5 rounded-full bg-primary"
           style={{ width: `${Math.min(percentUsed, 100)}%` }}
         />
       </div>
@@ -415,16 +404,12 @@ function AdminMetric({
   helper: string;
 }) {
   return (
-    <Card className="border-muted-foreground/15">
-      <CardHeader className="pb-2">
-        <CardTitle className="text-sm font-medium text-muted-foreground">
-          {title}
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-1">
-        <p className="text-3xl font-bold">{value}</p>
-        <p className="text-xs text-muted-foreground">{helper}</p>
-      </CardContent>
-    </Card>
+    <div className="px-4 py-4">
+      <p className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
+        {title}
+      </p>
+      <p className="mt-1.5 text-2xl font-semibold tracking-tight tabular-nums">{value}</p>
+      <p className="mt-1 text-xs text-muted-foreground">{helper}</p>
+    </div>
   );
 }

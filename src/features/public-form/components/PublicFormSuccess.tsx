@@ -20,7 +20,7 @@ export function PublicFormSuccess({ trackingUrl }: { trackingUrl?: string }) {
         <div className="mt-8 w-full max-w-md space-y-3">
           <Link
             href={trackingUrl}
-            className="group inline-flex h-12 w-full items-center justify-center gap-1.5 rounded-md bg-foreground px-5 text-sm font-semibold text-background transition hover:opacity-90"
+            className="group inline-flex h-10 w-full items-center justify-center gap-1.5 rounded-md bg-foreground px-5 text-sm font-semibold text-background transition hover:opacity-90"
             data-testid="track-application-btn"
           >
             Track application status

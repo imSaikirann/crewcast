@@ -55,7 +55,7 @@ export function PublicFormReview({
           variant="ghost"
           onClick={onBack}
           disabled={loading}
-          className="h-12 rounded-md px-4 text-sm font-medium text-muted-foreground hover:text-foreground"
+          className="h-10 rounded-md px-4 text-sm font-medium text-muted-foreground hover:text-foreground"
           data-testid="review-back-btn"
         >
           <ArrowLeft className="mr-1.5 size-4" />
@@ -65,7 +65,7 @@ export function PublicFormReview({
         <Button
           onClick={onSubmit}
           disabled={loading}
-          className="h-12 rounded-md px-6 text-sm font-semibold"
+          className="h-10 rounded-md px-6 text-sm font-semibold"
           data-testid="review-submit-btn"
         >
           {loading ? (

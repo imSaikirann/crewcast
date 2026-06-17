@@ -1,74 +1,103 @@
 import Link from "next/link";
 
-
 import { FormAlert } from "@/components/ui/form-alert";
-
 import { CrewcastMark } from "@/components/brand/CrewcastLogo";
-import { GoogleButton } from "./google-button";
+import { GoogleIcon } from "@/components/icons/google-icon";
+import { GithubIcon } from "@/components/icons/github-icon";
+import { ProviderButton } from "./provider-button";
+import { EmailSignIn } from "./email-sign-in";
 import { TrustLine } from "./trust-line";
 
 export function LoginCard({
-  loading,
+  pending,
   errorMessage,
+  emailSent,
   onGoogleClick,
+  onGithubClick,
+  onEmailSubmit,
 }: {
-  loading: boolean;
+  pending: "google" | "github" | "email" | null;
   errorMessage: string | null;
+  emailSent: string | null;
   onGoogleClick: () => void;
+  onGithubClick: () => void;
+  onEmailSubmit: (email: string) => void;
 }) {
+  const busy = pending !== null;
+
   return (
-    <main className="bg-grid relative flex min-h-screen items-center justify-center overflow-hidden bg-background px-6">
-
-
-      {/* Soft radial vignette for depth */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top,hsl(var(--foreground)/0.06),transparent_60%)]"
-      />
-
-      <section className="relative z-10 w-full max-w-[360px]">
+    <main className="flex min-h-screen items-center justify-center bg-background px-6">
+      <section className="w-full max-w-90">
         {/* Logo */}
-        <div className="mb-10">
+        <div className="mb-8 flex justify-center">
           <CrewcastMark />
         </div>
 
-        {/* Card */}
-        <div className="overflow-hidden rounded-[10px] border border-border bg-card shadow-sm">
-          {/* Header */}
-          <div className="border-b border-border bg-muted/40 px-7 py-6">
-            <h1 className="mb-1.5 text-[22px] font-bold leading-none tracking-[-0.03em] text-foreground">
-              Sign in
-            </h1>
-            <p className="text-[13px] leading-[1.6] text-muted-foreground">
-              Continue to your hiring dashboard.
-            </p>
+        {/* Heading */}
+        <div className="mb-6 text-center">
+          <h1 className="text-xl font-semibold tracking-tight text-foreground">
+            Sign in to Crewcast
+          </h1>
+          <p className="mt-1.5 text-sm text-muted-foreground">
+            Continue to your hiring dashboard.
+          </p>
+        </div>
+
+        {errorMessage && (
+          <div className="mb-4">
+            <FormAlert variant="error">{errorMessage}</FormAlert>
           </div>
+        )}
 
-          {/* Body */}
-          <div className="space-y-4 px-7 py-6">
-            {errorMessage && (
-              <FormAlert variant="error">{errorMessage}</FormAlert>
-            )}
-
-            <GoogleButton loading={loading} onClick={onGoogleClick} />
-
-            <div className="flex items-center gap-3">
-              <div className="h-px flex-1 bg-border" />
-              <span className="font-mono text-[10px] uppercase tracking-[0.1em] text-muted-foreground">
-                free to start
-              </span>
-              <div className="h-px flex-1 bg-border" />
+        {emailSent ? (
+          <FormAlert variant="success">
+            Check your inbox — we sent a sign-in link to{" "}
+            <span className="font-medium">{emailSent}</span>.
+          </FormAlert>
+        ) : (
+          <div className="space-y-3">
+            {/* OAuth providers */}
+            <div className="space-y-2.5">
+              <ProviderButton
+                label="Continue with Google"
+                icon={<GoogleIcon />}
+                loading={pending === "google"}
+                disabled={busy}
+                onClick={onGoogleClick}
+                testId="login-google-button"
+              />
+              <ProviderButton
+                label="Continue with GitHub"
+                icon={<GithubIcon />}
+                loading={pending === "github"}
+                disabled={busy}
+                onClick={onGithubClick}
+                testId="login-github-button"
+              />
             </div>
 
-            <TrustLine />
+            {/* Divider */}
+            <div className="flex items-center gap-3 py-1">
+              <div className="h-px flex-1 bg-border/60" />
+              <span className="text-xs text-muted-foreground">or</span>
+              <div className="h-px flex-1 bg-border/60" />
+            </div>
+
+            {/* Email */}
+            <EmailSignIn loading={pending === "email"} onSubmit={onEmailSubmit} />
           </div>
+        )}
+
+        {/* Trust line */}
+        <div className="mt-6">
+          <TrustLine />
         </div>
 
         {/* Back link */}
         <div className="mt-6 text-center">
           <Link
             href="/"
-            className="font-mono text-[11px] uppercase tracking-[0.08em] text-muted-foreground transition-colors hover:text-foreground"
+            className="text-sm text-muted-foreground transition-colors hover:text-foreground"
           >
             Back to home
           </Link>

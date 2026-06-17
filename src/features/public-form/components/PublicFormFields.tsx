@@ -42,7 +42,7 @@ export function PublicFormFields({ form, onNext }: any) {
         </p>
         <Button
           size="lg"
-          className="group h-12 rounded-md px-6 text-sm font-semibold"
+          className="group h-10 rounded-md px-6 text-sm font-semibold"
           data-testid="public-form-continue-btn"
         >
           Continue

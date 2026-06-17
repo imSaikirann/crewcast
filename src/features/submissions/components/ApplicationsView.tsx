@@ -5,8 +5,8 @@ import Link from "next/link";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import ApplicationTable from "@/features/submissions/components/ApplicationTable";
+import ApplicationFilters from "@/features/submissions/components/ApplicationFilters";
 import { HugeIcon } from "@/utils/hugeicons";
 
 export type Application = {
@@ -106,15 +106,46 @@ export default function ApplicationsView({
   form: FormSummary;
 }) {
   const [compareIds, setCompareIds] = useState<string[]>([]);
+  const [search, setSearch] = useState("");
+  const [status, setStatus] = useState("");
+  const [scoreBand, setScoreBand] = useState("");
+  const [sort, setSort] = useState("newest");
 
-  const applications = useMemo(
-    () =>
-      [...data].sort(
-        (left, right) =>
-          new Date(right.createdAt).getTime() - new Date(left.createdAt).getTime()
-      ),
-    [data]
-  );
+  const applications = useMemo(() => {
+    const term = search.trim().toLowerCase();
+
+    const filtered = data.filter((application) => {
+      if (status && application.status !== status) return false;
+
+      const score = getScore(application);
+      if (scoreBand === "strong" && !(typeof score === "number" && score >= 80)) return false;
+      if (scoreBand === "good" && !(typeof score === "number" && score >= 60 && score < 80)) return false;
+      if (scoreBand === "low" && !(typeof score === "number" && score < 60)) return false;
+      if (scoreBand === "missing" && typeof score === "number") return false;
+
+      if (term) {
+        const haystack = [
+          application.fullName,
+          application.email,
+          getInsightReport(application)?.summary ?? "",
+          ...Object.values(application.responses ?? {}).map((value) => String(value ?? "")),
+        ]
+          .join(" ")
+          .toLowerCase();
+        if (!haystack.includes(term)) return false;
+      }
+
+      return true;
+    });
+
+    return filtered.sort((left, right) => {
+      if (sort === "name") return left.fullName.localeCompare(right.fullName);
+      if (sort === "oldest")
+        return new Date(left.createdAt).getTime() - new Date(right.createdAt).getTime();
+      if (sort === "score_desc") return (getScore(right) ?? -1) - (getScore(left) ?? -1);
+      return new Date(right.createdAt).getTime() - new Date(left.createdAt).getTime();
+    });
+  }, [data, search, status, scoreBand, sort]);
   const compareApplications = useMemo(
     () =>
       compareIds
@@ -135,24 +166,19 @@ export default function ApplicationsView({
 
   return (
     <div className="space-y-6">
-      <section className="border-b pb-5">
+      <section className="border-b border-border/60 pb-5">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
-              Submissions
-            </p>
-            <h1 className="mt-2 font-display text-2xl font-semibold tracking-tight">
-              Candidate review
-            </h1>
+            <h1 className="text-xl font-semibold tracking-tight">Candidate review</h1>
             <p className="mt-1 text-sm text-muted-foreground">
-              {form.title} / {applications.length} submissions
+              {form.title} · {data.length} submissions
             </p>
           </div>
           <div className="flex flex-wrap items-center gap-2">
-            <Badge variant="secondary" className="rounded-md">
+            <Badge variant="secondary" className="rounded-md font-normal">
               {form.hiredCount}/{form.openings} hired
             </Badge>
-            <Button asChild variant="outline">
+            <Button asChild variant="outline" size="sm">
               <Link href={`/dashboard/submissions/${form.publicId}/analytics`}>
                 <HugeIcon name="analytics-up" className="size-4" />
                 Form analytics
@@ -166,6 +192,17 @@ export default function ApplicationsView({
         applications={compareApplications}
         selectedCount={compareIds.length}
         onClear={() => setCompareIds([])}
+      />
+
+      <ApplicationFilters
+        search={search}
+        setSearch={setSearch}
+        status={status}
+        setStatus={setStatus}
+        scoreBand={scoreBand}
+        setScoreBand={setScoreBand}
+        sort={sort}
+        setSort={setSort}
       />
 
       <ApplicationTable
@@ -203,18 +240,16 @@ function ComparisonPanel({
   const winner = getComparisonWinner(applications);
 
   return (
-    <Card className="rounded-lg border-muted-foreground/15 py-5 shadow-xs">
-      <CardHeader className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+    <section className="rounded-lg border border-border/60">
+      <div className="flex flex-col gap-2 border-b border-border/60 p-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <CardTitle className="font-display text-base font-semibold">
-            Compare candidates
-          </CardTitle>
-          <p className="mt-1 text-sm text-muted-foreground">
+          <h2 className="text-sm font-semibold">Compare candidates</h2>
+          <p className="mt-0.5 text-sm text-muted-foreground">
             Select up to three candidates from the table.
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <Badge variant={selectedCount > 0 ? "default" : "secondary"}>
+          <Badge variant={selectedCount > 0 ? "default" : "secondary"} className="font-normal">
             {selectedCount}/3 selected
           </Badge>
           {selectedCount > 0 && (
@@ -223,16 +258,16 @@ function ComparisonPanel({
             </Button>
           )}
         </div>
-      </CardHeader>
-      <CardContent>
+      </div>
+      <div className="p-4">
         {applications.length === 0 ? (
-          <div className="rounded-lg border border-dashed bg-secondary/30 p-5 text-sm text-muted-foreground">
+          <div className="rounded-lg border border-dashed border-border/60 p-5 text-sm text-muted-foreground">
             Pick candidates with the compare button to see score, GitHub signal, and tech match side by side.
           </div>
         ) : (
           <div className="space-y-4">
             {winner && (
-              <div className="rounded-lg border bg-secondary/40 px-4 py-3 text-sm">
+              <div className="rounded-lg border border-border/60 bg-muted/30 px-4 py-3 text-sm">
                 Stronger fit by score: <span className="font-semibold">{winner.fullName}</span>
               </div>
             )}
@@ -247,8 +282,8 @@ function ComparisonPanel({
             </div>
           </div>
         )}
-      </CardContent>
-    </Card>
+      </div>
+    </section>
   );
 }
 
@@ -265,7 +300,7 @@ function CompareCard({
   const skillsMatch = breakdown?.skillsMatch;
 
   return (
-    <div className={`rounded-lg border p-4 ${highlighted ? "bg-primary/5" : "bg-card"}`}>
+    <div className={`rounded-lg border border-border/60 p-4 ${highlighted ? "bg-primary/5" : ""}`}>
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
           <p className="truncate font-semibold">{application.fullName}</p>
@@ -302,7 +337,7 @@ function CompareCard({
 
 function CompareMetric({ label, value }: { label: string; value: string | number }) {
   return (
-    <div className="rounded-md bg-secondary px-3 py-2">
+    <div className="rounded-md border border-border/60 px-3 py-2">
       <p className="font-semibold">{String(value)}</p>
       <p className="text-xs text-muted-foreground">{label}</p>
     </div>
@@ -316,12 +351,12 @@ function ScoreBadge({ score }: { score?: number }) {
 
   const tone =
     score >= 80
-      ? "bg-emerald-600 text-white"
+      ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
       : score >= 60
-        ? "bg-amber-500 text-white"
-        : "bg-rose-600 text-white";
+        ? "bg-amber-500/10 text-amber-600 dark:text-amber-400"
+        : "bg-rose-500/10 text-rose-600 dark:text-rose-400";
 
-  return <Badge className={tone}>{score}/100</Badge>;
+  return <Badge className={`border-0 font-medium ${tone}`}>{score}/100</Badge>;
 }
 
 function getComparisonWinner(applications: Application[]) {

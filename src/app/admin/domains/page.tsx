@@ -4,13 +4,6 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import AppShell from "@/components/app/AppShell";
 import { Badge } from "@/components/ui/badge";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { ROLES } from "@/lib/constants/roles";
 import { withRequiredGitHubField } from "@/lib/formFields";
 import { prisma } from "@/lib/prisma";
@@ -92,66 +85,59 @@ export default async function AdminDomainsPage() {
   return (
     <AppShell>
       <main className="min-h-screen px-4 py-6 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-7xl space-y-8">
-          <div>
-            <p className="text-sm font-medium text-muted-foreground">
-              Admin setup
-            </p>
-            <h1 className="text-3xl font-bold tracking-tight">
-              Domain Management
-            </h1>
-            <p className="mt-1 max-w-3xl text-muted-foreground">
+        <div className="mx-auto max-w-7xl space-y-6">
+          <div className="border-b border-border/60 pb-5">
+            <h1 className="text-xl font-semibold tracking-tight">Domain management</h1>
+            <p className="mt-1 max-w-3xl text-sm text-muted-foreground">
               Create domains, control recruiter visibility, and manage default
               candidate forms separately from analytics.
             </p>
           </div>
 
           <div className="grid gap-6 xl:grid-cols-[430px_1fr]">
-            <Card className="border-muted-foreground/15">
-              <CardHeader>
-                <CardTitle>Create Domain</CardTitle>
-                <CardDescription>
+            <section className="rounded-lg border border-border/60">
+              <div className="border-b border-border/60 p-4">
+                <h2 className="text-sm font-semibold">Create domain</h2>
+                <p className="mt-0.5 text-sm text-muted-foreground">
                   Add or update a hiring domain. Software defaults always include
                   a locked GitHub profile field.
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
+                </p>
+              </div>
+              <div className="p-4">
                 <DomainCreateForm defaultFields={DEFAULT_SOFTWARE_FIELDS} />
-              </CardContent>
-            </Card>
+              </div>
+            </section>
 
-            <Card className="border-muted-foreground/15">
-              <CardHeader>
-                <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-                  <div>
-                    <CardTitle>Total Domains</CardTitle>
-                    <CardDescription>
-                      Recruiters only see active domains; defaults drive the form
-                      builder.
-                    </CardDescription>
-                  </div>
-                  <div className="rounded-md border bg-muted/40 px-4 py-3 text-right">
-                    <p className="text-3xl font-bold">{domainCount}</p>
-                    <p className="text-xs text-muted-foreground">domains</p>
-                  </div>
+            <section className="rounded-lg border border-border/60">
+              <div className="flex flex-col gap-4 border-b border-border/60 p-4 sm:flex-row sm:items-start sm:justify-between">
+                <div>
+                  <h2 className="text-sm font-semibold">Total domains</h2>
+                  <p className="mt-0.5 text-sm text-muted-foreground">
+                    Recruiters only see active domains; defaults drive the form
+                    builder.
+                  </p>
                 </div>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid gap-3 sm:grid-cols-3">
+                <div className="text-right">
+                  <p className="text-2xl font-semibold tabular-nums">{domainCount}</p>
+                  <p className="text-xs text-muted-foreground">domains</p>
+                </div>
+              </div>
+              <div className="space-y-4 p-4">
+                <div className="grid grid-cols-3 divide-x divide-border/60 overflow-hidden rounded-lg border border-border/60">
                   <DomainStat label="Active" value={activeDomainCount} />
                   <DomainStat label="Hidden" value={inactiveDomainCount} />
                   <DomainStat label="Defaults ready" value={domainsWithDefaults} />
                 </div>
 
-                <div className="overflow-hidden rounded-lg border">
+                <div className="overflow-hidden rounded-lg border border-border/60">
                   <table className="w-full text-sm">
-                    <thead className="bg-muted">
+                    <thead className="border-b border-border/60 bg-muted/30 text-xs uppercase tracking-wide text-muted-foreground">
                       <tr>
-                        <th className="px-4 py-3 text-left">Domain</th>
-                        <th className="px-4 py-3 text-left">Status</th>
-                        <th className="px-4 py-3 text-left">Default</th>
-                        <th className="px-4 py-3 text-left">Forms</th>
-                        <th className="px-4 py-3 text-right">Actions</th>
+                        <th className="px-4 py-2.5 text-left font-medium">Domain</th>
+                        <th className="px-4 py-2.5 text-left font-medium">Status</th>
+                        <th className="px-4 py-2.5 text-left font-medium">Default</th>
+                        <th className="px-4 py-2.5 text-left font-medium">Forms</th>
+                        <th className="px-4 py-2.5 text-right font-medium">Actions</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -166,7 +152,7 @@ export default async function AdminDomainsPage() {
                         </tr>
                       ) : (
                         domains.map((domain) => (
-                          <tr key={domain.id} className="border-t">
+                          <tr key={domain.id} className="border-t border-border/50">
                             <td className="px-4 py-3">
                               <div className="font-medium">{domain.title}</div>
                               <div className="max-w-xl text-muted-foreground">
@@ -178,6 +164,7 @@ export default async function AdminDomainsPage() {
                                 variant={
                                   domain.isActive ? "default" : "secondary"
                                 }
+                                className="font-normal"
                               >
                                 {domain.isActive ? "Active" : "Hidden"}
                               </Badge>
@@ -225,8 +212,8 @@ export default async function AdminDomainsPage() {
                     </tbody>
                   </table>
                 </div>
-              </CardContent>
-            </Card>
+              </div>
+            </section>
           </div>
         </div>
       </main>
@@ -236,8 +223,8 @@ export default async function AdminDomainsPage() {
 
 function DomainStat({ label, value }: { label: string; value: number }) {
   return (
-    <div className="rounded-md border bg-background px-4 py-3">
-      <p className="text-2xl font-semibold">{value}</p>
+    <div className="px-4 py-3">
+      <p className="text-2xl font-semibold tabular-nums">{value}</p>
       <p className="text-xs text-muted-foreground">{label}</p>
     </div>
   );

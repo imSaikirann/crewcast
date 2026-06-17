@@ -55,3 +55,34 @@ export async function sendRecruiterVerificationEmail(
 
   return data
 }
+
+export async function sendMagicLinkEmail(email: string, url: string) {
+  const { apiKey, from } = getResendConfig()
+  const resend = new Resend(apiKey)
+
+  const { data, error } = await resend.emails.send({
+    from,
+    to: email,
+    subject: "Your Crewcast sign-in link",
+    html: `
+      <div style="font-family: Arial, sans-serif; max-width: 560px; margin: 0 auto; color: #111827;">
+        <h1 style="font-size: 22px; margin-bottom: 12px;">Sign in to Crewcast</h1>
+        <p style="font-size: 15px; line-height: 1.6;">Click the button below to securely sign in. This link expires in 24 hours and can only be used once.</p>
+        <p style="margin: 28px 0;">
+          <a href="${url}" style="background: #111827; color: #ffffff; padding: 12px 18px; border-radius: 6px; text-decoration: none; display: inline-block;">
+            Sign in to Crewcast
+          </a>
+        </p>
+        <p style="font-size: 13px; line-height: 1.5; color: #6b7280;">If the button does not work, copy this link into your browser:<br />${url}</p>
+        <p style="font-size: 13px; line-height: 1.5; color: #6b7280;">If you did not request this email, you can safely ignore it.</p>
+      </div>
+    `,
+    text: `Sign in to Crewcast: ${url}`,
+  })
+
+  if (error) {
+    throw new Error(`Resend email failed: ${error.message}`)
+  }
+
+  return data
+}

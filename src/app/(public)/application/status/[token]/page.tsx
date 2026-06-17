@@ -38,9 +38,9 @@ export default async function ApplicationStatusPage({
   if (!application) {
     return (
       <main className="min-h-screen bg-background px-4 py-16 text-foreground">
-        <section className="mx-auto max-w-xl rounded-lg border bg-card p-8 text-center shadow-sm">
+        <section className="mx-auto max-w-xl rounded-lg border border-border/60 p-8 text-center">
           <CrewcastWordmark className="mb-6 justify-center" markClassName="size-8 rounded-md" />
-          <h1 className="text-2xl font-semibold">Status link not found</h1>
+          <h1 className="text-xl font-semibold">Status link not found</h1>
           <p className="mt-3 text-sm leading-6 text-muted-foreground">
             This tracking link may be incorrect or no longer available. Check the
             link from your application confirmation page.
@@ -70,13 +70,13 @@ export default async function ApplicationStatusPage({
           <CrewcastWordmark markClassName="size-8 rounded-md" />
         </header>
 
-        <div className="rounded-lg border bg-card p-6 shadow-sm">
+        <div className="rounded-lg border border-border/60 p-6">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
             <div>
               <p className="text-sm text-muted-foreground">
                 {application.job.recruiter?.companyName || "Hiring team"}
               </p>
-              <h1 className="mt-2 text-3xl font-semibold tracking-tight">
+              <h1 className="mt-2 text-2xl font-semibold tracking-tight">
                 {application.job.title}
               </h1>
               <p className="mt-2 text-sm text-muted-foreground">
@@ -86,7 +86,7 @@ export default async function ApplicationStatusPage({
             <StatusBadge status={application.status} />
           </div>
 
-          <div className="mt-6 grid gap-3 sm:grid-cols-3">
+          <div className="mt-6 grid grid-cols-1 divide-y divide-border/60 overflow-hidden rounded-lg border border-border/60 sm:grid-cols-3 sm:divide-x sm:divide-y-0">
             <Metric label="Applied" value={formatDateTime(application.createdAt.toISOString())} />
             <Metric label="Last update" value={formatDateTime(application.updatedAt.toISOString())} />
             <Metric label="Hiring progress" value={`${Math.min(hiredCount, openings)}/${openings} hired`} />
@@ -103,17 +103,17 @@ export default async function ApplicationStatusPage({
           </p>
         </div>
 
-        <div className="rounded-lg border bg-card p-6">
+        <div className="rounded-lg border border-border/60 p-6">
           <p className="text-sm font-semibold">What happens next?</p>
           <div className="mt-4 grid gap-3">
             {STATUS_STEPS.map((step) => (
               <div
                 key={step.status}
                 className={[
-                  "flex items-start gap-3 rounded-lg border p-3",
+                  "flex items-start gap-3 rounded-lg border border-border/60 p-3",
                   step.status === application.status
                     ? "border-primary/40 bg-primary/10"
-                    : "bg-background",
+                    : "",
                 ].join(" ")}
               >
                 <span className="mt-1 size-2 rounded-full bg-primary" />
@@ -134,7 +134,7 @@ export default async function ApplicationStatusPage({
 
 function Metric({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-lg border bg-background px-3 py-2">
+    <div className="px-3 py-2.5">
       <p className="text-xs text-muted-foreground">{label}</p>
       <p className="mt-1 text-sm font-medium">{value}</p>
     </div>
@@ -144,15 +144,15 @@ function Metric({ label, value }: { label: string; value: string }) {
 function StatusBadge({ status }: { status: string }) {
   const className =
     status === "HIRED"
-      ? "bg-emerald-600 text-white"
+      ? "border-0 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
       : status === "REJECTED"
-        ? "bg-rose-600 text-white"
+        ? "border-0 bg-rose-500/10 text-rose-600 dark:text-rose-400"
         : status === "INTERVIEW"
-          ? "bg-primary text-primary-foreground"
+          ? "border-0 bg-primary/10 text-primary"
           : "";
 
   return (
-    <Badge className={className} variant={className ? "default" : "secondary"}>
+    <Badge className={`font-normal capitalize ${className}`} variant={className ? "default" : "secondary"}>
       {status.toLowerCase()}
     </Badge>
   );

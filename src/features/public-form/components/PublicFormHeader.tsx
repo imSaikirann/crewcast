@@ -70,7 +70,7 @@ export function PublicFormHeader({ recruiter }: { recruiter: any }) {
         variant="outline"
         size="icon"
         onClick={share}
-        className="rounded-full"
+        className="rounded-md"
       >
         <Share2 className="w-4 h-4" />
       </Button>

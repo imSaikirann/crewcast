@@ -6,12 +6,13 @@ import { useEffect, useState } from "react";
 import { ArrowRightIcon } from "./icons";
 
 const links = [
-  { label: "How it works", href: "#features" },
-  { label: "Why Crewcast", href: "#benefits" },
-  { label: "Stories", href: "#testimonials" },
+  { label: "How it works", href: "/#features" },
+  { label: "Why Crewcast", href: "/#benefits" },
+  { label: "Stories", href: "/#testimonials" },
+  { label: "Open roles", href: "/jobs" },
 ];
 
-export function Navbar() {
+export function Navbar({ solid = false }: { solid?: boolean }) {
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -23,11 +24,13 @@ export function Navbar() {
 
   return (
     <header
-      className={`sticky top-0 z-50 w-full bg-white/80 backdrop-blur-md transition-colors duration-200 ${
+      className={`sticky top-0 z-50 w-full transition-colors duration-200 ${
+        solid ? "bg-white" : "bg-white/80 backdrop-blur-md"
+      } ${
         scrolled ? "border-b border-neutral-100" : "border-b border-transparent"
       }`}
     >
-      <nav className="mx-auto flex h-16 max-w-5xl items-center justify-between px-6">
+      <nav className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
         <Link
           href="/"
           className="inline-flex items-center"
@@ -56,14 +59,11 @@ export function Navbar() {
         </div>
 
         <a
-          href="#get-started"
+          href="/#get-started"
           className="font-sora group inline-flex items-center gap-1.5 rounded-full bg-neutral-900 px-4 py-2 text-sm font-medium text-white shadow-sm ring-1 ring-neutral-900/10 transition-all duration-200 hover:-translate-y-0.5 hover:bg-neutral-800 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900 focus-visible:ring-offset-2"
         >
           Get started
-          <ArrowRightIcon
-            size={15}
-            className="transition-transform duration-200 group-hover:translate-x-0.5"
-          />
+         
         </a>
       </nav>
     </header>

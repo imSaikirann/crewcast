@@ -24,14 +24,14 @@ export default function ApplicationFilters({
   setSort,
 }: Props) {
   return (
-    <div className="rounded-lg border bg-background p-4">
+    <div className="rounded-lg border border-border/60 p-3">
       <div className="grid gap-3 lg:grid-cols-[1fr_170px_170px_190px]">
         <Input
           type="text"
           placeholder="Search name, email, GitHub, or response"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="h-11"
+          className="h-9"
         />
 
         <SelectField
@@ -90,11 +90,11 @@ function SelectField({
 }) {
   return (
     <label className="space-y-1 text-xs font-medium text-muted-foreground">
-      <span>{label}</span>
+      <span className="sr-only">{label}</span>
       <select
         value={value}
         onChange={(event) => onChange(event.target.value)}
-        className="h-11 w-full rounded-md border bg-background px-3 text-sm text-foreground outline-none transition focus:border-ring focus:ring-ring/50 focus:ring-[3px]"
+        className="h-9 w-full rounded-md border border-border/60 bg-transparent px-3 text-sm text-foreground outline-none transition focus:border-ring focus:ring-ring/50 focus:ring-[3px]"
       >
         {options.map(([optionValue, optionLabel]) => (
           <option key={optionValue || "all"} value={optionValue}>

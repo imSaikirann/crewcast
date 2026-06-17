@@ -1,28 +1,23 @@
-import { HugeIcon, type HugeIconName } from "@/utils/hugeicons";
+import { type HugeIconName } from "@/utils/hugeicons";
 
 export function StatCard({
   title,
   value,
   intent,
-  icon = "analytics-up",
 }: {
   title: string;
   value: number | string;
   intent?: "primary";
+  /** Deprecated: icons removed in the minimal redesign. Kept for call-site compatibility. */
   icon?: HugeIconName;
 }) {
   return (
-    <div className="rounded-lg border border-border/60 bg-card px-4 py-4 transition-colors hover:bg-secondary/40">
-      <div className="flex items-center justify-between gap-3">
-        <p className="text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">
-          {title}
-        </p>
-        <div className="grid size-7 shrink-0 place-items-center rounded-md bg-secondary text-muted-foreground">
-          <HugeIcon name={icon} className="size-3.5" />
-        </div>
-      </div>
+    <div className="px-4 py-4">
+      <p className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
+        {title}
+      </p>
       <p
-        className={`mt-2 font-display text-2xl font-semibold tracking-tight ${
+        className={`mt-1.5 text-2xl font-semibold tracking-tight tabular-nums ${
           intent === "primary" ? "text-primary" : "text-foreground"
         }`}
       >
