@@ -1,4 +1,4 @@
-import DashboardScreen from "@/features/dashboard/screens/DashboardScreen";
+﻿import DashboardScreen from "@/features/dashboard/screens/DashboardScreen";
 import AppPage from "@/components/app/AppPage";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { ROLES } from "@/lib/constants/roles";
@@ -91,3 +91,4 @@ export default async function Page() {
     </AppPage>
   );
 }
+

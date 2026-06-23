@@ -1,4 +1,4 @@
-import {
+﻿import {
   Briefcase,
   MapPin,
   Users,
@@ -13,7 +13,7 @@ import {
 export function PublicFormMeta({ form }: any) {
   const salary =
     form.salaryMin && form.salaryMax
-      ? `${form.currency ?? ""} ${formatNumber(form.salaryMin)} – ${formatNumber(form.salaryMax)} / month`
+      ? `${form.currency ?? ""} ${formatNumber(form.salaryMin)} â€“ ${formatNumber(form.salaryMax)} / month`
       : null;
 
   const recruiter = form.recruiter || {};
@@ -74,7 +74,7 @@ export function PublicFormMeta({ form }: any) {
           {form.workMode && (
             <Meta icon={<MapPin className="size-3.5" />}>
               {formatWorkMode(form.workMode)}
-              {form.location ? ` · ${form.location}` : ""}
+              {form.location ? ` Â· ${form.location}` : ""}
             </Meta>
           )}
           {form.experience && (

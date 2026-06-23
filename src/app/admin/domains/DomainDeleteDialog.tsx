@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useActionState, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -87,4 +87,5 @@ export default function DomainDeleteDialog({
     </>
   );
 }
+
 

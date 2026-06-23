@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button";
+﻿import { Button } from "@/components/ui/button";
 import { HugeIcon } from "@/utils/hugeicons";
 
 export default function PlanUsageCard({ plan }: any) {
@@ -45,3 +45,4 @@ export default function PlanUsageCard({ plan }: any) {
     </div>
   );
 }
+

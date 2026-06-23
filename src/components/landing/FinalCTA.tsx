@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { motion, useInView } from "framer-motion";
 import { ArrowRight, Briefcase, Lock, Zap } from "lucide-react";
@@ -15,7 +15,7 @@ export function FinalCTA() {
       ref={ref}
       className="relative overflow-hidden px-5 py-24 sm:px-6 sm:py-32 md:py-40"
     >
-      {/* ── Background: subtle grid + radial glow ── */}
+      {/* â”€â”€ Background: subtle grid + radial glow â”€â”€ */}
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0 opacity-50"
@@ -72,3 +72,4 @@ export function FinalCTA() {
     </section>
   );
 }
+

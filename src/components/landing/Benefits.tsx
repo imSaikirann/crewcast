@@ -1,33 +1,33 @@
-const benefits = [
+﻿const benefits = [
   {
-    emoji: "📋",
+    emoji: "ðŸ“‹",
     title: "Role-specific forms",
-    description: "Build forms with tech stack, experience, salary, screening questions, and GitHub — all in one flow.",
+    description: "Build forms with tech stack, experience, salary, screening questions, and GitHub â€” all in one flow.",
   },
   {
-    emoji: "🔗",
+    emoji: "ðŸ”—",
     title: "Public application links",
-    description: "Every job gets a shareable public URL. Candidates apply directly — no account, no friction.",
+    description: "Every job gets a shareable public URL. Candidates apply directly â€” no account, no friction.",
   },
   {
-    emoji: "📊",
+    emoji: "ðŸ“Š",
     title: "Views and conversion tracking",
     description: "See how many people viewed a job, how many applied, and where drop-off happens.",
   },
   {
-    emoji: "⭐",
+    emoji: "â­",
     title: "GitHub signal scoring",
     description: "Crewcast scores public repos, languages, activity, account maturity, and OSS contributions.",
   },
   {
-    emoji: "✂️",
+    emoji: "âœ‚ï¸",
     title: "Less manual screening",
     description: "Stop opening 200 resumes. Start with a ranked table that shows who has relevant public work.",
   },
   {
-    emoji: "📁",
+    emoji: "ðŸ“",
     title: "All applications in one place",
-    description: "Candidates, scores, answers, GitHub links, and notes — all scoped to your role and domain.",
+    description: "Candidates, scores, answers, GitHub links, and notes â€” all scoped to your role and domain.",
   },
 ];
 
@@ -91,3 +91,4 @@ export default function Benefits() {
     </section>
   );
 }
+

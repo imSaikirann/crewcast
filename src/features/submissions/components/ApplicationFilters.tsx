@@ -1,6 +1,7 @@
-"use client";
+﻿"use client";
 
 import { Input } from "@/components/ui/input";
+import { AppSelect } from "@/components/ui/app-select";
 
 type Props = {
   search: string;
@@ -89,19 +90,15 @@ function SelectField({
   options: [string, string][];
 }) {
   return (
-    <label className="space-y-1 text-xs font-medium text-muted-foreground">
-      <span className="sr-only">{label}</span>
-      <select
-        value={value}
-        onChange={(event) => onChange(event.target.value)}
-        className="h-9 w-full rounded-md border border-border/60 bg-transparent px-3 text-sm text-foreground outline-none transition focus:border-ring focus:ring-ring/50 focus:ring-[3px]"
-      >
-        {options.map(([optionValue, optionLabel]) => (
-          <option key={optionValue || "all"} value={optionValue}>
-            {optionLabel}
-          </option>
-        ))}
-      </select>
-    </label>
+    <AppSelect
+      label={label}
+      value={value}
+      onValueChange={onChange}
+      options={options.map(([optionValue, optionLabel]) => ({
+        value: optionValue,
+        label: optionLabel,
+      }))}
+    />
   );
 }
+

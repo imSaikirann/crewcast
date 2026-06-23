@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import * as HugeIcons from "hugeicons-react";
 import type { FC } from "react";
@@ -90,3 +90,4 @@ export const HugeIcon: FC<HugeIconProps> = ({
 
   return <IconComponent size={size} color={color} className={className} />;
 };
+

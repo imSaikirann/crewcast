@@ -1,4 +1,4 @@
-export function DomainCardSkeleton() {
+﻿export function DomainCardSkeleton() {
   return (
     <div
       className="flex h-full flex-col rounded-lg border border-border bg-card p-5"
@@ -28,7 +28,7 @@ export function DomainCardSkeleton() {
 
 /**
  * Token-driven shimmer that adapts to light + dark themes.
- * Uses `bg-muted` (subtle) with `animate-pulse` — no hardcoded grays.
+ * Uses `bg-muted` (subtle) with `animate-pulse` â€” no hardcoded grays.
  */
 function Shimmer({ className = "" }: { className?: string }) {
   return (
@@ -39,3 +39,4 @@ function Shimmer({ className = "" }: { className?: string }) {
     </div>
   );
 }
+

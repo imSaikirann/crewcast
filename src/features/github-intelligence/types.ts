@@ -10,6 +10,8 @@ export type GitHubInsightReport = {
     techMatchScore: number;
     activityScore: number;
     ossScore: number;
+    commitQualityScore: number;
+    accountMaturityScore: number;
   };
   techAnalysis: {
     matched: string[];

@@ -1,4 +1,4 @@
-"use client"
+﻿"use client"
 
 import { useState } from "react"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
@@ -96,7 +96,7 @@ export default function RecruiterProfilePage() {
       </div>
 
       <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_320px]">
-        {/* Company details — flat, no card */}
+        {/* Company details â€” flat, no card */}
         <div className="space-y-1">
           <p className="mb-3 text-xs font-semibold uppercase tracking-widest text-muted-foreground">
             Company details
@@ -109,7 +109,7 @@ export default function RecruiterProfilePage() {
           </div>
         </div>
 
-        {/* Verification — flat, no card */}
+        {/* Verification â€” flat, no card */}
         <div className="space-y-1">
           <p className="mb-3 text-xs font-semibold uppercase tracking-widest text-muted-foreground">
             Verification
@@ -157,7 +157,7 @@ export default function RecruiterProfilePage() {
 function OnboardingPanel({ children }: { children: React.ReactNode }) {
   return (
     <div className="grid min-h-[calc(100vh-180px)] place-items-center py-8">
-      <div className="w-full max-w-2xl rounded-2xl border bg-background p-6 shadow-xl">
+      <div className="w-full max-w-2xl rounded-lg border bg-card p-6">
         <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
           Step 1 of 2
         </p>

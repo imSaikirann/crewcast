@@ -1,4 +1,4 @@
-import Link from "next/link";
+﻿import Link from "next/link";
 import { ArrowRight, BadgeCheck } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
@@ -266,3 +266,4 @@ function MiniStat({ label, value }: { label: string; value: number | string }) {
     </div>
   );
 }
+

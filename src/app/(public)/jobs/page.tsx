@@ -1,4 +1,4 @@
-
+﻿
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
@@ -7,13 +7,7 @@ import type { Job } from "@/features/jobs/types/job";
 import { Navbar } from "@/components/landing/newsletter/Navbar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { AppSelect } from "@/components/ui/app-select";
 import {
   Sheet,
   SheetContent,
@@ -139,7 +133,7 @@ export default function JobsPage() {
   return (
     <>
       <Navbar solid />
-      <main className="min-h-screen bg-white px-4 py-12 text-foreground sm:px-6 lg:px-8">
+      <main className="min-h-screen bg-background px-4 py-12 text-foreground sm:px-6 lg:px-8">
       <div className="mx-auto max-w-6xl space-y-8">
         <section className="grid gap-6 border-b border-border/60 pb-7 lg:grid-cols-[minmax(0,1fr)_320px] lg:items-end">
           <div>
@@ -181,14 +175,14 @@ export default function JobsPage() {
         className="rounded-lg border border-border/60 p-2"
       >
         <div className="flex items-center gap-2">
-          {/* Search — always visible */}
+          {/* Search â€” always visible */}
           <div className="relative flex-1">
             <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
             <Input
               data-testid="jobs-search"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search role, company, stack…"
+              placeholder="Search role, company, stackâ€¦"
               className="h-9 rounded-md pl-9 pr-9"
             />
             {query ? (
@@ -241,6 +235,7 @@ export default function JobsPage() {
               <div className="grid gap-4 py-4">
                 <FilterField label="Work mode" icon={Globe2}>
                   <FilterSelect
+                    label="Work mode"
                     testId="filter-workmode-mobile"
                     value={workMode}
                     onChange={(v) => setWorkMode(v as typeof workMode)}
@@ -249,6 +244,7 @@ export default function JobsPage() {
                 </FilterField>
                 <FilterField label="Role type" icon={Briefcase}>
                   <FilterSelect
+                    label="Role type"
                     testId="filter-roletype-mobile"
                     value={roleType}
                     onChange={(v) => setRoleType(v as typeof roleType)}
@@ -257,6 +253,7 @@ export default function JobsPage() {
                 </FilterField>
                 <FilterField label="Experience" icon={Hourglass}>
                   <FilterSelect
+                    label="Experience"
                     testId="filter-experience-mobile"
                     value={experience}
                     onChange={(v) => setExperience(v as typeof experience)}
@@ -297,6 +294,7 @@ export default function JobsPage() {
           {/* Desktop inline filters */}
           <div className="hidden items-center gap-2 lg:flex">
             <FilterSelect
+              label="Work mode"
               testId="filter-workmode"
               value={workMode}
               onChange={(v) => setWorkMode(v as typeof workMode)}
@@ -305,6 +303,7 @@ export default function JobsPage() {
               icon={Globe2}
             />
             <FilterSelect
+              label="Role type"
               testId="filter-roletype"
               value={roleType}
               onChange={(v) => setRoleType(v as typeof roleType)}
@@ -313,6 +312,7 @@ export default function JobsPage() {
               icon={Briefcase}
             />
             <FilterSelect
+              label="Experience"
               testId="filter-experience"
               value={experience}
               onChange={(v) => setExperience(v as typeof experience)}
@@ -416,7 +416,7 @@ function JobCard({ job }: { job: Job }) {
         <div className="flex items-start justify-between gap-3">
           <div className="flex items-center gap-2.5 min-w-0">
             <div className="grid size-9 shrink-0 place-items-center rounded-md border border-border/60 text-sm font-semibold uppercase">
-              {(job.companyName ?? "·").slice(0, 1)}
+              {(job.companyName ?? "Â·").slice(0, 1)}
             </div>
             <div className="min-w-0">
               <p className="flex items-center gap-1 truncate text-sm font-medium">
@@ -585,6 +585,7 @@ function FilterField({
 }
 
 function FilterSelect({
+  label,
   value,
   onChange,
   options,
@@ -592,6 +593,7 @@ function FilterSelect({
   icon: Icon,
   testId,
 }: {
+  label: string;
   value: string;
   onChange: (v: string) => void;
   options: readonly string[];
@@ -599,25 +601,26 @@ function FilterSelect({
   icon?: React.ComponentType<{ className?: string }>;
   testId: string;
 }) {
+  const allLabel =
+    label === "Work mode"
+      ? "Any work mode"
+      : label === "Role type"
+        ? "Any role type"
+        : "Any experience";
+
   return (
-    <Select value={value} onValueChange={onChange}>
-      <SelectTrigger
-        data-testid={testId}
-        className={`rounded-md ${
-          compact ? "h-9 w-auto gap-1.5 px-3 text-sm" : "h-9"
-        }`}
-      >
-        {Icon && compact ? <Icon className="size-3.5 text-muted-foreground" /> : null}
-        <SelectValue />
-      </SelectTrigger>
-      <SelectContent className="rounded-md">
-        {options.map((opt) => (
-          <SelectItem key={opt} value={opt} className="rounded-md">
-            {opt === "ALL" ? "All" : prettify(opt)}
-          </SelectItem>
-        ))}
-      </SelectContent>
-    </Select>
+    <AppSelect
+      label={label}
+      testId={testId}
+      value={value}
+      onValueChange={onChange}
+      compact={compact}
+      icon={Icon}
+      options={options.map((option) => ({
+        value: option,
+        label: option === "ALL" ? allLabel : prettify(option),
+      }))}
+    />
   );
 }
 
@@ -688,7 +691,7 @@ function EmptyState({ onReset }: { onReset: () => void }) {
 /* ---------------- Helpers ---------------- */
 
 function prettify(value?: string | null) {
-  if (!value) return "—";
+  if (!value) return "â€”";
   return value
     .toLowerCase()
     .split("_")
@@ -709,8 +712,9 @@ function formatSalary(
   const cur = currency ?? "USD";
   const fmt = (n: number) =>
     n >= 1000 ? `${Math.round(n / 1000)}k` : `${n}`;
-  if (min && max) return `${cur} ${fmt(min)}–${fmt(max)}`;
+  if (min && max) return `${cur} ${fmt(min)}â€“${fmt(max)}`;
   if (min) return `${cur} ${fmt(min)}+`;
   if (max) return `up to ${cur} ${fmt(max)}`;
   return "Compensation TBD";
 }
+

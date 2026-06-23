@@ -1,4 +1,4 @@
-
+﻿
 "use client";
 
 import Link from "next/link";
@@ -90,7 +90,7 @@ const glowClassFor = (i: number) => {
 function ContributionGraph() {
   const cells: React.ReactNode[] = [];
   const mobileCells: React.ReactNode[] = [];
-  // Pick a few cells to "glow" — the active commits
+  // Pick a few cells to "glow" â€” the active commits
   const glowCells = [42, 87, 134, 198, 256, 301, 340];
 
   for (let w = 0; w < WEEKS; w++) {
@@ -270,7 +270,7 @@ export default function Footer() {
               <span className="relative inline-flex size-1.5 rounded-full bg-emerald-500" />
             </span>
             <span className="font-mono text-[10px] uppercase tracking-[0.12em] text-muted-foreground">
-              Live · 1.2k commits indexed today
+              Live Â· 1.2k commits indexed today
             </span>
           </div>
 
@@ -345,7 +345,7 @@ export default function Footer() {
    
         <div className="flex flex-col items-center gap-5 border-t border-border/70 py-6 sm:flex-row sm:justify-between sm:gap-4">
           <p className="text-center text-[11.5px] text-muted-foreground sm:text-left">
-            © {new Date().getFullYear()} Crewcast. Built by{" "}
+            Â© {new Date().getFullYear()} Crewcast. Built by{" "}
             <a
               href="https://imsaikirann.com"
               target="_blank"
@@ -380,3 +380,4 @@ export default function Footer() {
     </footer>
   );
 }
+

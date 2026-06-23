@@ -1,4 +1,4 @@
-import Link from "next/link";
+﻿import Link from "next/link";
 import { formatDateTime } from "@/utils/date";
 import { StatusBadge } from "./Statusbadge";
 import { ScoreBadge } from "./Scorebadge";
@@ -29,47 +29,48 @@ export function SubmissionRow({
   gridClassName,
 }: {
   submission: RecentSubmission;
-  gridClassName: string; // passed from SubmissionsTable — keeps header & row in sync
+  gridClassName: string; // passed from SubmissionsTable â€” keeps header & row in sync
 }) {
   return (
     <Link
       href={`/dashboard/submissions/${submission.form.publicId}`}
-      className={`${gridClassName} py-3 text-sm transition-colors hover:bg-zinc-50/80 dark:hover:bg-zinc-800/40`}
+      className={`${gridClassName} py-3 text-sm transition-colors hover:bg-muted/60 dark:hover:bg-muted/60`}
     >
-      {/* Col 1 — Candidate */}
+      {/* Col 1 â€” Candidate */}
       <div className="min-w-0">
-        <p className="truncate font-medium text-zinc-900 dark:text-zinc-100">
+        <p className="truncate font-medium text-foreground dark:text-foreground">
           {submission.fullName}
         </p>
-        <p className="truncate text-xs text-zinc-400 dark:text-zinc-500">
+        <p className="truncate text-xs text-muted-foreground">
           {submission.email}
         </p>
       </div>
 
-      {/* Col 2 — Position */}
+      {/* Col 2 â€” Position */}
       <div className="min-w-0">
-        <p className="truncate text-zinc-700 dark:text-zinc-300">
+        <p className="truncate text-foreground">
           {submission.form.title}
         </p>
-        <p className="text-xs text-zinc-400 dark:text-zinc-500">
+        <p className="text-xs text-muted-foreground">
           {formatLabel(submission.form.roleType)}
         </p>
       </div>
 
-      {/* Col 3 — Status */}
+      {/* Col 3 â€” Status */}
       <div>
         <StatusBadge status={submission.status} />
       </div>
 
-      {/* Col 4 — Score */}
+      {/* Col 4 â€” Score */}
       <div>
         <ScoreBadge score={submission.score} />
       </div>
 
-      {/* Col 5 — Date */}
-      <p className="text-right text-xs tabular-nums text-zinc-400 dark:text-zinc-500">
+      {/* Col 5 â€” Date */}
+      <p className="text-right text-xs tabular-nums text-muted-foreground">
         {formatDateTime(submission.createdAt)}
       </p>
     </Link>
   );
 }
+

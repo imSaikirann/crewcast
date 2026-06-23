@@ -1,8 +1,8 @@
-
+﻿
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { AppSelect } from "@/components/ui/app-select";
 import { Textarea } from "@/components/ui/textarea";
 import { FormPreview } from "./FormPreview";
 
@@ -83,21 +83,13 @@ export default function FormBuilderPanel({  formTitle, formDescription, setFormT
               <CardContent className="space-y-4">
                 <div>
                   <Label>Field Type</Label>
-                  <Select
+                  <AppSelect
+                    label="Field type"
                     value={selectedFieldType}
                     onValueChange={(value) => setSelectedFieldType(value as FieldType)}
-                  >
-                    <SelectTrigger className="mt-1 w-full">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {fieldTypes.map((type) => (
-                        <SelectItem key={type.value} value={type.value}>
-                          {type.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                    options={fieldTypes}
+                    className="mt-1"
+                  />
                 </div>
                 <Button onClick={handleAddField} className="w-full" variant="outline">
                   <HugeIcon name="add-circle" className="w-4 h-4 mr-2" />
@@ -146,3 +138,4 @@ export default function FormBuilderPanel({  formTitle, formDescription, setFormT
         </div>
   )
 }
+

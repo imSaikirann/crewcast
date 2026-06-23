@@ -1,5 +1,6 @@
-import { useFormContext } from "react-hook-form"
+﻿import { Controller, useFormContext } from "react-hook-form"
 import { Input } from "@/components/ui/input"
+import { AppSelect } from "@/components/ui/app-select"
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 import { ResumeUploadField } from "@/features/public-form/components/ResumeUploadField"
@@ -15,6 +16,7 @@ export function FieldRenderer({
   variant?: "default" | "public"
 }) {
   const {
+    control,
     register,
     formState: { errors },
   } = useFormContext()
@@ -94,25 +96,33 @@ export function FieldRenderer({
 
       {/* SELECT */}
       {field.type === "select" && (
-        <select
-          {...common}
-          disabled={field.disabled}
-          className={cn(
-            "w-full border text-foreground outline-none focus:border-primary",
-            isPublic
-              ? "h-12 rounded-md bg-background px-3 text-base"
-              : "h-11 rounded-[10px] bg-secondary px-3 text-sm"
+        <Controller
+          name={field.id}
+          control={control}
+          rules={{ required: field.required }}
+          render={({ field: controlledField }) => (
+            <AppSelect
+              label={field.label}
+              value={controlledField.value || ""}
+              onValueChange={controlledField.onChange}
+              disabled={field.disabled}
+              placeholder={field.placeholder || "Select an option"}
+              size="lg"
+              options={[
+                {
+                  value: "",
+                  label: field.placeholder || "Select an option",
+                  disabled: Boolean(field.required),
+                },
+                ...(field.options || []).map((option: string) => ({
+                  value: option,
+                  label: option,
+                })),
+              ]}
+              triggerClassName={cn(isPublic && "h-12 text-base")}
+            />
           )}
-        >
-          <option value="">
-            {field.placeholder || "Select an option"}
-          </option>
-          {field.options?.map((opt: string) => (
-            <option key={opt} value={opt}>
-              {opt}
-            </option>
-          ))}
-        </select>
+        />
       )}
 
       {/* RADIO */}
@@ -172,3 +182,5 @@ export function FieldRenderer({
     </div>
   )
 }
+
+

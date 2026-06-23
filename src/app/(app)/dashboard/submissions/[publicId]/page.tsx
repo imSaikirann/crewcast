@@ -1,4 +1,4 @@
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+﻿import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import AppPage from "@/components/app/AppPage";
 import ApplicationsView from "@/features/submissions/components/ApplicationsView";
 import { prisma } from "@/lib/prisma";
@@ -145,3 +145,4 @@ function normalizeFields(fields: unknown): {
         field !== null
     );
 }
+

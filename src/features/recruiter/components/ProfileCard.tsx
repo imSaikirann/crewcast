@@ -1,4 +1,4 @@
-import { HugeIcon } from "@/utils/hugeicons";
+﻿import { HugeIcon } from "@/utils/hugeicons";
 import { Recruiter } from "../types/recruiter";
 
 export default function ProfileCard({ recruiter }: any) {
@@ -60,3 +60,4 @@ export default function ProfileCard({ recruiter }: any) {
     </div>
   );
 }
+

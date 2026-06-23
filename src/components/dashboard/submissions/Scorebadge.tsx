@@ -1,11 +1,11 @@
-type ScoreBadgeProps = {
+﻿type ScoreBadgeProps = {
   score?: number;
 };
 
 export function ScoreBadge({ score }: ScoreBadgeProps) {
   if (typeof score !== "number") {
     return (
-      <span className="text-xs text-zinc-400 dark:text-zinc-600">—</span>
+      <span className="text-xs text-muted-foreground">â€”</span>
     );
   }
 
@@ -30,7 +30,7 @@ export function ScoreBadge({ score }: ScoreBadgeProps) {
   return (
     <div className="flex items-center gap-2">
       {/* Track */}
-      <div className="h-1 w-12 overflow-hidden rounded-full bg-zinc-100 dark:bg-zinc-800">
+      <div className="h-1 w-12 overflow-hidden rounded-full bg-muted dark:bg-muted">
         <div
           className={`h-full rounded-full transition-all ${trackFill}`}
           style={{ width: `${pct}%` }}
@@ -43,3 +43,4 @@ export function ScoreBadge({ score }: ScoreBadgeProps) {
     </div>
   );
 }
+

@@ -1,8 +1,8 @@
-import type { SVGProps } from "react";
+﻿import type { SVGProps } from "react";
 
 /**
  * Arcade-style icon set for the landing page.
- * Bold, rounded, slightly playful strokes with a soft duotone fill —
+ * Bold, rounded, slightly playful strokes with a soft duotone fill â€”
  * inspired by playful "arcade" icon sets, redrawn in-house.
  * 24x24 viewBox, currentColor, 1.9 stroke, round caps/joins.
  */
@@ -163,4 +163,74 @@ export const GaugeIcon = (p: IconProps) => (
     <circle cx="12" cy="14" r="1.2" fill="currentColor" stroke="none" />
   </Icon>
 );
+
+/* ---- Audience icons (purpose-drawn for the "Built for" pills) ---- */
+
+/** A young sprout breaking ground â€” early-stage / seed teams. */
+export const SeedlingIcon = (p: IconProps) => (
+  <Icon {...p}>
+    <path d="M12 20v-7" />
+    <path d="M12 13c-3.2 0-5-1.8-5-5 3.2 0 5 1.8 5 5Z" {...fill} />
+    <path d="M12 13c-3.2 0-5-1.8-5-5 3.2 0 5 1.8 5 5Z" />
+    <path d="M12 11.5c0-2.7 1.8-4.5 4.7-4.5 0 2.7-1.8 4.5-4.7 4.5Z" {...fill} />
+    <path d="M12 11.5c0-2.7 1.8-4.5 4.7-4.5 0 2.7-1.8 4.5-4.7 4.5Z" />
+    <path d="M8 20h8" />
+  </Icon>
+);
+
+/** A planted flag â€” founder staking the claim and leading the hire. */
+export const FounderFlagIcon = (p: IconProps) => (
+  <Icon {...p}>
+    <path d="M7 21V4" />
+    <path d="M7 4h10.5l-2.6 3.4L17.5 11H7Z" {...fill} />
+    <path d="M7 4h10.5l-2.6 3.4L17.5 11H7Z" />
+  </Icon>
+);
+
+/** A person inside a search lens â€” the first recruiter sourcing talent. */
+export const TalentSearchIcon = (p: IconProps) => (
+  <Icon {...p}>
+    <circle cx="10.5" cy="10.5" r="6.5" {...fill} />
+    <circle cx="10.5" cy="10.5" r="6.5" />
+    <circle cx="10.5" cy="8.8" r="1.9" />
+    <path d="M7.4 13.8c.5-1.5 1.7-2.4 3.1-2.4s2.6.9 3.1 2.4" />
+    <path d="m15.5 15.5 4 4" />
+  </Icon>
+);
+
+/** Angle brackets with a terminal cursor â€” devtool startups. */
+export const DevtoolIcon = (p: IconProps) => (
+  <Icon {...p}>
+    <rect x="3" y="5" width="18" height="14" rx="3" {...fill} />
+    <rect x="3" y="5" width="18" height="14" rx="3" />
+    <path d="m8.5 10-2 2 2 2" />
+    <path d="m13 10 2 2-2 2" />
+    <path d="M10.8 15.2 12.2 8.8" />
+  </Icon>
+);
+
+/** A globe with meridians â€” distributed / remote teams. */
+export const RemoteGlobeIcon = (p: IconProps) => (
+  <Icon {...p}>
+    <circle cx="12" cy="12" r="8.5" {...fill} />
+    <circle cx="12" cy="12" r="8.5" />
+    <path d="M3.6 12h16.8" />
+    <path d="M12 3.5c2.5 2.3 2.5 14.7 0 17" />
+    <path d="M12 3.5c-2.5 2.3-2.5 14.7 0 17" />
+  </Icon>
+);
+
+/** A rocket on lift-off â€” accelerator-backed / YC-style companies. */
+export const RocketIcon = (p: IconProps) => (
+  <Icon {...p}>
+    <path d="M12 3c3 2.2 4.5 5.3 4.5 9.3L14.5 14h-5l-2-1.7C7.5 8.3 9 5.2 12 3Z" {...fill} />
+    <path d="M12 3c3 2.2 4.5 5.3 4.5 9.3L14.5 14h-5l-2-1.7C7.5 8.3 9 5.2 12 3Z" />
+    <circle cx="12" cy="9.5" r="1.6" />
+    <path d="M9.5 14l-2 1 .6-3M14.5 14l2 1-.6-3" />
+    <path d="M10.6 16.5c0 1.4.5 2.4 1.4 3.3.9-.9 1.4-1.9 1.4-3.3" {...fill} />
+    <path d="M10.6 16.5c0 1.4.5 2.4 1.4 3.3.9-.9 1.4-1.9 1.4-3.3" />
+  </Icon>
+);
+
+
 

@@ -1,4 +1,4 @@
-import type { Metadata } from "next"
+﻿import type { Metadata } from "next"
 import "./globals.css"
 import { Providers } from "./providers"
 import Navbar from "@/components/navbar"
@@ -68,24 +68,22 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <head lang="en" className="dark" >
+      <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
         <link
-          href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Sora:wght@300;400;500;600;700&family=Roboto:wght@400;500;700&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
           rel="stylesheet"
         />
         <script
           dangerouslySetInnerHTML={{
             __html: `
               try {
-                var theme = localStorage.getItem("crewcast-theme") || "system";
-                var resolved = theme === "system"
-                  ? (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light")
-                  : theme;
+                var saved = localStorage.getItem("crewcast-theme");
+                var resolved = saved === "dark" ? "dark" : "light";
                 document.documentElement.classList.remove("light", "dark");
                 document.documentElement.classList.add(resolved);
-                document.documentElement.dataset.theme = theme;
+                document.documentElement.dataset.theme = resolved;
                 document.documentElement.style.colorScheme = resolved;
               } catch (_) {}
             `,
@@ -106,3 +104,4 @@ export default function RootLayout({
     </html>
   )
 }
+

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import { useSession, signIn } from "next-auth/react";
@@ -6,7 +6,7 @@ import Link from "next/link";
 import { Menu, X } from "lucide-react";
 import { usePathname } from "next/navigation";
 
-import { CrewcastMark } from "@/components/brand/CrewcastLogo"; // ✅ YOUR LOGO
+import { CrewcastMark } from "@/components/brand/CrewcastLogo"; // âœ… YOUR LOGO
 import { navLinks } from "./navLinks";
 import ProfileMenu from "./ProfileMenu";
 import MobileMenu from "./MobileMenu";
@@ -26,7 +26,7 @@ export default function Navbar() {
         {/* Top bar */}
         <div className="flex items-center justify-between h-16">
 
-          {/* ✅ Logo (FIXED) */}
+          {/* âœ… Logo (FIXED) */}
           <Link href="/" className="flex items-center gap-2.5">
             <CrewcastMark className="size-6" />
             <span className="text-[15px] font-semibold tracking-tight">
@@ -97,3 +97,4 @@ export default function Navbar() {
     </header>
   );
 }
+

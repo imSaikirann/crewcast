@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -128,3 +128,4 @@ export default function ReportForm({ formPublicId, onClose }: Props) {
     </div>
   );
 }
+

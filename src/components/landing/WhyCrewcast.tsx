@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
@@ -13,7 +13,7 @@ const pillars = [
   {
     Icon: Github,
     title: "GitHub-backed scoring",
-    desc: "Every application gets a 0–100 score with a simple breakdown: activity, quality, OSS, and match.",
+    desc: "Every application gets a 0â€“100 score with a simple breakdown: activity, quality, OSS, and match.",
   },
   {
     Icon: ListChecks,
@@ -23,7 +23,7 @@ const pillars = [
   {
     Icon: ShieldCheck,
     title: "Less spam. Better fit.",
-    desc: "Candidates shouldn’t file 1000+ applications to be seen. The right work rises faster.",
+    desc: "Candidates shouldnâ€™t file 1000+ applications to be seen. The right work rises faster.",
   },
 ];
 
@@ -90,7 +90,7 @@ export function WhyCrewcast() {
         animate={inView ? { opacity: 1 } : {}}
         transition={{ delay: 0.1 }}
       >
-        Crewcast is proof-of-work hiring: structured applications, GitHub insights, and a workflow that’s fair to candidates and fast for recruiters.
+        Crewcast is proof-of-work hiring: structured applications, GitHub insights, and a workflow thatâ€™s fair to candidates and fast for recruiters.
       </motion.p>
 
       <div className="grid gap-4 sm:grid-cols-2">
@@ -127,3 +127,4 @@ export function WhyCrewcast() {
     </section>
   );
 }
+

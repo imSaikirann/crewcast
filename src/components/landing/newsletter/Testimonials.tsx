@@ -1,4 +1,4 @@
-import { QuoteIcon } from "./icons";
+﻿import { QuoteIcon } from "./icons";
 
 const testimonials = [
   {
@@ -25,22 +25,22 @@ export function Testimonials() {
   return (
     <section id="testimonials" className="w-full scroll-mt-20">
       <div className="mx-auto max-w-5xl px-6 py-20 sm:py-28">
-        <h2 className="font-heading max-w-2xl text-3xl font-bold leading-tight text-neutral-900 sm:text-4xl">
+        <h2 className="font-heading max-w-2xl text-3xl font-bold leading-tight text-foreground sm:text-4xl">
           Teams hire with confidence.
         </h2>
 
         <div className="mt-12 grid gap-x-12 gap-y-12 sm:mt-16 sm:grid-cols-2 sm:gap-y-14 lg:grid-cols-3">
           {testimonials.map((t) => (
             <figure key={t.name} className="flex flex-col">
-              <QuoteIcon size={24} className="text-neutral-300" />
-              <blockquote className="font-sora mt-4 flex-1 text-[15px] leading-relaxed text-neutral-700">
+              <QuoteIcon size={24} className="text-muted-foreground/50" />
+              <blockquote className="font-sora mt-4 flex-1 text-[15px] leading-relaxed text-foreground">
                 {t.quote}
               </blockquote>
               <figcaption className="mt-6">
-                <p className="font-heading text-sm font-semibold text-neutral-900">
+                <p className="font-heading text-sm font-semibold text-foreground">
                   {t.name}
                 </p>
-                <p className="font-sora mt-0.5 text-sm text-neutral-400">
+                <p className="font-sora mt-0.5 text-sm text-muted-foreground">
                   {t.role}
                 </p>
               </figcaption>
@@ -51,3 +51,5 @@ export function Testimonials() {
     </section>
   );
 }
+
+

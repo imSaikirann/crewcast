@@ -1,24 +1,24 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
-import { X, Plus } from "lucide-react";
 
+import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { AppSelect } from "@/components/ui/app-select";
 import { Textarea } from "@/components/ui/textarea";
+import { MultiSelect } from "@/components/ui/multi-select";
+import { SKILL_OPTIONS } from "@/lib/constants/skills";
+import { CURRENCY_OPTIONS, getCurrency } from "@/lib/constants/currencies";
 import { JobFormDetails } from "../types/types";
 
 const workModes = ["REMOTE", "HYBRID", "ONSITE"];
 const roleTypes = ["FULL_TIME", "PART_TIME", "CONTRACT", "INTERNSHIP"];
 const experiences = ["JUNIOR", "MID", "SENIOR", "LEAD"];
+
+const NUMBER_INPUT_RESET =
+  "[appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none";
 
 export function FormDetailsStep({
   values,
@@ -30,7 +30,6 @@ export function FormDetailsStep({
   onNext: (v: JobFormDetails) => void;
 }) {
   const [tags, setTags] = useState<string[]>(values.techStack || []);
-  const [tagInput, setTagInput] = useState("");
   const form = useForm<JobFormDetails>({ defaultValues: values });
   const currentWorkMode = form.watch("workMode") || "REMOTE";
   const currentRoleType = form.watch("roleType") || "FULL_TIME";
@@ -44,25 +43,24 @@ export function FormDetailsStep({
     onChange?.({ ...form.getValues(), techStack: nextTags });
   };
 
-  const addTag = () => {
-    const next = tagInput.trim();
-    if (!next || tags.includes(next)) return;
-    const nextTags = [...tags, next];
+  const setSkills = (nextTags: string[]) => {
     setTags(nextTags);
-    setTagInput("");
     syncForm(nextTags);
   };
+
+  const currency = form.watch("currency") || "INR";
+  const currencySymbol = getCurrency(currency)?.symbol ?? "";
 
   return (
     <FormProvider {...form}>
       <form
         id="step1-form"
         onSubmit={form.handleSubmit((data) => onNext({ ...data, techStack: tags }))}
-        className="space-y-12"
+        className="space-y-6"
       >
         {/* Role info */}
         <Section
-          eyebrow="01"
+          index="1"
           title="Role"
           description="Tell candidates what they'll be doing."
         >
@@ -80,7 +78,7 @@ export function FormDetailsStep({
           <Field label="Description" required>
             <Textarea
               placeholder="Describe responsibilities, requirements, and what success looks like."
-              className="min-h-[140px] text-sm leading-6"
+              className="min-h-35 text-sm leading-6"
               {...form.register("formDescription", {
                 required: true,
                 onChange: () => syncForm(),
@@ -91,7 +89,7 @@ export function FormDetailsStep({
 
         {/* Location & Work */}
         <Section
-          eyebrow="02"
+          index="2"
           title="Location & work"
           description="Where and how this role operates."
         >
@@ -129,38 +127,33 @@ export function FormDetailsStep({
           </Field>
 
           <Field label="Experience level">
-            <Select
+            <AppSelect
+              label="Experience level"
               value={form.watch("experience") || "JUNIOR"}
               onValueChange={(value) => {
                 form.setValue("experience", value);
                 syncForm();
               }}
-            >
-              <SelectTrigger className="h-11">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {experiences.map((item) => (
-                  <SelectItem key={item} value={item}>
-                    {labelize(item)}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+              options={experiences.map((item) => ({
+                value: item,
+                label: labelize(item),
+              }))}
+              size="lg"
+            />
           </Field>
         </Section>
 
         {/* Compensation */}
         <Section
-          eyebrow="03"
+          index="3"
           title="Compensation"
           description="Optional. Salary visibility increases applications."
         >
-          <div className="grid gap-4 sm:grid-cols-3">
+          <div className="grid gap-4 sm:grid-cols-[1fr_1fr_minmax(0,200px)]">
             <Field label="Min salary">
-              <Input
-                type="number"
-                className="h-11"
+              <MoneyInput
+                symbol={currencySymbol}
+                placeholder="0"
                 {...form.register("salaryMin", {
                   valueAsNumber: true,
                   onChange: () => syncForm(),
@@ -168,9 +161,9 @@ export function FormDetailsStep({
               />
             </Field>
             <Field label="Max salary">
-              <Input
-                type="number"
-                className="h-11"
+              <MoneyInput
+                symbol={currencySymbol}
+                placeholder="0"
                 {...form.register("salaryMax", {
                   valueAsNumber: true,
                   onChange: () => syncForm(),
@@ -178,94 +171,68 @@ export function FormDetailsStep({
               />
             </Field>
             <Field label="Currency">
-              <Select
-                value={form.watch("currency") || "INR"}
+              <AppSelect
+                label="Currency"
+                value={currency}
                 onValueChange={(value) => {
                   form.setValue("currency", value);
                   syncForm();
                 }}
-              >
-                <SelectTrigger className="h-11">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="INR">INR</SelectItem>
-                  <SelectItem value="USD">USD</SelectItem>
-                  <SelectItem value="EUR">EUR</SelectItem>
-                </SelectContent>
-              </Select>
+                options={CURRENCY_OPTIONS}
+                size="lg"
+                contentClassName="max-w-[320px]"
+              />
             </Field>
           </div>
         </Section>
 
         {/* Hiring */}
         <Section
-          eyebrow="04"
+          index="4"
           title="Hiring"
-          description="Track openings, tech, and deadlines."
+          description="Track openings, required skills, and deadlines."
         >
-          <Field label="Openings" hint="Used for tracking — e.g. 0 / 3 hired.">
-            <Input
-              type="number"
-              min={1}
-              className="h-11 sm:max-w-[200px]"
-              placeholder="3"
-              {...form.register("openings", {
-                valueAsNumber: true,
-                min: 1,
-                onChange: () => syncForm(),
-              })}
-            />
-          </Field>
+          <div className="grid gap-5 sm:grid-cols-2">
+            <Field label="Openings" hint="Used for tracking — e.g. 0 / 3 hired.">
+              <Input
+                type="number"
+                min={1}
+                className={cn("h-11", NUMBER_INPUT_RESET)}
+                placeholder="3"
+                {...form.register("openings", {
+                  valueAsNumber: true,
+                  min: 1,
+                  onChange: () => syncForm(),
+                })}
+              />
+            </Field>
+
+            <Field label="Application deadline" required>
+              <Input
+                type="date"
+                className="h-11"
+                {...form.register("expiresAt", {
+                  required: true,
+                  onChange: () => syncForm(),
+                })}
+              />
+            </Field>
+          </div>
 
           <Field
-            label="Tech stack"
-            hint="Press Enter to add. These help candidates self-qualify."
+            label="Skills"
+            hint="Pick from the catalogue or type to add your own."
           >
-            <div className="flex flex-wrap items-center gap-1.5 rounded-md border border-border bg-background px-2 py-2 focus-within:border-foreground/30 focus-within:ring-1 focus-within:ring-foreground/10">
-              {tags.map((tag) => (
-                <span
-                  key={tag}
-                  className="inline-flex items-center gap-1 rounded-md border border-border bg-secondary/50 px-2 py-0.5 text-xs font-medium"
-                >
-                  {tag}
-                  <button
-                    type="button"
-                    onClick={() => {
-                      const nextTags = tags.filter((t) => t !== tag);
-                      setTags(nextTags);
-                      syncForm(nextTags);
-                    }}
-                    className="text-muted-foreground hover:text-foreground"
-                    aria-label={`Remove ${tag}`}
-                  >
-                    <X className="size-3" />
-                  </button>
-                </span>
-              ))}
-              <input
-                value={tagInput}
-                onChange={(e) => setTagInput(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") {
-                    e.preventDefault();
-                    addTag();
-                  }
-                }}
-                placeholder={tags.length === 0 ? "React, Figma, SQL…" : ""}
-                className="h-7 min-w-[120px] flex-1 bg-transparent px-1 text-sm outline-none placeholder:text-muted-foreground"
-              />
-            </div>
-          </Field>
-
-          <Field label="Application deadline" required>
-            <Input
-              type="date"
-              className="h-11 sm:max-w-[240px]"
-              {...form.register("expiresAt", {
-                required: true,
-                onChange: () => syncForm(),
-              })}
+            <MultiSelect
+              label="Skills"
+              options={SKILL_OPTIONS}
+              selected={tags}
+              onChange={setSkills}
+              allowCustom
+              size="lg"
+              placeholder="Add skills candidates should have"
+              searchPlaceholder="Search skills…"
+              emptyText="No matching skills — press Enter to add a custom one"
             />
           </Field>
         </Section>
@@ -275,32 +242,34 @@ export function FormDetailsStep({
 }
 
 function Section({
-  eyebrow,
+  index,
   title,
   description,
   children,
 }: {
-  eyebrow: string;
+  index: string;
   title: string;
   description?: string;
   children: React.ReactNode;
 }) {
   return (
-    <section className="grid gap-6 border-t border-border pt-8 lg:grid-cols-[220px_1fr] lg:gap-10">
-      <div>
-        <p className="text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground">
-          {eyebrow}
-        </p>
-        <h2 className="mt-2 font-display text-base font-semibold tracking-tight">
-          {title}
-        </h2>
-        {description && (
-          <p className="mt-1 text-xs leading-5 text-muted-foreground">
-            {description}
-          </p>
-        )}
-      </div>
-      <div className="space-y-5">{children}</div>
+    <section className="rounded-xl border border-border bg-card">
+      <header className="flex items-start gap-3 border-b border-border px-5 py-4 sm:px-6">
+        <span className="mt-0.5 grid size-6 shrink-0 place-items-center rounded-full bg-foreground text-[11px] font-semibold tabular-nums text-background">
+          {index}
+        </span>
+        <div className="min-w-0">
+          <h2 className="font-display text-sm font-semibold tracking-tight">
+            {title}
+          </h2>
+          {description && (
+            <p className="mt-0.5 text-xs leading-5 text-muted-foreground">
+              {description}
+            </p>
+          )}
+        </div>
+      </header>
+      <div className="space-y-5 px-5 py-5 sm:px-6">{children}</div>
     </section>
   );
 }
@@ -309,24 +278,48 @@ function Field({
   label,
   hint,
   required,
+  className,
   children,
 }: {
   label: string;
   hint?: string;
   required?: boolean;
+  className?: string;
   children: React.ReactNode;
 }) {
   return (
-    <div className="space-y-1.5">
+    <div className={cn("space-y-2", className)}>
       <Label className="text-[13px] font-medium text-foreground">
         {label}
         {required && <span className="ml-1 text-muted-foreground">*</span>}
       </Label>
       {children}
-      {hint && <p className="text-xs text-muted-foreground">{hint}</p>}
+      {hint && <p className="text-xs leading-5 text-muted-foreground">{hint}</p>}
     </div>
   );
 }
+
+const MoneyInput = ({
+  symbol,
+  className,
+  ...props
+}: React.ComponentProps<typeof Input> & { symbol: string }) => {
+  return (
+    <div className="relative">
+      {symbol && (
+        <span className="pointer-events-none absolute inset-y-0 left-0 grid w-9 place-items-center text-sm text-muted-foreground">
+          {symbol}
+        </span>
+      )}
+      <Input
+        type="number"
+        inputMode="numeric"
+        className={cn("h-11", symbol && "pl-9", NUMBER_INPUT_RESET, className)}
+        {...props}
+      />
+    </div>
+  );
+};
 
 function Segmented({
   value,
@@ -338,7 +331,7 @@ function Segmented({
   onChange: (value: string) => void;
 }) {
   return (
-    <div className="inline-flex flex-wrap gap-1 rounded-md border border-border bg-secondary/30 p-1">
+    <div className="flex flex-wrap gap-1 rounded-md border border-border bg-secondary/30 p-1">
       {options.map((option) => {
         const active = value === option;
         return (
@@ -346,11 +339,13 @@ function Segmented({
             key={option}
             type="button"
             onClick={() => onChange(option)}
-            className={`h-9 rounded px-3 text-xs font-medium transition ${
+            className={cn(
+              "h-9 flex-1 rounded px-3 text-xs font-medium transition-colors",
+              "min-w-21",
               active
                 ? "bg-background text-foreground shadow-sm"
                 : "text-muted-foreground hover:text-foreground"
-            }`}
+            )}
           >
             {labelize(option)}
           </button>

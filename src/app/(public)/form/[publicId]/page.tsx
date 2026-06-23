@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/prisma";
+﻿import { prisma } from "@/lib/prisma";
 import { cacheGet, cacheSet } from "@/lib/redis";
 import { cacheKeys, cacheTtl } from "@/lib/cacheKeys";
 import { PublicFormShell } from "@/features/public-form/components/PublicFormShell";
@@ -19,7 +19,7 @@ export default async function Page({
       await trackFormView(form.id);
       return <PublicFormShell form={form} />;
     } catch {
-      // corrupt cache → ignore
+      // corrupt cache â†’ ignore
     }
   }
 

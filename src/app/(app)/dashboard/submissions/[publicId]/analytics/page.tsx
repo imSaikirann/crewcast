@@ -1,4 +1,4 @@
-import Link from "next/link";
+﻿import Link from "next/link";
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 
@@ -285,3 +285,4 @@ function formatLabel(value: string) {
     .map((part) => part.charAt(0) + part.slice(1).toLowerCase())
     .join(" ");
 }
+

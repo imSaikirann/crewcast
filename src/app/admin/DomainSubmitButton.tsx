@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useFormStatus } from "react-dom";
 
@@ -19,3 +19,4 @@ export default function DomainSubmitButton({
     </Button>
   );
 }
+

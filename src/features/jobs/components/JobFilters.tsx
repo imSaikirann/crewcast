@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useMemo, useState } from "react";
 import { Search, SlidersHorizontal, X } from "lucide-react";
@@ -6,13 +6,7 @@ import { Search, SlidersHorizontal, X } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { AppSelect } from "@/components/ui/app-select";
 import JobCard from "./JobCard";
 import type { Job } from "../types/job";
 
@@ -238,26 +232,17 @@ function FilterSelect({
   options: [string, string][];
 }) {
   return (
-    <label className="space-y-1">
-      <span className="text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">
-        {label}
-      </span>
-      <Select
-        value={value}
-        onValueChange={onChange}
-      >
-        <SelectTrigger className="h-10 w-full bg-background font-medium">
-          <SelectValue />
-        </SelectTrigger>
-        <SelectContent align="start" position="popper" className="min-w-[var(--radix-select-trigger-width)]">
-          {options.map(([optionValue, optionLabel]) => (
-            <SelectItem key={optionValue} value={optionValue}>
-              {optionLabel}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
-    </label>
+    <AppSelect
+      label={label}
+      value={value}
+      onValueChange={onChange}
+      options={options.map(([optionValue, optionLabel]) => ({
+        value: optionValue,
+        label: optionLabel,
+      }))}
+      showLabel
+      size="lg"
+    />
   );
 }
 
@@ -270,3 +255,4 @@ function hasFilters(filters: Filters) {
     filters.tech !== "ALL"
   );
 }
+

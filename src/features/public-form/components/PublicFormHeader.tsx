@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button";
+﻿import { Button } from "@/components/ui/button";
 import { Share2, ShieldCheck, Globe, Linkedin } from "lucide-react";
 
 export function PublicFormHeader({ recruiter }: { recruiter: any }) {
@@ -77,3 +77,4 @@ export function PublicFormHeader({ recruiter }: { recruiter: any }) {
     </div>
   );
 }
+

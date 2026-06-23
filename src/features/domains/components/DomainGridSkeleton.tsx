@@ -1,4 +1,4 @@
-import { DomainCardSkeleton } from "./DomainCardSkeleton";
+﻿import { DomainCardSkeleton } from "./DomainCardSkeleton";
 
 export function DomainGridSkeleton() {
   return (
@@ -9,3 +9,4 @@ export function DomainGridSkeleton() {
     </div>
   );
 }
+

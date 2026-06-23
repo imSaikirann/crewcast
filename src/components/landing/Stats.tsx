@@ -1,4 +1,4 @@
-// ─── StatsBar.tsx ───────────────────────────────────────────────────────────
+﻿// â”€â”€â”€ StatsBar.tsx â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 "use client";
 
 import { useRef, useState } from "react";
@@ -16,9 +16,9 @@ import {
 } from "lucide-react";
 
 const stats = [
-  { val: "0–100", label: "A score for every application" },
+  { val: "0â€“100", label: "A score for every application" },
   { val: "4",     label: "Signals that matter" },
-  { val: "<5m",   label: "To apply — no resume loops" },
+  { val: "<5m",   label: "To apply â€” no resume loops" },
   { val: "Public",label: "Public GitHub data only" },
 ];
 
@@ -59,7 +59,7 @@ export function StatsBar() {
 }
 
 
-// ─── HowItWorks.tsx ─────────────────────────────────────────────────────────
+// â”€â”€â”€ HowItWorks.tsx â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const steps = [
   {
     num: "01",
@@ -83,7 +83,7 @@ const steps = [
     num: "04",
     Icon: BarChart2,
     title: "Review scored candidates",
-    desc: "Applications arrive ranked — with a clear signal breakdown.",
+    desc: "Applications arrive ranked â€” with a clear signal breakdown.",
   },
 ];
 
@@ -116,7 +116,7 @@ export function HowItWorks() {
         animate={inView ? { opacity: 1 } : {}}
         transition={{ delay: 0.1 }}
       >
-        Four steps. No integrations. You’re live in minutes.
+        Four steps. No integrations. Youâ€™re live in minutes.
       </motion.p>
 
       <div
@@ -166,7 +166,7 @@ export function HowItWorks() {
 }
 
 
-// ─── Features.tsx ────────────────────────────────────────────────────────────
+// â”€â”€â”€ Features.tsx â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const features = [
   {
     id: "dashboard",
@@ -210,9 +210,9 @@ const features = [
             Recent activity
           </div>
           {[
-            "Aditya Kumar applied · score 91 · 2m ago",
-            "Backend Intern job published · 1h ago",
-            "Frontend form scored 24 applicants · 3h ago",
+            "Aditya Kumar applied Â· score 91 Â· 2m ago",
+            "Backend Intern job published Â· 1h ago",
+            "Frontend form scored 24 applicants Â· 3h ago",
           ].map((a) => (
             <div
               key={a}
@@ -230,14 +230,14 @@ const features = [
     id: "scoring",
     Icon: Github,
     title: "GitHub signal scoring",
-    desc: "A score you can trust — based on public work, not claims.",
+    desc: "A score you can trust â€” based on public work, not claims.",
     preview: (
       <div className="space-y-3">
         <div
           className="text-[9px] font-semibold uppercase mb-3"
           style={{ color: "var(--lc-text-3)" }}
         >
-          Score breakdown · github.com/adityak
+          Score breakdown Â· github.com/adityak
         </div>
         {[
           ["Repositories",    91],
@@ -286,7 +286,7 @@ const features = [
           className="px-3 py-2 border-b border-[var(--lc-border)] text-[10px] font-medium"
           style={{ background: "var(--lc-bg-2)", color: "var(--lc-text-3)" }}
         >
-          Frontend Engineer — Application
+          Frontend Engineer â€” Application
         </div>
         <div className="p-4 space-y-3">
           {[
@@ -327,7 +327,7 @@ const features = [
     id: "analytics",
     Icon: TrendingUp,
     title: "Analytics & reporting",
-    desc: "Know what’s working: views, conversion, and funnel health.",
+    desc: "Know whatâ€™s working: views, conversion, and funnel health.",
     preview: (
       <div className="space-y-3">
         <div className="grid grid-cols-2 gap-2">
@@ -382,14 +382,14 @@ const features = [
     id: "admin",
     Icon: Shield,
     title: "Admin domain control",
-    desc: "Control domains, defaults, and access — without duct tape.",
+    desc: "Control domains, defaults, and access â€” without duct tape.",
     preview: (
       <div className="space-y-2">
         {[
           ["Domain",         "filtrank.in",              "Active",        "hi" ],
-          ["Team",           "3 recruiters · 2 admins",  "Manage →",      "lo" ],
-          ["Default fields", "Name, email, GitHub",      "Edit →",        "lo" ],
-          ["Access control", "Role-based permissions",   "Configure →",   "lo" ],
+          ["Team",           "3 recruiters Â· 2 admins",  "Manage â†’",      "lo" ],
+          ["Default fields", "Name, email, GitHub",      "Edit â†’",        "lo" ],
+          ["Access control", "Role-based permissions",   "Configure â†’",   "lo" ],
         ].map(([l, v, a, t]) => (
           <div
             key={l as string}
@@ -515,7 +515,7 @@ export function Features() {
 }
 
 
-// ─── Comparison.tsx ──────────────────────────────────────────────────────────
+// â”€â”€â”€ Comparison.tsx â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 export function Comparison() {
   const ref    = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-80px" });
@@ -545,7 +545,7 @@ export function Comparison() {
         animate={inView ? { opacity: 1 } : {}}
         transition={{ delay: 0.1 }}
       >
-        Crewcast doesn't replace recruiter judgment — it gives it a foundation of
+        Crewcast doesn't replace recruiter judgment â€” it gives it a foundation of
         real engineering evidence from day one.
       </motion.p>
 
@@ -586,7 +586,7 @@ export function Comparison() {
           ))}
         </motion.div>
 
-        {/* With — white bordered highlight, no green */}
+        {/* With â€” white bordered highlight, no green */}
         <motion.div
           className="border rounded-[8px] p-7"
           style={{
@@ -607,7 +607,7 @@ export function Comparison() {
             "Every application has a GitHub score on arrival",
             "Ranked table shows who has public work to review",
             "Score based on real repos, not claimed experience",
-            "Shortlist in minutes — your judgment, better data",
+            "Shortlist in minutes â€” your judgment, better data",
           ].map((t) => (
             <div
               key={t}
@@ -628,3 +628,4 @@ export function Comparison() {
     </section>
   );
 }
+

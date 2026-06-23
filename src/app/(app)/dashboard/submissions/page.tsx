@@ -1,4 +1,4 @@
-import Link from "next/link";
+﻿import Link from "next/link";
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 
@@ -102,13 +102,13 @@ export default async function Page() {
       ]}
     >
       <div className="mx-auto max-w-6xl space-y-8">
-        {/* ── Page header ── */}
-        <div className="flex items-end justify-between border-b border-zinc-100 pb-6 dark:border-zinc-800">
+        {/* â”€â”€ Page header â”€â”€ */}
+        <div className="flex items-end justify-between border-b border-border pb-6 dark:border-border">
           <div>
-            <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-zinc-400 dark:text-zinc-500">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-muted-foreground">
               {recruiter.companyName}
             </p>
-            <h1 className="mt-1.5 text-xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-50">
+            <h1 className="mt-1.5 text-xl font-semibold tracking-tight text-foreground">
               Submissions
             </h1>
           </div>
@@ -120,7 +120,7 @@ export default async function Page() {
           </Button>
         </div>
 
-        {/* ── Metrics ── */}
+        {/* â”€â”€ Metrics â”€â”€ */}
         <div className="grid grid-cols-2 gap-3 xl:grid-cols-4">
           <MetricCard label="Forms" value={totalForms} helper={`${activeForms} published`} />
           <MetricCard label="Total" value={totalSubmissions} helper="All time" />
@@ -128,7 +128,7 @@ export default async function Page() {
           <MetricCard label="Reviewed" value={reviewedCount} helper="In recent list" />
         </div>
 
-        {/* ── Content ── */}
+        {/* â”€â”€ Content â”€â”€ */}
         {totalForms === 0 ? (
           <EmptyState
             title="No forms yet"
@@ -142,7 +142,7 @@ export default async function Page() {
         ) : (
           <div className="space-y-3">
             <div className="flex items-center justify-between">
-              <p className="text-xs text-zinc-400 dark:text-zinc-500">
+              <p className="text-xs text-muted-foreground">
                 Showing {submissions.length} most recent applications
               </p>
             </div>
@@ -153,3 +153,4 @@ export default async function Page() {
     </AppPage>
   );
 }
+

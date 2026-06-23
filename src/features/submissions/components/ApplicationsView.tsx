@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
@@ -171,7 +171,7 @@ export default function ApplicationsView({
           <div>
             <h1 className="text-xl font-semibold tracking-tight">Candidate review</h1>
             <p className="mt-1 text-sm text-muted-foreground">
-              {form.title} · {data.length} submissions
+              {form.title} Â· {data.length} submissions
             </p>
           </div>
           <div className="flex flex-wrap items-center gap-2">
@@ -371,3 +371,4 @@ function getComparisonWinner(applications: Application[]) {
   if (topScore === secondScore) return null;
   return sorted[0];
 }
+

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import Link from "next/link";
 import { motion } from "framer-motion";
@@ -19,35 +19,35 @@ const candidates = [
   {
     initials: "LU",
     name: "Monkey D. Luffy",
-    role: "Full Stack Engineer · High commit velocity · TypeScript, Node.js · ships without overthinking",
+    role: "Full Stack Engineer Â· High commit velocity Â· TypeScript, Node.js Â· ships without overthinking",
     score: 95,
     tier: "high",
   },
   {
     initials: "ZO",
     name: "Roronoa Zoro",
-    role: "Backend Engineer · Distributed systems · Go, Rust · zero downtime mindset",
+    role: "Backend Engineer Â· Distributed systems Â· Go, Rust Â· zero downtime mindset",
     score: 90,
     tier: "high",
   },
   {
     initials: "SA",
     name: "Sanji",
-    role: "Frontend Engineer · UI performance · React, CSS · pixel-perfect obsession",
+    role: "Frontend Engineer Â· UI performance Â· React, CSS Â· pixel-perfect obsession",
     score: 84,
     tier: "mid",
   },
   {
     initials: "NA",
     name: "Nami",
-    role: "Data Engineer · Analytics pipelines · Python, SQL · reads data like a map",
+    role: "Data Engineer Â· Analytics pipelines Â· Python, SQL Â· reads data like a map",
     score: 80,
     tier: "mid",
   },
   {
     initials: "CH",
     name: "Tony Tony Chopper",
-    role: "ML Engineer · Learning systems · Python, TensorFlow · fast learner energy",
+    role: "ML Engineer Â· Learning systems Â· Python, TensorFlow Â· fast learner energy",
     score: 68,
     tier: "low",
   },
@@ -194,7 +194,7 @@ export default function Hero() {
                   Frontend Engineer
                 </div>
                 <div className="mt-1 flex flex-wrap gap-1.5 text-[10px] text-[var(--lc-text-3)]">
-                  24 applicants · 6 shortlisted · 2 interviews
+                  24 applicants Â· 6 shortlisted Â· 2 interviews
                 </div>
               </div>
               <div className="flex shrink-0 gap-2">
@@ -329,3 +329,4 @@ export default function Hero() {
     </section>
   );
 }
+

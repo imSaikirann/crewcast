@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+﻿import type { ReactNode } from "react";
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 
@@ -10,3 +10,4 @@ export default async function DashboardLayout({ children }: { children: ReactNod
   if (!session?.user?.id) redirect("/login");
   return <AppShell>{children}</AppShell>;
 }
+

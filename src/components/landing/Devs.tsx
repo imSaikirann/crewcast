@@ -1,4 +1,4 @@
-const GitHubMark = ({ className = "h-4 w-4" }: { className?: string }) => (
+﻿const GitHubMark = ({ className = "h-4 w-4" }: { className?: string }) => (
   <svg viewBox="0 0 16 16" className={`fill-current ${className}`} aria-hidden="true">
     <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z" />
   </svg>
@@ -39,7 +39,7 @@ export default function Devs() {
     <section className="relative z-10 bg-[var(--landing-bg-alt)] px-5 py-20 sm:px-6 lg:py-28">
       <div className="mx-auto max-w-7xl">
         <div className="grid gap-16 lg:grid-cols-2 lg:items-center">
-          {/* Left — copy */}
+          {/* Left â€” copy */}
           <div className="space-y-6">
             <p className="text-xs font-medium uppercase text-[var(--landing-subtle)]">
               // CANDIDATE_EXPERIENCE
@@ -48,18 +48,18 @@ export default function Devs() {
               Clean forms for candidates. Scored signals for you.
             </h2>
             <p className="text-lg leading-8 text-[var(--landing-muted)]">
-              Candidates see a simple public job page and a clean application form. For software roles, they add their GitHub profile. Crewcast handles the scoring — they don't need to do anything extra.
+              Candidates see a simple public job page and a clean application form. For software roles, they add their GitHub profile. Crewcast handles the scoring â€” they don't need to do anything extra.
             </p>
 
             <div className="space-y-3">
               {[
                 "Browse public jobs at crewcast.io/jobs",
                 "Apply with name, email, answers, and GitHub",
-                "No account required — form submit is enough",
+                "No account required â€” form submit is enough",
                 "GitHub profile is the only extra step for devs",
               ].map((item) => (
                 <div key={item} className="flex items-start gap-3 text-sm text-[var(--landing-muted)]">
-                  <span className="mt-0.5 text-[var(--landing-accent)]">→</span>
+                  <span className="mt-0.5 text-[var(--landing-accent)]">â†’</span>
                   {item}
                 </div>
               ))}
@@ -84,7 +84,7 @@ export default function Devs() {
             </div>
           </div>
 
-          {/* Right — candidate table preview */}
+          {/* Right â€” candidate table preview */}
           <div className="rounded-sm border border-[var(--landing-border)] bg-[var(--landing-panel)] overflow-hidden">
             {/* Table header */}
             <div className="grid grid-cols-[1fr_60px_1fr] gap-4 bg-[var(--landing-bg)] px-5 py-3 border-b border-[var(--landing-border)]">
@@ -115,8 +115,8 @@ export default function Devs() {
             ))}
 
             <div className="flex items-center justify-between border-t border-[var(--landing-border)] bg-[var(--landing-bg)] px-5 py-3">
-              <span className="text-xs text-[var(--landing-subtle)]">Sorted by score · 3 of 24 shown</span>
-              <span className="text-xs font-medium text-[var(--landing-accent)]">View all →</span>
+              <span className="text-xs text-[var(--landing-subtle)]">Sorted by score Â· 3 of 24 shown</span>
+              <span className="text-xs font-medium text-[var(--landing-accent)]">View all â†’</span>
             </div>
           </div>
         </div>
@@ -124,3 +124,4 @@ export default function Devs() {
     </section>
   );
 }
+

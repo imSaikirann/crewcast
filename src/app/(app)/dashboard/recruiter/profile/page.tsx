@@ -1,4 +1,4 @@
-import AppPage from "@/components/app/AppPage";
+﻿import AppPage from "@/components/app/AppPage";
 
 import RecruiterProfilePage from "@/features/recruiter/pages/RecruiterProfilePage";
 
@@ -15,4 +15,5 @@ export default function Page() {
     </AppPage>
   )
 }
+
 

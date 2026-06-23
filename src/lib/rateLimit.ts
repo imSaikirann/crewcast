@@ -45,10 +45,14 @@ export async function rateLimit({
   const count = await cacheIncr(key);
 
   if (count === null) {
+    // Cache backend is unavailable. In production we fail closed to keep
+    // rate limiting effective; in development we fail open so a missing or
+    // cold Redis instance doesn't block local requests.
+    const allowed = process.env.NODE_ENV !== "production";
     return {
-      allowed: false,
+      allowed,
       limit,
-      remaining: 0,
+      remaining: allowed ? limit : 0,
       retryAfter: windowSeconds,
     };
   }

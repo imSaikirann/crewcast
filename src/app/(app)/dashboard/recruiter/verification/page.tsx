@@ -1,4 +1,4 @@
-import { Suspense } from "react"
+﻿import { Suspense } from "react"
 import RecruiterVerificationClient from "./RecruiterVerificationClient"
 
 export const dynamic = "force-dynamic"
@@ -10,3 +10,4 @@ export default function Page() {
     </Suspense>
   )
 }
+

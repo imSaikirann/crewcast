@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { LayoutDashboard, LogOut, ChevronDown, Settings, Shield } from "lucide-react";
 import { signOut } from "next-auth/react";
@@ -39,7 +39,7 @@ export function ProfileMenu({ user }: { user: User }) {
       <DropdownMenuContent
         align="end"
         sideOffset={8}
-        className="w-64 rounded-xl border-border/80 bg-popover/95 p-1.5 shadow-2xl backdrop-blur-xl"
+        className="w-64 rounded-md border-border bg-popover p-1 shadow-[0_12px_32px_rgba(0,0,0,0.12)]"
       >
         {/* v0-style header */}
         <DropdownMenuLabel className="flex items-center gap-3 px-2.5 py-2.5">

@@ -1,4 +1,4 @@
-import Link from "next/link";
+﻿import Link from "next/link";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -11,7 +11,7 @@ export default function JobCard({ job }: { job: Job }) {
   const extraTechCount = Math.max(job.techStack.length - visibleTech.length, 0);
 
   return (
-    <article className="flex h-full flex-col rounded-lg border bg-card p-5 shadow-xs transition hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-md">
+    <article className="flex h-full flex-col rounded-lg border bg-card p-5 transition-colors hover:border-[var(--border-strong)] hover:bg-muted/20">
       <div className="space-y-4">
         <div className="flex items-start justify-between gap-4">
           <div className="min-w-0">
@@ -133,3 +133,4 @@ function formatExperience(exp: Job["experience"]) {
   if (exp === "SENIOR") return "Senior";
   return "Lead";
 }
+

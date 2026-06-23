@@ -1,4 +1,4 @@
-"use client"
+﻿"use client"
 
 import { useEffect } from "react"
 import { useSearchParams, useRouter } from "next/navigation"
@@ -27,7 +27,7 @@ export default function RecruiterVerificationClient() {
     <div className="flex min-h-screen items-center justify-center bg-background text-foreground">
       <div className="text-center space-y-4">
         <h1 className="text-xl font-semibold">
-          Verifying your company…
+          Verifying your companyâ€¦
         </h1>
         <p className="text-muted-foreground">
           Please wait while we confirm your email.
@@ -36,3 +36,4 @@ export default function RecruiterVerificationClient() {
     </div>
   )
 }
+

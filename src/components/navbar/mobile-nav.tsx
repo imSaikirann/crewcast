@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import { Menu, LayoutDashboard, LogOut, Settings, Shield } from "lucide-react";

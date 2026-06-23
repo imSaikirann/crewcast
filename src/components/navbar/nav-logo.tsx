@@ -1,4 +1,4 @@
-import Link from "next/link";
+﻿import Link from "next/link";
 import { CrewcastMark } from "@/components/brand/CrewcastLogo";
 
 export function NavLogo() {

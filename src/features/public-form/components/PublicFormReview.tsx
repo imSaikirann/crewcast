@@ -1,4 +1,4 @@
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+﻿import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Send, AlertCircle, Paperclip } from "lucide-react";
 
@@ -69,7 +69,7 @@ export function PublicFormReview({
           data-testid="review-submit-btn"
         >
           {loading ? (
-            "Submitting…"
+            "Submittingâ€¦"
           ) : (
             <>
               Submit application
@@ -92,7 +92,7 @@ function formatAnswer(value: unknown) {
     );
   }
   if (Array.isArray(value)) return value.join(", ");
-  if (value === undefined || value === null || value === "") return "—";
+  if (value === undefined || value === null || value === "") return "â€”";
   return String(value);
 }
 

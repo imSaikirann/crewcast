@@ -1,4 +1,4 @@
-import { CompassIcon, ClockIcon, PenIcon } from "./icons";
+﻿import { CompassIcon, ClockIcon, PenIcon } from "./icons";
 
 const features = [
   {
@@ -23,10 +23,10 @@ export function Features() {
     <section id="features" className="w-full scroll-mt-20">
       <div className="mx-auto max-w-5xl px-6 py-20 sm:py-28">
         <div className="max-w-2xl">
-          <h2 className="font-heading text-3xl font-bold leading-tight text-neutral-900 sm:text-4xl">
+          <h2 className="font-heading text-3xl font-bold leading-tight text-foreground sm:text-4xl">
             Proof of work beats keywords.
           </h2>
-          <p className="font-sora mt-4 text-lg leading-relaxed text-neutral-500">
+          <p className="font-sora mt-4 text-lg leading-relaxed text-muted-foreground">
             Crewcast weighs real projects and open-source contributions over
             resume buzzwords, so the right work rises to the top faster.
           </p>
@@ -35,11 +35,11 @@ export function Features() {
         <div className="mt-12 grid gap-x-12 gap-y-10 sm:mt-16 sm:grid-cols-2 sm:gap-y-12 lg:grid-cols-3">
           {features.map(({ icon: Icon, title, body }) => (
             <div key={title}>
-              <Icon size={24} className="text-neutral-900" />
-              <h3 className="font-heading mt-5 text-lg font-semibold text-neutral-900">
+              <Icon size={24} className="text-foreground" />
+              <h3 className="font-heading mt-5 text-lg font-semibold text-foreground">
                 {title}
               </h3>
-              <p className="font-sora mt-2.5 text-[15px] leading-relaxed text-neutral-500">
+              <p className="font-sora mt-2.5 text-[15px] leading-relaxed text-muted-foreground">
                 {body}
               </p>
             </div>
@@ -49,3 +49,5 @@ export function Features() {
     </section>
   );
 }
+
+

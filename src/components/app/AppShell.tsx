@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import type { Session } from "next-auth";
 import { signOut, useSession } from "next-auth/react";
@@ -39,6 +39,9 @@ const navItems: {
 }[] = [
   { href: "/dashboard", label: "Dashboard", icon: "analytics-up" },
   { href: "/jobs", label: "Jobs", icon: "briefcase" },
+  // NOTE: "Find People" (GitHub people search) is temporarily disabled.
+  // Crewcast is forms-only for now. Do not delete — re-enable when needed.
+  // { href: "/dashboard/people", label: "Find People", icon: "user" },
   { href: "/dashboard/submissions", label: "Candidates", icon: "user-add" },
   { href: "/dashboard/domains", label: "Domains", icon: "target-03" },
   { href: "/dashboard/recruiter/profile", label: "Profile", icon: "office-building" },
@@ -104,7 +107,7 @@ export default function AppShell({ children }: { children: ReactNode }) {
         />
       </aside>
 
-      {/* Collapse toggle — floats on the sidebar edge */}
+      {/* Collapse toggle â€” floats on the sidebar edge */}
       <button
         onClick={toggleCollapsed}
         aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
@@ -128,7 +131,7 @@ export default function AppShell({ children }: { children: ReactNode }) {
           collapsed ? "ml-[60px]" : "ml-[228px]"
         )}
       >
-        {/* Breadcrumb / page title area — optional slot */}
+        {/* Breadcrumb / page title area â€” optional slot */}
         <div className="flex-1" />
         <div className="flex items-center gap-1.5">
           <ThemeToggle compact />
@@ -214,7 +217,7 @@ export default function AppShell({ children }: { children: ReactNode }) {
   );
 }
 
-// ─── Sidebar Content ──────────────────────────────────────────────────────────
+// â”€â”€â”€ Sidebar Content â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 function SidebarContent({
   collapsed,
@@ -338,7 +341,7 @@ function SidebarContent({
   );
 }
 
-// ─── Nav Link ─────────────────────────────────────────────────────────────────
+// â”€â”€â”€ Nav Link â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 function NavLink({
   item,
@@ -376,7 +379,7 @@ function NavLink({
   return link;
 }
 
-// ─── User Menu ────────────────────────────────────────────────────────────────
+// â”€â”€â”€ User Menu â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 function UserMenu({
   session,
@@ -441,7 +444,7 @@ function UserMenu({
   );
 }
 
-// ─── User Avatar ──────────────────────────────────────────────────────────────
+// â”€â”€â”€ User Avatar â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 function UserAvatar({ image, name }: { image?: string | null; name: string }) {
   if (image) {
@@ -463,7 +466,7 @@ function UserAvatar({ image, name }: { image?: string | null; name: string }) {
   );
 }
 
-// ─── Helpers ──────────────────────────────────────────────────────────────────
+// â”€â”€â”€ Helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 function isActivePath(pathname: string, href: string) {
   if (href === "/dashboard" || href === "/admin") return pathname === href;

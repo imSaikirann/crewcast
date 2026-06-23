@@ -1,4 +1,4 @@
-type Props = {
+﻿type Props = {
   totalApplications: number;
   filteredApplications: number;
   views: number;
@@ -49,3 +49,4 @@ function Metric({
     </div>
   );
 }
+

@@ -1,12 +1,12 @@
-const adminCaps = [
-  { emoji: "🏢", label: "Domain management" },
-  { emoji: "📋", label: "Default forms" },
-  { emoji: "👥", label: "Recruiter activity" },
-  { emoji: "📊", label: "Platform analytics" },
-  { emoji: "🔍", label: "Application reports" },
-  { emoji: "👁️", label: "View tracking" },
-  { emoji: "📈", label: "Form quality scores" },
-  { emoji: "🛡️", label: "Access control" },
+﻿const adminCaps = [
+  { emoji: "ðŸ¢", label: "Domain management" },
+  { emoji: "ðŸ“‹", label: "Default forms" },
+  { emoji: "ðŸ‘¥", label: "Recruiter activity" },
+  { emoji: "ðŸ“Š", label: "Platform analytics" },
+  { emoji: "ðŸ”", label: "Application reports" },
+  { emoji: "ðŸ‘ï¸", label: "View tracking" },
+  { emoji: "ðŸ“ˆ", label: "Form quality scores" },
+  { emoji: "ðŸ›¡ï¸", label: "Access control" },
 ];
 
 export default function Reviews() {
@@ -23,7 +23,7 @@ export default function Reviews() {
               Full platform control for admins.
             </h2>
             <p className="text-lg leading-8 text-[var(--landing-muted)]">
-              Platform admins manage every dimension of the hiring operation — domains, recruiter access, form quality, and aggregate reporting across all roles.
+              Platform admins manage every dimension of the hiring operation â€” domains, recruiter access, form quality, and aggregate reporting across all roles.
             </p>
           </div>
 
@@ -48,7 +48,7 @@ export default function Reviews() {
           {/* Before */}
           <div className="rounded-sm border border-[color-mix(in_srgb,var(--landing-danger)_30%,transparent)] bg-[var(--landing-panel)] p-6 space-y-4">
             <div className="flex items-center gap-3">
-              <span className="text-xs font-bold uppercase text-[var(--landing-danger)]">❌ Without Crewcast</span>
+              <span className="text-xs font-bold uppercase text-[var(--landing-danger)]">âŒ Without Crewcast</span>
             </div>
             <ul className="space-y-3">
               {[
@@ -68,14 +68,14 @@ export default function Reviews() {
           {/* After */}
           <div className="rounded-sm border border-[var(--landing-border)] bg-[var(--landing-accent-soft)] p-6 space-y-4">
             <div className="flex items-center gap-3">
-              <span className="text-xs font-bold uppercase text-[var(--landing-accent)]">✓ With Crewcast</span>
+              <span className="text-xs font-bold uppercase text-[var(--landing-accent)]">âœ“ With Crewcast</span>
             </div>
             <ul className="space-y-3">
               {[
                 "Every application has a GitHub score and breakdown",
                 "Recruiter sees ranked table, not a pile of PDFs",
                 "Score is based on real public work, not claimed skills",
-                "Shortlist in minutes — review signal, not just resume",
+                "Shortlist in minutes â€” review signal, not just resume",
               ].map((p) => (
                 <li key={p} className="flex items-start gap-3 text-sm text-[var(--landing-muted)]">
                   <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--landing-accent)] opacity-60" />
@@ -108,3 +108,4 @@ export default function Reviews() {
     </section>
   );
 }
+

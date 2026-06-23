@@ -1,4 +1,4 @@
-import { Database, FileText, ListFilter } from "lucide-react";
+﻿import { Database, FileText, ListFilter } from "lucide-react";
 
 const GitHubMark = ({ className = "h-4 w-4" }: { className?: string }) => (
   <svg viewBox="0 0 16 16" className={`fill-current ${className}`} aria-hidden="true">
@@ -24,7 +24,7 @@ const steps = [
     num: "03",
     icon: Database,
     title: "Share the public link",
-    description: "Every form gets a public URL. Post it anywhere — no login required for candidates to apply.",
+    description: "Every form gets a public URL. Post it anywhere â€” no login required for candidates to apply.",
   },
   {
     num: "04",
@@ -35,10 +35,10 @@ const steps = [
 ];
 
 const capabilities = [
-  { label: "Candidate forms", emoji: "📋" },
-  { label: "GitHub scoring", emoji: "⭐" },
-  { label: "Application tracking", emoji: "📊" },
-  { label: "Admin analytics", emoji: "🔬" },
+  { label: "Candidate forms", emoji: "ðŸ“‹" },
+  { label: "GitHub scoring", emoji: "â­" },
+  { label: "Application tracking", emoji: "ðŸ“Š" },
+  { label: "Admin analytics", emoji: "ðŸ”¬" },
 ];
 
 export default function StatsBento() {
@@ -106,9 +106,9 @@ export default function StatsBento() {
         {/* Bottom stat bar */}
         <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
           {[
-            { value: "0–100", label: "GitHub score range" },
+            { value: "0â€“100", label: "GitHub score range" },
             { value: "4", label: "main signal groups" },
-            { value: "Public", label: "data only — no scraping" },
+            { value: "Public", label: "data only â€” no scraping" },
             { value: "Real-time", label: "score on submission" },
           ].map((m) => (
             <div key={m.label} className="rounded-sm border border-[var(--landing-border)] bg-[var(--landing-panel)] p-5">
@@ -121,3 +121,4 @@ export default function StatsBento() {
     </section>
   );
 }
+

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useRef, useState } from "react";
 import { motion, useInView, AnimatePresence } from "framer-motion";
@@ -16,9 +16,9 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-/* ──────────────────────────────────────────────────────── */
-/*  Steps — real copy                                       */
-/* ──────────────────────────────────────────────────────── */
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+/*  Steps â€” real copy                                       */
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 const steps = [
   {
     title: "Create your account",
@@ -32,7 +32,7 @@ const steps = [
     title: "Build your role form",
     desc:  "Define requirements & screening questions.",
     detail:
-      "Pick a role template or start blank. Add tech stack, seniority, and custom questions. Candidates link their GitHub — we pull public signals automatically.",
+      "Pick a role template or start blank. Add tech stack, seniority, and custom questions. Candidates link their GitHub â€” we pull public signals automatically.",
     icon: FileText,
     chips: ["Role templates", "Custom questions", "GitHub auto-pull"],
   },
@@ -40,7 +40,7 @@ const steps = [
     title: "Publish & share",
     desc:  "One link. Post anywhere. No friction.",
     detail:
-      "Get a clean public link to share on LinkedIn, X, or your careers page. Candidates apply in 2 minutes — no login, no CV uploads, no spam.",
+      "Get a clean public link to share on LinkedIn, X, or your careers page. Candidates apply in 2 minutes â€” no login, no CV uploads, no spam.",
     icon: Share2,
     chips: ["Public link", "Embed widget", "QR code"],
   },
@@ -48,15 +48,15 @@ const steps = [
     title: "Review your shortlist",
     desc:  "Ranked candidates with real signals.",
     detail:
-      "Each applicant arrives scored. See commit activity, language fit, repo quality, and your custom answers — all in one view. Move from 200 applicants to top 10 in minutes.",
+      "Each applicant arrives scored. See commit activity, language fit, repo quality, and your custom answers â€” all in one view. Move from 200 applicants to top 10 in minutes.",
     icon: Sparkles,
     chips: ["AI scoring", "GitHub signals", "Side-by-side compare"],
   },
 ];
 
-/* ──────────────────────────────────────────────────────── */
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 /*  Component                                               */
-/* ──────────────────────────────────────────────────────── */
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 export function HowItWorks() {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-80px" });
@@ -254,7 +254,7 @@ export function HowItWorks() {
                     disabled={active === 0}
                     className="text-[12px] font-medium text-muted-foreground transition-colors hover:text-foreground disabled:opacity-30"
                   >
-                    ← Back
+                    â† Back
                   </button>
                   {active < steps.length - 1 ? (
                     <button
@@ -279,15 +279,15 @@ export function HowItWorks() {
   );
 }
 
-/* ──────────────────────────────────────────────────────── */
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 /*  Per-step mini preview                                   */
-/* ──────────────────────────────────────────────────────── */
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 function StepPreview({ index }: { index: number }) {
   if (index === 0) {
     return (
       <div className="space-y-2">
         <Row icon={<Mail className="size-3.5" />} label="you@company.com" badge="Verified" tone="emerald" />
-        <Row icon={<UserPlus className="size-3.5" />} label="Recruiter · Acme Corp" badge="Saved" />
+        <Row icon={<UserPlus className="size-3.5" />} label="Recruiter Â· Acme Corp" badge="Saved" />
       </div>
     );
   }
@@ -295,7 +295,7 @@ function StepPreview({ index }: { index: number }) {
     return (
       <div className="space-y-2">
         <Row label="Senior Backend Engineer" badge="Draft" />
-        <Row label="Stack: Go · Postgres · Kafka" />
+        <Row label="Stack: Go Â· Postgres Â· Kafka" />
         <Row label="Custom: 'Ship a real-time bug'" />
       </div>
     );
@@ -304,15 +304,15 @@ function StepPreview({ index }: { index: number }) {
     return (
       <div className="space-y-2">
         <Row icon={<Link2 className="size-3.5" />} label="crewcast.co/r/acme-backend" badge="Live" tone="emerald" />
-        <Row label="Shared on LinkedIn · X · Careers page" />
+        <Row label="Shared on LinkedIn Â· X Â· Careers page" />
       </div>
     );
   }
   return (
     <div className="space-y-2">
-      <Row icon={<Github className="size-3.5" />} label="@octocat — 247 commits, Go fit 92%" badge="Top match" tone="emerald" />
-      <Row icon={<Star className="size-3.5" />} label="@dev-rey — strong tests, ships weekly" />
-      <Row icon={<Star className="size-3.5" />} label="@kira-codes — clean refactors" />
+      <Row icon={<Github className="size-3.5" />} label="@octocat â€” 247 commits, Go fit 92%" badge="Top match" tone="emerald" />
+      <Row icon={<Star className="size-3.5" />} label="@dev-rey â€” strong tests, ships weekly" />
+      <Row icon={<Star className="size-3.5" />} label="@kira-codes â€” clean refactors" />
     </div>
   );
 }
@@ -349,3 +349,4 @@ function Row({
     </div>
   );
 }
+

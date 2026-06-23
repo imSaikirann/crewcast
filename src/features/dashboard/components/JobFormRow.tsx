@@ -1,4 +1,4 @@
-import { formatDate } from "@/utils/date";
+﻿import { formatDate } from "@/utils/date";
 
 import type { JobForm } from "../types/dashboard.types";
 import { JobFormActionsMenu } from "./JobFormActionsMenu";
@@ -14,9 +14,9 @@ export function JobFormRow({ form }: { form: JobForm }) {
         <h3 className="truncate text-sm font-medium text-foreground">{form.title}</h3>
         <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-0.5 md:hidden">
           <span className="text-xs text-muted-foreground">{form.domainTitle || "General"}</span>
-          <span className="text-xs text-muted-foreground">·</span>
+          <span className="text-xs text-muted-foreground">Â·</span>
           <StatusBadge status={status} />
-          <span className="text-xs text-muted-foreground">·</span>
+          <span className="text-xs text-muted-foreground">Â·</span>
           <span className="text-xs text-muted-foreground">{form.submissions} apps</span>
         </div>
       </div>

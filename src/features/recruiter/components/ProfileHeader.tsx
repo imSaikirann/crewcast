@@ -1,4 +1,4 @@
-import { HugeIcon } from "@/utils/hugeicons";
+﻿import { HugeIcon } from "@/utils/hugeicons";
 
 export default function ProfileHeader({ recruiter }: any) {
   return (
@@ -34,3 +34,4 @@ export default function ProfileHeader({ recruiter }: any) {
     </div>
   );
 }
+

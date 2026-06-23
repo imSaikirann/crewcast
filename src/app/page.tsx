@@ -1,4 +1,4 @@
-import { Navbar } from "@/components/landing/newsletter/Navbar";
+﻿import { Navbar } from "@/components/landing/newsletter/Navbar";
 import { Hero } from "@/components/landing/newsletter/Hero";
 import { SocialProof } from "@/components/landing/newsletter/SocialProof";
 import { Features } from "@/components/landing/newsletter/Features";
@@ -10,7 +10,7 @@ import { Footer } from "@/components/landing/newsletter/Footer";
 
 export default function Home() {
   return (
-    <div className="font-sora min-h-screen w-full overflow-x-hidden bg-white text-neutral-900 antialiased">
+    <div className="min-h-screen w-full overflow-x-hidden bg-background text-foreground antialiased">
       <Navbar />
       <main>
         <Hero />
@@ -25,3 +25,5 @@ export default function Home() {
     </div>
   );
 }
+
+

@@ -1,4 +1,4 @@
-import Link from "next/link";
+﻿import Link from "next/link";
 import Image from "next/image";
 
 const links = [
@@ -10,7 +10,7 @@ const links = [
 
 export function Footer() {
   return (
-    <footer className="w-full border-t border-neutral-100">
+    <footer className="w-full border-t border-border">
       <div className="mx-auto flex max-w-5xl flex-col items-center justify-between gap-6 px-6 py-12 sm:flex-row">
         <Link
           href="/"
@@ -31,17 +31,19 @@ export function Footer() {
             <a
               key={l.label}
               href={l.href}
-              className="font-sora text-sm text-neutral-500 transition-colors hover:text-neutral-900"
+              className="font-sora text-sm text-muted-foreground transition-colors hover:text-foreground"
             >
               {l.label}
             </a>
           ))}
         </nav>
 
-        <p className="font-sora text-sm text-neutral-400">
-          © {new Date().getFullYear()} Crewcast
+        <p className="font-sora text-sm text-muted-foreground">
+          Â© {new Date().getFullYear()} Crewcast
         </p>
       </div>
     </footer>
   );
 }
+
+

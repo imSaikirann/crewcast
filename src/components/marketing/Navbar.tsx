@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, useEffect } from "react";
 import { useSession, signIn, signOut } from "next-auth/react";
@@ -61,7 +61,7 @@ export default function Navbar() {
       className="fixed inset-x-0 top-0 z-50 transition-transform duration-300"
       style={{ transform: hidden ? "translateY(-100%)" : "translateY(0)" }}
     >
-      {/* ── Main bar ── */}
+      {/* â”€â”€ Main bar â”€â”€ */}
       <div
         style={{
           borderBottom:      scrolled ? "0.5px solid var(--lc-border)" : "0.5px solid transparent",
@@ -148,7 +148,7 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* ── Mobile menu ── */}
+      {/* â”€â”€ Mobile menu â”€â”€ */}
       {mobileOpen && (
         <div
           className="md:hidden border-b"
@@ -211,7 +211,7 @@ export default function Navbar() {
   );
 }
 
-/* ─── Profile dropdown (desktop) ─────────────────────────────────────────── */
+/* â”€â”€â”€ Profile dropdown (desktop) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 function ProfileMenu({
   user,
   open,
@@ -301,7 +301,7 @@ function ProfileMenu({
   );
 }
 
-/* ─── Mobile user section ─────────────────────────────────────────────────── */
+/* â”€â”€â”€ Mobile user section â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 function MobileUserSection({
   user,
   onClose,
@@ -356,7 +356,7 @@ function MobileUserSection({
   );
 }
 
-/* ─── Dropdown link item ──────────────────────────────────────────────────── */
+/* â”€â”€â”€ Dropdown link item â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 function DropdownItem({
   href,
   icon,
@@ -388,3 +388,4 @@ function DropdownItem({
     </Link>
   );
 }
+

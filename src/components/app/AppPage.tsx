@@ -1,4 +1,4 @@
-import type { ReactNode } from "react"
+﻿import type { ReactNode } from "react"
 
 import Breadcrumbs, { type BreadcrumbItemType } from "@/components/common/Breadcrumbs"
 import BackButton from "@/components/common/BackButton"
@@ -24,14 +24,14 @@ export default function AppPage({
     <div className="min-h-screen">
       <div
         className={cn(
-          "w-full px-4 pb-8 pt-5 sm:px-6 lg:px-8",
+          "w-full px-4 pb-10 pt-6 sm:px-6 lg:px-8",
           width === "wide" && "mx-auto max-w-7xl",
           width === "form" && "mx-auto max-w-6xl",
           className
         )}
       >
         {breadcrumbs && (
-          <div className="mb-8">
+          <div className="mb-6">
             {backButton && (
               <BackButton
                 fallbackHref={backButton.fallbackHref}
@@ -47,3 +47,4 @@ export default function AppPage({
     </div>
   )
 }
+

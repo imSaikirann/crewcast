@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { ArrowRight } from "lucide-react";
 import { signIn } from "next-auth/react";

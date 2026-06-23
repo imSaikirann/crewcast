@@ -1,4 +1,4 @@
-import { HugeIcon } from "@/utils/hugeicons";
+﻿import { HugeIcon } from "@/utils/hugeicons";
 
 export default function ProfileActions() {
   return (
@@ -20,3 +20,4 @@ export default function ProfileActions() {
     </div>
   );
 }
+

@@ -1,4 +1,4 @@
-import Link from "next/link";
+﻿import Link from "next/link";
 
 import { FormAlert } from "@/components/ui/form-alert";
 import { CrewcastMark } from "@/components/brand/CrewcastLogo";
@@ -51,7 +51,7 @@ export function LoginCard({
 
         {emailSent ? (
           <FormAlert variant="success">
-            Check your inbox — we sent a sign-in link to{" "}
+            Check your inbox â€” we sent a sign-in link to{" "}
             <span className="font-medium">{emailSent}</span>.
           </FormAlert>
         ) : (

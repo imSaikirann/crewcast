@@ -1,4 +1,4 @@
-type StatusBadgeProps = {
+﻿type StatusBadgeProps = {
   status: string;
 };
 
@@ -14,9 +14,9 @@ const STATUS_CONFIG: Record<string, { bg: string; text: string; dot: string }> =
     dot: "bg-red-500 dark:bg-red-400",
   },
   APPLIED: {
-    bg: "bg-zinc-100 dark:bg-zinc-800",
-    text: "text-zinc-600 dark:text-zinc-400",
-    dot: "bg-zinc-400 dark:bg-zinc-500",
+    bg: "bg-muted dark:bg-muted",
+    text: "text-muted-foreground",
+    dot: "bg-muted-foreground",
   },
   INTERVIEWING: {
     bg: "bg-blue-50 dark:bg-blue-950/50",
@@ -24,9 +24,9 @@ const STATUS_CONFIG: Record<string, { bg: string; text: string; dot: string }> =
     dot: "bg-blue-500 dark:bg-blue-400",
   },
   OFFER_SENT: {
-    bg: "bg-violet-50 dark:bg-violet-950/50",
-    text: "text-violet-600 dark:text-violet-400",
-    dot: "bg-violet-500 dark:bg-violet-400",
+    bg: "bg-blue-50 dark:bg-blue-950/50",
+    text: "text-blue-600 dark:text-blue-400",
+    dot: "bg-blue-500 dark:bg-blue-400",
   },
 };
 
@@ -48,3 +48,4 @@ export function StatusBadge({ status }: StatusBadgeProps) {
     </span>
   );
 }
+

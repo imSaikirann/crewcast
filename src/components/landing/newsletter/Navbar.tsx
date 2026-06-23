@@ -1,9 +1,9 @@
-"use client";
+﻿"use client";
 
 import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { ArrowRightIcon } from "./icons";
+import { ThemeToggle } from "@/components/theme/ThemeToggle";
 
 const links = [
   { label: "How it works", href: "/#features" },
@@ -25,9 +25,9 @@ export function Navbar({ solid = false }: { solid?: boolean }) {
   return (
     <header
       className={`sticky top-0 z-50 w-full transition-colors duration-200 ${
-        solid ? "bg-white" : "bg-white/80 backdrop-blur-md"
+        solid ? "bg-background" : "bg-background/80 backdrop-blur-md"
       } ${
-        scrolled ? "border-b border-neutral-100" : "border-b border-transparent"
+        scrolled ? "border-b border-border" : "border-b border-transparent"
       }`}
     >
       <nav className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
@@ -51,21 +51,25 @@ export function Navbar({ solid = false }: { solid?: boolean }) {
             <a
               key={l.label}
               href={l.href}
-              className="font-sora text-sm text-neutral-500 transition-colors hover:text-neutral-900"
+              className="font-sora text-sm text-muted-foreground transition-colors hover:text-foreground"
             >
               {l.label}
             </a>
           ))}
         </div>
 
-        <a
-          href="/#get-started"
-          className="font-sora group inline-flex items-center gap-1.5 rounded-full bg-neutral-900 px-4 py-2 text-sm font-medium text-white shadow-sm ring-1 ring-neutral-900/10 transition-all duration-200 hover:-translate-y-0.5 hover:bg-neutral-800 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900 focus-visible:ring-offset-2"
-        >
-          Get started
-         
-        </a>
+        <div className="flex items-center gap-2">
+          <ThemeToggle compact />
+          <Link
+            href="/login"
+            className="inline-flex h-9 items-center justify-center rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/25"
+          >
+            Get started
+          </Link>
+        </div>
       </nav>
     </header>
   );
 }
+
+

@@ -1,4 +1,4 @@
-import { redirect } from "next/navigation";
+﻿import { redirect } from "next/navigation";
 import { getServerSession } from "next-auth";
 
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
@@ -229,3 +229,4 @@ function DomainStat({ label, value }: { label: string; value: number }) {
     </div>
   );
 }
+

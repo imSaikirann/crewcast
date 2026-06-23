@@ -20,6 +20,44 @@ const WEIGHTS = {
   recentActivity: 0.05,
 };
 
+/**
+ * Top-level scoring pillars for the final candidate score (0-100).
+ * Each pillar is computed independently as a 0-100 sub-score, then combined
+ * with these weights. Weights sum to 1.0.
+ *
+ * - oss:            Open-source contributions (external PRs/issues). Highest weight.
+ * - techMatch:      Overlap between the job's required tech and the candidate's
+ *                   actual repository languages (with depth bonus).
+ * - activity:       Commit volume + recency of real coding work.
+ * - impact:         Stars/forks on owned repos, using tiered thresholds so a repo
+ *                   that crosses a popularity bar (10/50/100/500 stars) ranks higher.
+ * - commitQuality:  Ratio of meaningful commit messages vs low-effort ones.
+ * - accountMaturity: Account age, with diminishing returns past ~5 years.
+ * - influence:      Followers (minor signal).
+ */
+const PILLAR_WEIGHTS = {
+  oss: 0.24,
+  techMatch: 0.2,
+  activity: 0.18,
+  impact: 0.15,
+  commitQuality: 0.1,
+  accountMaturity: 0.08,
+  influence: 0.05,
+};
+
+/**
+ * Star tiers: a repository earns escalating credit once it crosses a popularity
+ * threshold. This rewards "a repo with real traction" far more than many repos
+ * with a couple of stars each.
+ */
+const STAR_TIERS: Array<{ min: number; points: number }> = [
+  { min: 500, points: 40 },
+  { min: 100, points: 25 },
+  { min: 50, points: 15 },
+  { min: 10, points: 7 },
+  { min: 1, points: 2 },
+];
+
 const NORMALIZATION = {
   commits: 500,
   pullRequestsOpened: 100,
@@ -55,42 +93,44 @@ export function buildGitHubInsightReport(
   const languageDepth = calculateLanguageDepth(repos);
   const techAnalysis = analyzeTechStack(languageDepth, options.requiredTechStack ?? []);
   const oss = analyzeOss(data);
-  const contributionMetrics = buildContributionMetrics(data, ownedRepos, oss.topRepos.length);
-  const metricScores = scoreContributionMetrics(contributionMetrics);
-  const repoScore = scoreMetricGroup([
-    metricScores.commits,
-    metricScores.repositoriesContributedTo,
-    metricScores.starsForks,
-  ]);
-  const activityScore = metricScores.recentActivity;
-  const ossScore = scoreMetricGroup([
-    metricScores.pullRequestsOpened,
-    metricScores.pullRequestsMerged,
-    metricScores.issuesOpened,
-    metricScores.reviewComments,
-  ]);
-  const languageDiversityScore = metricScores.languageDiversity;
-  const totalScore = clampScore(
-    metricScores.commits * WEIGHTS.commits +
-      metricScores.pullRequestsOpened * WEIGHTS.pullRequestsOpened +
-      metricScores.pullRequestsMerged * WEIGHTS.pullRequestsMerged +
-      metricScores.issuesOpened * WEIGHTS.issuesOpened +
-      metricScores.reviewComments * WEIGHTS.reviewComments +
-      metricScores.repositoriesContributedTo * WEIGHTS.repositoriesContributedTo +
-      metricScores.followers * WEIGHTS.followers +
-      metricScores.starsForks * WEIGHTS.starsForks +
-      metricScores.languageDiversity * WEIGHTS.languageDiversity +
-      metricScores.recentActivity * WEIGHTS.recentActivity
-  );
-  const projects = selectProjectHighlights(ownedRepos, techAnalysis.matched);
-  const commits = selectMeaningfulCommits(ownedRepos);
-  const warnings = buildWarnings(data.repositories, ownedRepos, recentRepos);
-  const activityStatus = statusFromScore(activityScore);
   const contributedRepos = new Set(
     data.pullRequests
       .filter((pr) => pr.owner.toLowerCase() !== data.username.toLowerCase())
       .map((pr) => pr.repository)
   );
+  const contributionMetrics = buildContributionMetrics(data, ownedRepos, contributedRepos.size);
+
+  // --- Top-level pillar scores (each 0-100) ---
+  const ossScore = scoreOssContribution(oss, contributionMetrics, contributedRepos.size);
+  const impactScore = scoreImpactSignal(ownedRepos);
+  const activityScore = scoreCodeActivity(ownedRepos);
+  const commitQualityScore = scoreCommitQuality(ownedRepos);
+  const techMatchScore = techAnalysis.matchScore;
+  const accountMaturityScore = scoreAccountMaturity(data.profile.createdAt);
+  const followersScore = normalizeMetric(data.profile.followers, 200);
+
+  const totalScore = clampScore(
+    ossScore * PILLAR_WEIGHTS.oss +
+      techMatchScore * PILLAR_WEIGHTS.techMatch +
+      activityScore * PILLAR_WEIGHTS.activity +
+      impactScore * PILLAR_WEIGHTS.impact +
+      commitQualityScore * PILLAR_WEIGHTS.commitQuality +
+      accountMaturityScore * PILLAR_WEIGHTS.accountMaturity +
+      followersScore * PILLAR_WEIGHTS.influence
+  );
+
+  // Keep the displayed contributor category consistent with the final score.
+  contributionMetrics.category = categoryFromScore(totalScore);
+
+  const projects = selectProjectHighlights(ownedRepos, techAnalysis.matched);
+  const commits = selectMeaningfulCommits(ownedRepos);
+  const warnings = buildWarnings(data.repositories, ownedRepos, recentRepos, {
+    accountMaturityScore,
+    commitQualityScore,
+    hasRequiredTech: (options.requiredTechStack ?? []).length > 0,
+    missingTech: techAnalysis.missing,
+  });
+  const activityStatus = statusFromScore(activityScore);
 
   return {
     totalScore,
@@ -110,10 +150,12 @@ export function buildGitHubInsightReport(
       category: contributionMetrics.category,
     }),
     breakdown: {
-      repoScore,
-      techMatchScore: languageDiversityScore,
+      repoScore: impactScore,
+      techMatchScore,
       activityScore,
       ossScore,
+      commitQualityScore,
+      accountMaturityScore,
     },
     techAnalysis: {
       matched: techAnalysis.matched,
@@ -249,6 +291,115 @@ function calculateContributionScore(metrics: {
   );
 }
 
+// === Pillar scoring (final candidate score) ===
+
+/**
+ * Open-source contribution pillar. Rewards external pull requests (merged most),
+ * issues opened, and the number of distinct external repositories contributed to.
+ */
+function scoreOssContribution(
+  oss: { totalPRs: number; mergedPRs: number },
+  metrics: GitHubInsightReport["contributionMetrics"],
+  externalRepoCount: number
+) {
+  const prOpened = normalizeMetric(oss.totalPRs, 50);
+  const prMerged = normalizeMetric(oss.mergedPRs, 25);
+  const issues = normalizeMetric(metrics.issuesOpened, 40);
+  const externalRepos = normalizeMetric(externalRepoCount, 6);
+
+  return clampScore(
+    prMerged * 0.4 + prOpened * 0.25 + externalRepos * 0.2 + issues * 0.15
+  );
+}
+
+/**
+ * Impact pillar based on stars and forks of OWNED repositories. Uses tiered
+ * thresholds (STAR_TIERS) so a repository that crosses a real popularity bar
+ * is worth far more than many lightly-starred repositories, plus a smaller
+ * linear component for overall stars + forks volume.
+ */
+function scoreImpactSignal(ownedRepos: GitHubRepositorySignal[]) {
+  let tierPoints = 0;
+  for (const repo of ownedRepos) {
+    const tier = STAR_TIERS.find((entry) => repo.stargazerCount >= entry.min);
+    if (tier) tierPoints += tier.points;
+  }
+  const tierScore = Math.min(tierPoints, 100);
+
+  const totalStars = ownedRepos.reduce((sum, repo) => sum + repo.stargazerCount, 0);
+  const totalForks = ownedRepos.reduce((sum, repo) => sum + repo.forkCount, 0);
+  const volumeScore = normalizeMetric(totalStars + totalForks, 300);
+
+  return clampScore(tierScore * 0.7 + volumeScore * 0.3);
+}
+
+/**
+ * Code activity pillar. Combines total commit volume, recent (90-day) commit
+ * volume, and how recently the candidate was last active in owned repositories.
+ */
+function scoreCodeActivity(ownedRepos: GitHubRepositorySignal[]) {
+  const totalCommits = ownedRepos.reduce((sum, repo) => sum + repo.totalCommits, 0);
+  const recentCommits = ownedRepos.reduce((sum, repo) => sum + repo.commitsLast90Days, 0);
+  const volumeScore = normalizeMetric(totalCommits, 500);
+  const recentScore = normalizeMetric(recentCommits, 100);
+
+  const lastActive = findLastActive(ownedRepos);
+  const recencyScore = isRecent(lastActive, 30)
+    ? 100
+    : isRecent(lastActive, 90)
+      ? 70
+      : isRecent(lastActive, 365)
+        ? 40
+        : 10;
+
+  return clampScore(volumeScore * 0.4 + recentScore * 0.3 + recencyScore * 0.3);
+}
+
+/**
+ * Commit-quality pillar. Measures the ratio of meaningful commit messages to
+ * low-effort ones across owned repositories, scaled by how many messages were
+ * sampled (more evidence => more confidence).
+ */
+function scoreCommitQuality(ownedRepos: GitHubRepositorySignal[]) {
+  const messages = ownedRepos
+    .flatMap((repo) => repo.recentCommitMessages)
+    .map((message) => message.trim())
+    .filter(Boolean);
+
+  if (messages.length === 0) return 0;
+
+  const meaningful = messages.filter(isMeaningfulCommitMessage).length;
+  const ratio = meaningful / messages.length;
+  const volumeFactor = Math.min(messages.length / 20, 1);
+
+  return clampScore(ratio * 100 * (0.5 + 0.5 * volumeFactor));
+}
+
+/**
+ * Account-maturity pillar. Account age in years with diminishing returns:
+ * roughly 5+ years of history reaches the full score.
+ */
+function scoreAccountMaturity(createdAt: string) {
+  const created = new Date(createdAt).getTime();
+  if (!Number.isFinite(created)) return 0;
+
+  const years = (Date.now() - created) / (365.25 * 24 * 60 * 60 * 1000);
+  if (years <= 0) return 0;
+
+  return clampScore(Math.min(years / 5, 1) * 100);
+}
+
+/** Shared predicate: is a commit message descriptive rather than low-effort? */
+function isMeaningfulCommitMessage(message: string) {
+  const normalized = message.trim().toLowerCase();
+  return (
+    normalized.length > 8 &&
+    !LOW_QUALITY_COMMIT_MESSAGES.has(normalized) &&
+    !/^fix(e[sd])?$/i.test(message) &&
+    !/^update[sd]?$/i.test(message)
+  );
+}
+
 function calculateLanguageDepth(repos: GitHubRepositorySignal[]) {
   const depth: Record<string, number> = {};
 
@@ -354,22 +505,20 @@ function selectMeaningfulCommits(repos: GitHubRepositorySignal[]) {
   return repos
     .flatMap((repo) => repo.recentCommitMessages)
     .map((message) => message.trim())
-    .filter((message) => {
-      const normalized = message.toLowerCase();
-      return (
-        normalized.length > 8 &&
-        !LOW_QUALITY_COMMIT_MESSAGES.has(normalized) &&
-        !/^fix(e[sd])?$/i.test(message) &&
-        !/^update[sd]?$/i.test(message)
-      );
-    })
+    .filter(isMeaningfulCommitMessage)
     .slice(0, 5);
 }
 
 function buildWarnings(
   allRepos: GitHubRepositorySignal[],
   ownedRepos: GitHubRepositorySignal[],
-  recentRepos: GitHubRepositorySignal[]
+  recentRepos: GitHubRepositorySignal[],
+  context: {
+    accountMaturityScore: number;
+    commitQualityScore: number;
+    hasRequiredTech: boolean;
+    missingTech: string[];
+  }
 ) {
   const warnings: string[] = [];
   const emptyRepos = ownedRepos.filter((repo) => repo.isEmpty || repo.diskUsage <= 0);
@@ -379,6 +528,9 @@ function buildWarnings(
   if (recentRepos.length === 0) warnings.push("No owned repositories updated in the last 90 days.");
   if (emptyRepos.length >= Math.max(3, ownedRepos.length / 2)) warnings.push("Many owned repositories appear empty or very small.");
   if (totalCommits < 3) warnings.push("Very low recent commit volume across owned repositories.");
+  if (context.accountMaturityScore <= 20) warnings.push("GitHub account is relatively new.");
+  if (ownedRepos.length > 0 && context.commitQualityScore <= 30) warnings.push("Commit messages are mostly low-effort (e.g. \"fix\", \"update\").");
+  if (context.hasRequiredTech && context.missingTech.length > 0) warnings.push(`No public language evidence for required tech: ${context.missingTech.slice(0, 3).join(", ")}.`);
 
   return warnings;
 }
@@ -444,11 +596,6 @@ function buildSummary({
 function normalizeMetric(value: number, fullScoreAt: number) {
   if (fullScoreAt <= 0) return 0;
   return Math.min(value / fullScoreAt, 1) * 100;
-}
-
-function scoreMetricGroup(scores: number[]) {
-  if (!scores.length) return 0;
-  return clampScore(scores.reduce((sum, score) => sum + score, 0) / scores.length);
 }
 
 function categoryFromScore(score: number) {

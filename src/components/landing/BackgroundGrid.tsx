@@ -1,4 +1,4 @@
-export default function BackgroundGrid() {
+﻿export default function BackgroundGrid() {
   return (
     <div
       className="pointer-events-none fixed inset-0 z-0"
@@ -13,3 +13,4 @@ export default function BackgroundGrid() {
     />
   );
 }
+

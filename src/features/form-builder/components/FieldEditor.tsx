@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React from "react";
 import { Lock, Trash2, Plus, X } from "lucide-react";
@@ -88,7 +88,7 @@ export function FieldEditor({
           Required field
           {locked && (
             <span className="text-xs text-muted-foreground">
-              · locked for scoring
+              Â· locked for scoring
             </span>
           )}
         </label>

@@ -1,4 +1,4 @@
-import Link from "next/link";
+﻿import Link from "next/link";
 
 import { CrewcastWordmark } from "@/components/brand/CrewcastLogo";
 import { Badge } from "@/components/ui/badge";
@@ -239,3 +239,4 @@ const STATUS_STEPS = [
     description: "The application is no longer active for this role.",
   },
 ];
+

@@ -1,4 +1,4 @@
-"use client"
+﻿"use client"
 
 import { MultiStepForm } from "../components/MultiStepForm"
 import { useFormBuilder } from "../hooks/useFormBuilder"
@@ -26,3 +26,4 @@ export default function Page() {
     />
   )
 }
+

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { FileText, Trash2 } from "lucide-react";
 import { useState } from "react";
@@ -177,3 +177,4 @@ function formatFileSize(size: number) {
   if (size < 1024 * 1024) return `${Math.round(size / 1024)}KB`;
   return `${(size / (1024 * 1024)).toFixed(1)}MB`;
 }
+

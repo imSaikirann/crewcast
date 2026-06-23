@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import { Mail } from "lucide-react";
@@ -48,3 +48,4 @@ export function EmailSignIn({
     </form>
   );
 }
+

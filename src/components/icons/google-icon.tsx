@@ -1,4 +1,4 @@
-export function GoogleIcon({ className }: { className?: string }) {
+﻿export function GoogleIcon({ className }: { className?: string }) {
   return (
     <svg
       width="16" height="16" viewBox="0 0 24 24"

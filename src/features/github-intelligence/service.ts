@@ -23,6 +23,8 @@ export function emptyGitHubInsightReport(message: string): GitHubInsightReport {
       techMatchScore: 0,
       activityScore: 0,
       ossScore: 0,
+      commitQualityScore: 0,
+      accountMaturityScore: 0,
     },
     techAnalysis: {
       matched: [],

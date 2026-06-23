@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import {
   createContext,
@@ -9,7 +9,7 @@ import {
   type ReactNode,
 } from "react";
 
-type Theme = "light" | "dark" | "system";
+type Theme = "light" | "dark";
 type ResolvedTheme = "light" | "dark";
 
 type ThemeContextValue = {
@@ -22,25 +22,22 @@ const ThemeContext = createContext<ThemeContextValue | null>(null);
 const storageKey = "crewcast-theme";
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
-  const [theme, setThemeState] = useState<Theme>("system");
-  const [resolvedTheme, setResolvedTheme] = useState<ResolvedTheme>("dark");
+  const [theme, setThemeState] = useState<Theme>("light");
+  const [resolvedTheme, setResolvedTheme] = useState<ResolvedTheme>("light");
 
   useEffect(() => {
     const saved = window.localStorage.getItem(storageKey);
-    if (saved === "light" || saved === "dark" || saved === "system") {
+    if (saved === "light" || saved === "dark") {
       setThemeState(saved);
       return;
     }
 
-    setThemeState("system");
+    setThemeState("light");
   }, []);
 
   useEffect(() => {
-    const media = window.matchMedia("(prefers-color-scheme: dark)");
-
     const applyTheme = () => {
-      const nextResolved: ResolvedTheme =
-        theme === "system" ? (media.matches ? "dark" : "light") : theme;
+      const nextResolved: ResolvedTheme = theme;
 
       const root = document.documentElement;
       root.classList.remove("light", "dark");
@@ -51,8 +48,6 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     };
 
     applyTheme();
-    media.addEventListener("change", applyTheme);
-    return () => media.removeEventListener("change", applyTheme);
   }, [theme]);
 
   const value = useMemo(
@@ -77,3 +72,4 @@ export function useTheme() {
   }
   return value;
 }
+

@@ -80,16 +80,34 @@ function createNoopClient(): CacheClient {
 }
 
 function createLocalRedisClient(): CacheClient {
+  const existing = globalForRedis.localRedis;
   const redis =
-    globalForRedis.localRedis ??
+    existing ??
     new IORedis(process.env.REDIS_URL ?? "redis://localhost:6379", {
       lazyConnect: true,
       maxRetriesPerRequest: 1,
-      enableOfflineQueue: false,
+      // Queue commands while the connection is being established instead of
+      // throwing "Stream isn't writeable". Without this, the first command
+      // after a cold start races the TCP handshake and fails.
+      enableOfflineQueue: true,
     });
 
   if (!isProduction) {
     globalForRedis.localRedis = redis;
+  }
+
+  if (!existing) {
+    // Avoid unhandled "error" events crashing the dev server when Redis is down.
+    redis.on("error", (error: unknown) => {
+      console.warn("Local Redis error:", error);
+    });
+
+    // Warm the connection eagerly. With `lazyConnect` + `enableOfflineQueue: false`
+    // the first command would otherwise race the TCP handshake and fail with
+    // "Stream isn't writeable". Connecting up front avoids that cold-start error.
+    redis.connect().catch(() => {
+      // The error listener above already logs connection failures.
+    });
   }
 
   return {
